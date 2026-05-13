@@ -87,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
                         .putString("token", state.token)
                         .putInt("userId", state.userId)
                         .putString("userName", state.userName)
+                        .putString("userEmail", state.userEmail)
                         .apply()
                     goToMain()
                 }

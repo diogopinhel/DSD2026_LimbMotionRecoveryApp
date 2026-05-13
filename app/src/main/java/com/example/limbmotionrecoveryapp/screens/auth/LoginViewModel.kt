@@ -15,7 +15,7 @@ class LoginViewModel : ViewModel() {
     sealed class State {
         object Idle : State()
         object Loading : State()
-        data class Success(val token: String, val userId: Int, val userName: String) : State()
+        data class Success(val token: String, val userId: Int, val userName: String, val userEmail: String = "") : State()
         data class Error(val message: String) : State()
     }
 
@@ -35,7 +35,8 @@ class LoginViewModel : ViewModel() {
                 val user = result["user"] as? Map<*, *>
                 val userId = (user?.get("id") as? Double)?.toInt() ?: 0
                 val userName = user?.get("name") as? String ?: ""
-                _state.postValue(State.Success(token, userId, userName))
+                val userEmail = user?.get("email") as? String ?: email.trim()
+                _state.postValue(State.Success(token, userId, userName, userEmail))
             } catch (e: Exception) {
                 _state.postValue(State.Error(e.message ?: "Login failed"))
             }

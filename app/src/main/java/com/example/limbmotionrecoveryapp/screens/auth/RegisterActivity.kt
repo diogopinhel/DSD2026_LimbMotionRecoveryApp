@@ -171,6 +171,7 @@ class RegisterActivity : AppCompatActivity() {
                         .putString("token", state.token)
                         .putInt("userId", state.userId)
                         .putString("userName", state.userName)
+                        .putString("userEmail", state.userEmail)
                         .apply()
                     startActivity(Intent(this, MainActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))

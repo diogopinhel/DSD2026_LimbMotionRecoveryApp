@@ -35,7 +35,18 @@ class PlansFragment : Fragment() {
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
         val adapter = PlanAdapter { plan ->
-            Toast.makeText(requireContext(), "Opening: ${plan.name}", Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(requireContext(), PlanDetailsActivity::class.java).apply {
+                putExtra(PlanDetailsActivity.EXTRA_PLAN_ID, plan.id)
+                putExtra(PlanDetailsActivity.EXTRA_PLAN_NAME, plan.name)
+                putExtra(PlanDetailsActivity.EXTRA_PLAN_STATUS, plan.status)
+                putExtra(PlanDetailsActivity.EXTRA_DOCTOR, plan.doctorName)
+                putExtra(PlanDetailsActivity.EXTRA_PROGRESS, plan.progressPercent)
+                putExtra(PlanDetailsActivity.EXTRA_COMPLETED_SESSIONS, plan.completedSessions)
+                putExtra(PlanDetailsActivity.EXTRA_TOTAL_SESSIONS, plan.totalSessions)
+                putExtra(PlanDetailsActivity.EXTRA_START_DATE, plan.startDate)
+                putExtra(PlanDetailsActivity.EXTRA_END_DATE, plan.endDate)
+            }
+            startActivity(intent)
         }
 
         rvPlans.layoutManager = LinearLayoutManager(requireContext())
