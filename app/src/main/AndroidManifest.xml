@@ -51,6 +51,10 @@
             android:name=".screens.plans.PlanDetailsActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".sensor.SensorActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

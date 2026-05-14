@@ -16,7 +16,54 @@
 
 ---
 
-## 1. Auth Screens (Login & Register)
+## 1. Home Screen
+
+The Home screen shows the patient's current recovery status, sensor connection state, and a quick-start button for today's exercises.
+
+| Status | Method | Path | Notes |
+|--------|--------|------|-------|
+| ⚠️ | GET | `/schedule/{userId}` | Used to derive active plan name, week number and session counts. Response shape still unconfirmed — see section 2. |
+| ❌ | GET | `/progress/{userId}/rom` | **Current ROM degree and weekly gain.** Needed for the "Today at a glance" ROM card. Returns current angle + delta vs last week. |
+| ❌ | GET | `/schedule/{userId}/today` | **Count of today's remaining exercises.** Shown in the "Today at a glance" session card. Can also be a `todayExercises` field in the schedule response (see section 2). |
+| ❌ | GET | `/appointments/{userId}/next` | **Next appointment card.** Returns the next scheduled appointment (date, time, doctor name, location type). |
+| ❌ | POST | `/pain/{userId}/checkin` | **Pain check-in.** Record current pain level (1–10). Used to update the pain card on the home screen. |
+| ❌ | GET | `/pain/{userId}/latest` | **Latest pain level.** Retrieves the most recent pain entry and the delta from the previous day. |
+
+**Required fields for `GET /progress/{userId}/rom` (home card variant):**
+```json
+{
+  "currentDegrees": 120,
+  "weeklyGainDegrees": 15
+}
+```
+
+**Required fields for `GET /appointments/{userId}/next`:**
+```json
+{
+  "date": "2024-04-25",
+  "time": "10:30",
+  "doctorName": "Dr. Ana Rodrigues",
+  "locationType": "In Clinic"
+}
+```
+
+**Required fields for `GET /pain/{userId}/latest`:**
+```json
+{
+  "level": 4,
+  "label": "Moderate",
+  "changeFromYesterday": -1
+}
+```
+
+**Notes:**
+- The "Today at a glance" glance grid currently shows `completedSessions/totalSessions` and plan progress % from the schedule endpoint as a fallback. Once `/progress/{userId}/rom` and `todayExercises` exist, those will fill in automatically.
+- The "Next appointment", "Pain check-in" and "Learn & recover" sections are **hidden** in the current build because their endpoints don't exist yet.
+- Sensor data (ROM, movement) for the live card comes from the S2 local module — no V2 endpoint needed for real-time sensor data.
+
+---
+
+## 2. Auth Screens (Login & Register)
 
 | Status | Method | Path | Notes |
 |--------|--------|------|-------|

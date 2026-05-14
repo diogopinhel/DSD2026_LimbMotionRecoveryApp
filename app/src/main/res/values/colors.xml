@@ -13,4 +13,12 @@
     <color name="colorLogoBorder">#D4EDE4</color>
     <color name="colorDivider">#E8EFED</color>
     <color name="colorPageBackground">#F0F4F3</color>
+    <color name="colorAmberBg">#FFF8F0</color>
+    <color name="colorAmberBorder">#FDEBC8</color>
+    <color name="colorAmberText">#BA7517</color>
+    <color name="colorAmberDark">#854F0B</color>
+    <color name="colorGreenLightBg">#F0FBF6</color>
+    <color name="colorGreenLightBorder">#B8E8D4</color>
+    <color name="colorGreenDark">#0F6E56</color>
+    <color name="colorGreenExtraLight">#E1F5EE</color>
 </resources>

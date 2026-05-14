@@ -3,6 +3,7 @@ package com.example.limbmotionrecoveryapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.limbmotionrecoveryapp.screens.home.HomeFragment
 import com.example.limbmotionrecoveryapp.screens.plans.PlansFragment
 import com.example.limbmotionrecoveryapp.screens.profile.ProfileFragment
 import com.example.limbmotionrecoveryapp.screens.progress.ProgressFragment
@@ -10,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
+    private val homeFragment = HomeFragment()
     private val plansFragment = PlansFragment()
     private val progressFragment = ProgressFragment()
     private val profileFragment = ProfileFragment()
@@ -19,15 +21,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            showFragment(plansFragment)
+            showFragment(homeFragment)
         }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_plans
+        bottomNav.selectedItemId = R.id.nav_home
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> showFragment(plansFragment)
+                R.id.nav_home -> showFragment(homeFragment)
                 R.id.nav_plans -> showFragment(plansFragment)
                 R.id.nav_progress -> showFragment(progressFragment)
                 R.id.nav_profile -> showFragment(profileFragment)
