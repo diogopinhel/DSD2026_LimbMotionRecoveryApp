@@ -3,7 +3,7 @@ package com.dsd.s1.ble;
 import com.dsd.s1.model.SensorSample;
 import java.util.*;
 
-public class WitMotionParser {
+public class claWitMotionParser {
     private static final int SERIAL_FRAME_LEN = 11;
     private static final int BLE_PACKET_LEN = 20;
     private static final int MAX_RX_BUFFER = 4096;
