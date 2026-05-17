@@ -9,6 +9,8 @@ import com.example.limbmotionrecoveryapp.screens.profile.ProfileFragment
 import com.example.limbmotionrecoveryapp.screens.progress.ProgressFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+import android.content.Intent
+
 class MainActivity : AppCompatActivity() {
 
     private val homeFragment = HomeFragment()
@@ -18,6 +20,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        //test-code-Yiding Wang
+        //startActivity(Intent(this, com.example.limbmotionrecoveryapp.test.TestS2Activity::class.java))
+        //test-code-end
+
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {

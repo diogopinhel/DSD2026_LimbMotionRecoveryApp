@@ -51,6 +51,7 @@ class HomeFragment : Fragment() {
 
         btnStartExercises.setOnClickListener {
             navigateTo(R.id.nav_plans)
+            //startActivity(Intent(requireContext(), SensorActivity::class.java))
         }
 
         btnConnectSensor.setOnClickListener {

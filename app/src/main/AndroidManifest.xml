@@ -55,6 +55,12 @@
             android:name=".sensor.SensorActivity"
             android:exported="false" />
 
+        <!-- ===== test Activity ===== -->
+        <activity
+            android:name=".test.TestS2Activity"
+            android:exported="false" />
+        <!-- ============================= -->
+
     </application>
 
 </manifest>
