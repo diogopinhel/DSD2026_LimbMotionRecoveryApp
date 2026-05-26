@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPageBackground"
+    android:orientation="vertical">
+
+    <!-- Top bar (always visible) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/colorPageBackground"
+        android:paddingStart="14dp"
+        android:paddingEnd="18dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/btnBack"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_btn_back"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="10dp">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"
+                android:contentDescription="@null" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect Sensor"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark" />
+    </LinearLayout>
+
+    <!-- ══════════════════════════════════════
+         STATE: SCANNING
+    ══════════════════════════════════════ -->
+    <ScrollView
+        android:id="@+id/stateScanningLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- Hero with animated rings -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:paddingBottom="16dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Ring 1 (outermost) -->
+                    <View
+                        android:id="@+id/scanRing1"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_ring"
+                        android:alpha="0.15" />
+
+                    <!-- Ring 2 -->
+                    <View
+                        android:id="@+id/scanRing2"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_ring"
+                        android:alpha="0.25" />
+
+                    <!-- Ring 3 (innermost) -->
+                    <View
+                        android:id="@+id/scanRing3"
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_ring"
+                        android:alpha="0.4" />
+
+                    <!-- Device icon box -->
+                    <FrameLayout
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_device_box">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sensor_wifi"
+                            android:contentDescription="@null"
+                            android:tint="@color/colorPrimaryGreen" />
+                    </FrameLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Searching for sensor…"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextDark"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Make sure your LIMBS sensor\nis turned on and nearby."
+                    android:textSize="12sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.5" />
+            </LinearLayout>
+
+            <!-- Steps -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginBottom="14dp">
+
+                <!-- Step 1: Turn on sensor (done) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:layout_marginBottom="12dp">
+
+                    <FrameLayout
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_step_done_circle">
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_check_field"
+                            android:contentDescription="@null"
+                            android:tint="@color/white" />
+                    </FrameLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Turn on the sensor"
+                            android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorTextDark" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Hold the button for 2 seconds until the LED blinks green."
+                            android:textSize="11sp" android:textColor="@color/colorTextMedium"
+                            android:layout_marginTop="2dp" android:lineSpacingMultiplier="1.4" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Step 2: Enable Bluetooth -->
+                <LinearLayout
+                    android:id="@+id/stepBluetoothRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <FrameLayout
+                        android:id="@+id/stepBtIcon"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_step_done_circle">
+                        <ImageView
+                            android:id="@+id/stepBtCheck"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_check_field"
+                            android:contentDescription="@null"
+                            android:tint="@color/white" />
+                    </FrameLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Enable Bluetooth"
+                            android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorTextDark" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Make sure Bluetooth is on in your phone settings."
+                            android:textSize="11sp" android:textColor="@color/colorTextMedium"
+                            android:layout_marginTop="2dp" android:lineSpacingMultiplier="1.4" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Step 3: Scanning (in progress) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="4dp">
+
+                    <FrameLayout
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/bg_step_scanning_circle">
+                        <ProgressBar
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/colorPrimaryGreen" />
+                    </FrameLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Scanning nearby devices"
+                            android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorPrimaryGreen" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Looking for LIMBS sensor via Bluetooth…"
+                            android:textSize="11sp" android:textColor="@color/colorTextMedium"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Bottom actions -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_waiting_btn"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waiting for sensor…"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextLight" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btnSkipFromScan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Continue without sensor"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ══════════════════════════════════════
+         STATE: FOUND
+    ══════════════════════════════════════ -->
+    <ScrollView
+        android:id="@+id/stateFoundLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- Found hero -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:paddingBottom="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <FrameLayout
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_marginBottom="12dp">
+
+                    <View
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_ring"
+                        android:alpha="0.3" />
+
+                    <View
+                        android:layout_width="62dp"
+                        android:layout_height="62dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_ring"
+                        android:alpha="0.5" />
+
+                    <FrameLayout
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_sensor_device_found">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sensor_wifi"
+                            android:contentDescription="@null"
+                            android:tint="@color/colorPrimaryGreen" />
+                    </FrameLayout>
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sensor found!"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextDark"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap connect to pair your device."
+                    android:textSize="12sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Found device card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/bg_sensor_live_card"
+                android:padding="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_icon_green">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_sensor_wifi"
+                        android:contentDescription="@null"
+                        android:tint="@color/colorPrimaryGreen" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFoundDeviceName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WitMotion Sensor"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:id="@+id/tvFoundDeviceAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ready to pair · BLE"
+                        android:textSize="11sp"
+                        android:textColor="@color/colorPrimaryGreen"
+                        android:textStyle="bold|normal"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- Signal bars -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="bottom">
+                    <View android:layout_width="4dp" android:layout_height="6dp" android:layout_marginEnd="2dp" android:background="@color/colorPrimaryGreen" />
+                    <View android:layout_width="4dp" android:layout_height="10dp" android:layout_marginEnd="2dp" android:background="@color/colorPrimaryGreen" />
+                    <View android:layout_width="4dp" android:layout_height="14dp" android:layout_marginEnd="2dp" android:background="@color/colorPrimaryGreen" />
+                    <View android:layout_width="4dp" android:layout_height="18dp" android:background="@color/colorPrimaryGreen" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Steps (all done) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="10dp">
+                    <FrameLayout android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="12dp" android:background="@drawable/bg_step_done_circle">
+                        <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_gravity="center" android:src="@drawable/ic_check_field" android:contentDescription="@null" android:tint="@color/white" />
+                    </FrameLayout>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sensor turned on" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorTextDark" android:gravity="center_vertical" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="10dp">
+                    <FrameLayout android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="12dp" android:background="@drawable/bg_step_done_circle">
+                        <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_gravity="center" android:src="@drawable/ic_check_field" android:contentDescription="@null" android:tint="@color/white" />
+                    </FrameLayout>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Bluetooth enabled" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorTextDark" android:gravity="center_vertical" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                    <FrameLayout android:layout_width="26dp" android:layout_height="26dp" android:layout_marginEnd="12dp" android:background="@drawable/bg_step_done_circle">
+                        <ImageView android:layout_width="12dp" android:layout_height="12dp" android:layout_gravity="center" android:src="@drawable/ic_check_field" android:contentDescription="@null" android:tint="@color/white" />
+                    </FrameLayout>
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Device found nearby" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/colorPrimaryGreen" android:gravity="center_vertical" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Connect button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:layout_marginTop="4dp">
+
+                <LinearLayout
+                    android:id="@+id/btnConnectDevice"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_cta_btn"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_sensor_wifi"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@null"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Connect LIMBS Sensor"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/btnSkipFromFound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Continue without sensor"
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ══════════════════════════════════════
+         STATE: CONNECTED
+    ══════════════════════════════════════ -->
+    <ScrollView
+        android:id="@+id/stateConnectedLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <!-- Success icon -->
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:background="@drawable/bg_connected_hero"
+                android:layout_marginBottom="14dp">
+
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check_field"
+                    android:contentDescription="@null"
+                    android:tint="@color/colorPrimaryGreen" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sensor connected!"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark"
+                android:gravity="center"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:id="@+id/tvConnectedDeviceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LIMBS Sensor is ready.\nMotion data will be recorded during your session."
+                android:textSize="12sp"
+                android:textColor="@color/colorTextMedium"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.5"
+                android:layout_marginBottom="28dp" />
+
+            <!-- Status row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_sensor_banner_on"
+                android:padding="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="32dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_sensor_wifi"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@null"
+                    android:tint="@color/colorPrimaryGreen" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tracking ready"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorGreenDark"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/bg_circle_green" />
+            </LinearLayout>
+
+            <!-- Done button -->
+            <LinearLayout
+                android:id="@+id/btnDone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_cta_btn"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ══════════════════════════════════════
+         STATE: ERROR
+    ══════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/stateErrorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_icon_amber"
+            android:layout_marginBottom="16dp">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_sensor_wifi"
+                android:contentDescription="@null"
+                android:tint="@color/colorAmberText" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Could not find sensor"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvErrorDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make sure your sensor is on and nearby."
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.5"
+            android:layout_marginBottom="32dp" />
+
+        <LinearLayout
+            android:id="@+id/btnRetry"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_cta_btn"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try again"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnSkipFromError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue without sensor"
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium"
+            android:gravity="center"
+            android:padding="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- ══════════════════════════════════════
+         STATE: CONNECTING (overlay on FOUND)
+    ══════════════════════════════════════ -->
+    <LinearLayout
+        android:id="@+id/stateConnectingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimaryGreen"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connecting…"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please wait while we establish the connection."
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium"
+            android:gravity="center"
+            android:layout_marginTop="6dp"
+            android:lineSpacingMultiplier="1.5" />
+    </LinearLayout>
+
+</LinearLayout>

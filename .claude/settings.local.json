@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\diogo\\\\AndroidStudioProjects\\\\LimbMotionRecoveryApp\\\\app\\\\src\\\\main\\\\java\\\\com\\\\dsd\" -Recurse | Select-Object FullName, @{n='Type';e={if \\($_.PSIsContainer\\) {'Dir'} else {'File'}}} | Sort-Object FullName)",
+      "Bash(.\\\\gradlew.bat assembleDebug)",
+      "PowerShell(java *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Android\\\\Android Studio\\\\jbr\\\\bin\\\\java.exe\" -version 2>&1)",
+      "PowerShell(New-Item *)"
+    ]
+  }
+}

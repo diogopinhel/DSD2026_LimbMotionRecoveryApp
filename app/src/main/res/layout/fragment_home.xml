@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPageBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="4dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextDark" />
+
+                <TextView
+                    android:id="@+id/tvPlanSubline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" "
+                    android:textSize="12sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/btnNotification"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_icon_green">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_nav_notification"
+                    android:contentDescription="@null" />
+
+                <View
+                    android:id="@+id/notifDot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/bg_notif_dot"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Week progress bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="14dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Recovery progress"
+                    android:textSize="11sp"
+                    android:textColor="@color/colorTextMedium" />
+
+                <TextView
+                    android:id="@+id/tvWeekLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextDark" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/weekProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_progress_track"
+                android:progressTint="@color/colorPrimaryGreen"
+                android:progressBackgroundTint="#E8F5EF" />
+        </LinearLayout>
+
+        <!-- Sensor banner: NOT CONNECTED -->
+        <LinearLayout
+            android:id="@+id/sensorBannerOff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/bg_sensor_banner_off"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <FrameLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_icon_amber">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sensor_wifi"
+                    android:contentDescription="@null"
+                    android:tint="@color/colorAmberText" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sensor not connected"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAmberDark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Connect to track motion data"
+                    android:textSize="11sp"
+                    android:textColor="@color/colorTextMedium"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnConnectSensor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Connect"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAmberText"
+                android:background="@drawable/bg_sensor_action_off"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- Sensor banner: CONNECTED -->
+        <LinearLayout
+            android:id="@+id/sensorBannerOn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/bg_sensor_banner_on"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/bg_sensor_icon">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_sensor_wifi"
+                    android:contentDescription="@null"
+                    android:tint="@color/colorPrimaryGreen" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LIMBS Sensor connected"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorGreenDark" />
+
+                <TextView
+                    android:id="@+id/tvSensorBattery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tracking ready"
+                    android:textSize="11sp"
+                    android:textColor="@color/colorPrimaryGreen"
+                    android:textStyle="bold|normal"
+                    android:layout_marginTop="1dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/bg_circle_green" />
+        </LinearLayout>
+
+        <!-- Live sensor data card (only visible when sensor connected) -->
+        <LinearLayout
+            android:id="@+id/sensorLiveCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_sensor_live_card"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_sensor_live_header"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="LIVE SENSOR DATA"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorGreenDark"
+                    android:letterSpacing="0.06" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● Live"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorGreenDark"
+                    android:background="@drawable/bg_sensor_live_badge"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tvLiveRom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="—"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ROM"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryGreen" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Joint angle"
+                        android:textSize="10sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorDivider" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/tvLiveMovement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="—"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="m/s²"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryGreen" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Movement"
+                        android:textSize="10sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Today at a glance card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimaryGreen" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_plan_card_default"
+                android:padding="14dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TODAY AT A GLANCE"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryGreen"
+                    android:letterSpacing="0.07"
+                    android:layout_marginBottom="9dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_glance_item"
+                        android:orientation="vertical"
+                        android:padding="9dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sessions done"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvGlanceSessions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorTextDark" />
+
+                        <TextView
+                            android:id="@+id/tvGlanceSessionsSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" "
+                            android:textSize="10sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            android:textStyle="bold|normal"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_glance_item"
+                        android:orientation="vertical"
+                        android:padding="9dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Plan progress"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvGlanceProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorTextDark" />
+
+                        <TextView
+                            android:id="@+id/tvGlanceProgressSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" "
+                            android:textSize="10sp"
+                            android:textColor="@color/colorAmberText"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Start Exercises CTA button -->
+        <LinearLayout
+            android:id="@+id/btnStartExercises"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_cta_btn"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_play"
+                android:layout_marginEnd="7dp"
+                android:contentDescription="@null"
+                android:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Exercises"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

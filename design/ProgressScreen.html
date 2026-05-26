@@ -1,0 +1,290 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { display: flex; justify-content: center; padding: 2rem; background: #F0F4F3; border-radius: 20px; font-family: 'Figtree', sans-serif; }
+.phone { width: 375px; height: 812px; background: #F7F9F8; border-radius: 44px; overflow: hidden; border: 10px solid #1a1a1a; position: relative; display: flex; flex-direction: column; }
+.status-bar { background: #fff; padding: 18px 24px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #1a1a1a; flex-shrink: 0; }
+.notch { width: 120px; height: 28px; background: #1a1a1a; border-radius: 0 0 18px 18px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+.scroll-area { flex: 1; overflow-y: auto; padding-bottom: 80px; scrollbar-width: none; }
+.scroll-area::-webkit-scrollbar { display: none; }
+
+.header { background: #fff; padding: 20px 20px 0; }
+.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.page-title { font-size: 24px; font-weight: 700; color: #0D1F1A; }
+
+.tabs-row { display: flex; background: #fff; padding: 0 20px; border-bottom: 1px solid #F0F4F3; }
+.tab { padding: 12px 16px 12px 0; font-size: 13px; font-weight: 600; color: #9EB5AF; position: relative; margin-right: 4px; }
+.tab.active { color: #1D9E75; }
+.tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2.5px; background: #1D9E75; border-radius: 2px; }
+
+.section { padding: 16px 16px 0; }
+.card { background: #fff; border-radius: 16px; border: 1px solid #E8EFED; margin-bottom: 12px; overflow: hidden; }
+.card-pad { padding: 16px; }
+.card-label { font-size: 11px; font-weight: 700; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.card-title { font-size: 28px; font-weight: 700; color: #0D1F1A; line-height: 1; }
+.card-meta { font-size: 12px; color: #1D9E75; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+
+/* chart */
+.chart-wrap { padding: 8px 16px 14px; position: relative; }
+.chart-area { position: relative; height: 130px; }
+.chart-grid { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.grid-line { border-top: 1px dashed #F0F4F3; position: relative; }
+.grid-label { position: absolute; left: 0; top: -9px; font-size: 10px; color: #C4D4D0; font-weight: 500; }
+.target-line { border-top: 1.5px dashed #1D9E75; position: relative; opacity: 0.4; }
+.target-label { position: absolute; right: 0; top: -9px; font-size: 10px; color: #1D9E75; font-weight: 700; }
+.chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.chart-x-labels { display: flex; justify-content: space-between; padding: 6px 0 0; }
+.chart-x-label { font-size: 10px; color: #9EB5AF; font-weight: 500; }
+
+/* donut */
+.adherence-row { display: flex; align-items: center; gap: 16px; padding: 16px; }
+.donut-wrap { position: relative; width: 72px; height: 72px; flex-shrink: 0; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-pct { font-size: 16px; font-weight: 700; color: #0D1F1A; line-height: 1; }
+.donut-sub { font-size: 9px; color: #9EB5AF; font-weight: 500; }
+.adherence-info { flex: 1; }
+.adherence-title { font-size: 14px; font-weight: 700; color: #0D1F1A; margin-bottom: 3px; }
+.adherence-sub { font-size: 12px; color: #6B8A82; }
+.adherence-badge { font-size: 11px; font-weight: 700; color: #085041; background: #E1F5EE; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 6px; }
+
+/* pain chart */
+.pain-bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0 16px 0; margin-bottom: 6px; }
+.pain-bar-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.pain-bar { width: 100%; border-radius: 4px 4px 0 0; }
+.pain-bar-label { font-size: 9px; color: #9EB5AF; }
+.pain-bar-val { font-size: 10px; font-weight: 700; }
+.pain-x-labels { display: flex; justify-content: space-around; padding: 0 16px 14px; }
+.pain-x-label { font-size: 10px; color: #9EB5AF; text-align: center; flex: 1; }
+
+/* weekly stats */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #F0F4F3; }
+.stat-cell { background: #fff; padding: 14px 12px; text-align: center; }
+.stat-val { font-size: 20px; font-weight: 700; color: #0D1F1A; }
+.stat-unit { font-size: 10px; color: #1D9E75; font-weight: 700; }
+.stat-label { font-size: 10px; color: #9EB5AF; margin-top: 3px; }
+
+/* navbar */
+.navbar { position: absolute; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #E8EFED; display: flex; padding: 10px 0 22px; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.nav-label { font-size: 10px; color: #9EB5AF; font-weight: 500; font-family: 'Figtree', sans-serif; }
+.nav-label-active { font-size: 10px; color: #1D9E75; font-weight: 700; font-family: 'Figtree', sans-serif; }
+.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: #1D9E75; }
+svg.nav-ico { width: 22px; height: 22px; stroke: #9EB5AF; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+svg.nav-ico.active { stroke: #1D9E75; }
+</style>
+
+<div class="wrap">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span>9:41</span>
+      <span style="display:flex;gap:5px;align-items:center;">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#1a1a1a"/><rect x="4" y="2.5" width="3" height="9.5" rx="1" fill="#1a1a1a"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#1a1a1a"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C5.5 2 3.3 3.1 1.8 4.8L0 3C2 1.1 4.8 0 8 0s6 1.1 8 3l-1.8 1.8C12.7 3.1 10.5 2 8 2z" fill="#1a1a1a"/><path d="M8 5c-1.7 0-3.2.7-4.3 1.8L2 5.1C3.5 3.8 5.6 3 8 3s4.5.8 6 2.1L12.3 6.8C11.2 5.7 9.7 5 8 5z" fill="#1a1a1a"/><circle cx="8" cy="10" r="2" fill="#1a1a1a"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1a1a1a"/><path d="M23 4.5v3a1.5 1.5 0 000-3z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <div class="scroll-area">
+
+      <div class="header">
+        <div class="header-top">
+          <div class="page-title">Progress</div>
+          <div style="background:#F0F7F4;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:600;color:#1D9E75;">Week 3 of 6</div>
+        </div>
+      </div>
+
+      <div class="tabs-row">
+        <div class="tab active">Overview</div>
+        <div class="tab">Pain</div>
+        <div class="tab">Range of Motion</div>
+      </div>
+
+      <div class="section">
+
+        <!-- ROM card -->
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:8px;">
+            <div class="card-label">Knee bending (ROM)</div>
+            <div class="card-title">120°</div>
+            <div class="card-meta">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+              15° improvement from last week
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-area">
+              <div class="chart-grid">
+                <div class="target-line"><span class="target-label">Target 135°</span></div>
+                <div class="grid-line"><span class="grid-label">120°</span></div>
+                <div class="grid-line"><span class="grid-label">90°</span></div>
+                <div class="grid-line"><span class="grid-label">60°</span></div>
+                <div class="grid-line"><span class="grid-label">30°</span></div>
+              </div>
+              <svg class="chart-svg" viewBox="0 0 300 130" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="romGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1D9E75" stop-opacity="0.18"/>
+                    <stop offset="100%" stop-color="#1D9E75" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M20,118 L80,104 L140,86 L200,70 L260,48" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20,118 L80,104 L140,86 L200,70 L260,48 L260,130 L20,130 Z" fill="url(#romGrad)"/>
+                <circle cx="20" cy="118" r="4" fill="#1D9E75"/>
+                <circle cx="80" cy="104" r="4" fill="#1D9E75"/>
+                <circle cx="140" cy="86" r="4" fill="#1D9E75"/>
+                <circle cx="200" cy="70" r="4" fill="#1D9E75"/>
+                <circle cx="260" cy="48" r="6" fill="#1D9E75" stroke="white" stroke-width="2"/>
+                <text x="260" y="38" text-anchor="middle" font-family="Figtree,sans-serif" font-size="11" font-weight="700" fill="#1D9E75">120°</text>
+              </svg>
+            </div>
+            <div class="chart-x-labels">
+              <span class="chart-x-label">Apr 4</span>
+              <span class="chart-x-label">Apr 11</span>
+              <span class="chart-x-label">Apr 18</span>
+              <span class="chart-x-label">Apr 22</span>
+              <span class="chart-x-label">Apr 25</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Adherence card -->
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:8px;">
+            <div class="card-label">Exercise adherence</div>
+            <div style="font-size:13px;color:#6B8A82;margin-bottom:2px;">This week</div>
+          </div>
+          <div class="adherence-row">
+            <div class="donut-wrap">
+              <svg width="72" height="72" viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="28" fill="none" stroke="#E8F5EF" stroke-width="8"/>
+                <circle cx="36" cy="36" r="28" fill="none" stroke="#1D9E75" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="26.4"
+                  stroke-linecap="round" transform="rotate(-90 36 36)"/>
+              </svg>
+              <div class="donut-center">
+                <div class="donut-pct">85%</div>
+                <div class="donut-sub">done</div>
+              </div>
+            </div>
+            <div class="adherence-info">
+              <div class="adherence-title">12 of 14 exercises</div>
+              <div class="adherence-sub">2 skipped this week</div>
+              <div class="adherence-badge">🔥 3 week streak</div>
+            </div>
+          </div>
+          <!-- week dots -->
+          <div style="display:flex;gap:6px;padding:0 16px 14px;align-items:center;">
+            <div style="font-size:10px;color:#9EB5AF;margin-right:2px;">Mon</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div style="font-size:10px;color:#9EB5AF;">Tue</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div style="font-size:10px;color:#9EB5AF;">Wed</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#E8EFED;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9EB5AF" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+            <div style="font-size:10px;color:#9EB5AF;">Thu</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div style="font-size:10px;color:#9EB5AF;">Fri</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#1D9E75;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div style="font-size:10px;color:#9EB5AF;">Sat</div>
+            <div style="width:28px;height:28px;border-radius:8px;background:#F0F7F4;border:1.5px dashed #B8DDD0;"></div>
+          </div>
+        </div>
+
+        <!-- Pain trend card -->
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:10px;">
+            <div class="card-label" style="color:#BA7517;">Pain trend</div>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+              <div style="font-size:28px;font-weight:700;color:#0D1F1A;">4</div>
+              <div style="font-size:13px;color:#1D9E75;font-weight:600;">↓ 2 from last week</div>
+            </div>
+            <div style="font-size:12px;color:#6B8A82;margin-top:2px;">Average pain level this week</div>
+          </div>
+          <div class="pain-bars">
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#9EB5AF;">6</div>
+              <div class="pain-bar" style="height:60px;background:#FEE8D2;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#9EB5AF;">6</div>
+              <div class="pain-bar" style="height:60px;background:#FEE8D2;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#BA7517;">5</div>
+              <div class="pain-bar" style="height:50px;background:#EF9F27;opacity:0.5;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#BA7517;">4</div>
+              <div class="pain-bar" style="height:40px;background:#EF9F27;opacity:0.6;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#1D9E75;">3</div>
+              <div class="pain-bar" style="height:30px;background:#1D9E75;opacity:0.5;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#1D9E75;">4</div>
+              <div class="pain-bar" style="height:40px;background:#EF9F27;opacity:0.5;"></div>
+            </div>
+            <div class="pain-bar-col">
+              <div style="font-size:10px;font-weight:700;color:#1D9E75;border-bottom:2px solid #1D9E75;">4</div>
+              <div class="pain-bar" style="height:40px;background:#1D9E75;border-radius:4px 4px 0 0;"></div>
+            </div>
+          </div>
+          <div class="pain-x-labels">
+            <span class="pain-x-label">Apr 19</span>
+            <span class="pain-x-label">20</span>
+            <span class="pain-x-label">21</span>
+            <span class="pain-x-label">22</span>
+            <span class="pain-x-label">23</span>
+            <span class="pain-x-label">24</span>
+            <span class="pain-x-label">25</span>
+          </div>
+        </div>
+
+        <!-- weekly summary -->
+        <div class="card" style="margin-bottom:4px;">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="card-label" style="color:#6B8A82;">Weekly summary</div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-cell">
+              <div class="stat-val">35 <span class="stat-unit">min</span></div>
+              <div class="stat-label">Avg session</div>
+            </div>
+            <div class="stat-cell">
+              <div class="stat-val">5 <span class="stat-unit">days</span></div>
+              <div class="stat-label">Active days</div>
+            </div>
+            <div class="stat-cell">
+              <div class="stat-val">↑ 8°<span class="stat-unit"> ROM</span></div>
+              <div class="stat-label">Weekly gain</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="navbar">
+      <div class="nav-item">
+        <svg class="nav-ico" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <div class="nav-label">Home</div>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-ico" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
+        <div class="nav-label">Plans</div>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-ico active" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div class="nav-label-active">Progress</div>
+        <div class="nav-dot"></div>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="nav-label">Profile</div>
+      </div>
+    </div>
+
+  </div>
+</div>
