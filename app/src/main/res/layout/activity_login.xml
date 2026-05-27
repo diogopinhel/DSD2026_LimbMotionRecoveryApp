@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp"
+        android:paddingBottom="40dp">
+
+        <!-- Logo section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingTop="52dp"
+            android:paddingBottom="28dp">
+
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginBottom="18dp"
+                android:background="@drawable/bg_logo_circle">
+
+                <ImageView
+                    android:id="@+id/imgLogo"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:contentDescription="LIMBS logo" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LIMBS"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Limb Motion Rehab"
+                android:textSize="13sp"
+                android:textColor="@color/colorPrimaryGreen" />
+        </LinearLayout>
+
+        <!-- Welcome section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome back! 👋"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign in to continue\nyour recovery journey."
+                android:textSize="14sp"
+                android:textColor="@color/colorTextMedium"
+                android:lineSpacingMultiplier="1.5"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Email label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Email field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="@color/colorBorder"
+            app:boxStrokeWidth="1.5dp"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_email"
+            app:endIconTint="@color/colorTextLight"
+            android:layout_marginBottom="14dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="john.doe@email.com"
+                android:inputType="textEmailAddress"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextDark" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Password field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPassword"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxStrokeColor="@color/colorBorder"
+            app:boxStrokeWidth="1.5dp"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/colorTextLight"
+            android:layout_marginBottom="6dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="••••••••"
+                android:inputType="textPassword"
+                android:textSize="15sp"
+                android:textColor="@color/colorTextDark" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Forgot password -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Forgot password?"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryGreen"
+            android:gravity="end"
+            android:paddingVertical="8dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Sign In button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Sign In"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/colorPrimaryGreen"
+            app:cornerRadius="14dp"
+            android:layout_marginBottom="18dp" />
+
+        <!-- Divider -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="18dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/colorDivider" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="or continue with"
+                android:textSize="12sp"
+                android:textColor="@color/colorTextLight"
+                android:paddingHorizontal="12dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/colorDivider" />
+        </LinearLayout>
+
+        <!-- Face ID button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnFaceId"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Sign in with Face ID"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextSensor"
+            app:strokeColor="@color/colorBorder"
+            app:strokeWidth="1.5dp"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_face_id"
+            app:iconTint="@color/colorPrimaryGreen"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Register link -->
+        <TextView
+            android:id="@+id/tvSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/colorTextMedium"
+            android:gravity="center" />
+
+    </LinearLayout>
+</ScrollView>

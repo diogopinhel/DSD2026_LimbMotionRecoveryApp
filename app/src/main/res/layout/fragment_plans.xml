@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPageBackground">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorPageBackground"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="My Plans"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark" />
+
+            <ImageButton
+                android:id="@+id/btnNotification"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_notif_btn"
+                android:src="@drawable/ic_nav_notification"
+                android:contentDescription="Notifications"
+                android:padding="9dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvHeaderSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading..."
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium" />
+    </LinearLayout>
+
+    <!-- Summary strip -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:id="@+id/cardActivePlans"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_plan_card_default"
+            android:padding="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvActivePlans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="–"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryGreen" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active plan"
+                android:textSize="11sp"
+                android:textColor="@color/colorTextMedium"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardTotalExercises"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_plan_card_default"
+            android:padding="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvTotalSessions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="–"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total sessions"
+                android:textSize="11sp"
+                android:textColor="@color/colorTextMedium"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardCompleted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:orientation="vertical"
+            android:background="@drawable/bg_plan_card_default"
+            android:padding="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvOverallPct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="–"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryGreen" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textSize="11sp"
+                android:textColor="@color/colorTextMedium"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Plan list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPlans"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
+
+    <!-- Empty state -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No plans found"
+        android:textSize="14sp"
+        android:textColor="@color/colorTextLight"
+        android:gravity="center"
+        android:padding="40dp"
+        android:visibility="gone" />
+
+    <!-- Loading -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

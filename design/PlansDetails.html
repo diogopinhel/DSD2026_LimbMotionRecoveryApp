@@ -1,0 +1,211 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.phone-wrap { display: flex; justify-content: center; padding: 2rem 0; background: #F0F4F3; border-radius: 20px; font-family: 'Figtree', sans-serif; }
+.phone { width: 375px; height: 812px; background: #F7F9F8; border-radius: 44px; overflow: hidden; border: 10px solid #1a1a1a; position: relative; display: flex; flex-direction: column; }
+.status-bar { background: #fff; padding: 18px 24px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #1a1a1a; flex-shrink: 0; }
+.notch { width: 120px; height: 28px; background: #1a1a1a; border-radius: 0 0 18px 18px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+.scroll-area { flex: 1; overflow-y: auto; padding-bottom: 110px; scrollbar-width: none; }
+.scroll-area::-webkit-scrollbar { display: none; }
+
+.top-bar { background: #fff; padding: 16px 20px 14px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #F0F4F3; }
+.back-btn { width: 34px; height: 34px; border-radius: 50%; background: #F0F7F4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.top-bar-info { flex: 1; }
+.top-bar-title { font-size: 15px; font-weight: 700; color: #0D1F1A; line-height: 1.2; }
+.top-bar-sub { font-size: 12px; color: #6B8A82; margin-top: 2px; }
+.top-bar-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+
+.plan-hero { background: #fff; padding: 16px 20px; border-bottom: 1px solid #F0F4F3; }
+.hero-progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.hero-pct { font-size: 22px; font-weight: 700; color: #1D9E75; }
+.hero-sessions { font-size: 12px; color: #6B8A82; }
+.progress-track { height: 7px; background: #E8F5EF; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+.progress-fill { height: 7px; background: #1D9E75; border-radius: 6px; width: 62%; }
+.hero-stats { display: flex; gap: 16px; }
+.hero-stat { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #6B8A82; }
+
+.tabs-row { display: flex; background: #fff; padding: 0 16px; border-bottom: 1px solid #F0F4F3; }
+.tab { flex: 1; padding: 12px 0; text-align: center; font-size: 13px; font-weight: 600; color: #9EB5AF; position: relative; }
+.tab.active { color: #1D9E75; }
+.tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2.5px; background: #1D9E75; border-radius: 2px; }
+.tab-badge { display: inline-block; background: #E1F5EE; color: #085041; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+.tab-badge-gray { display: inline-block; background: #F1EFE8; color: #888780; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 4px; }
+
+.section-header { padding: 14px 16px 8px; display: flex; align-items: center; gap: 8px; }
+.section-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+.section-tag-warmup { color: #BA7517; }
+.section-tag-strength { color: #1D9E75; }
+.section-tag-cooldown { color: #378ADD; }
+.section-divider { flex: 1; height: 1px; background: #F0F4F3; }
+
+.ex-row { background: #fff; margin: 0 16px 8px; border-radius: 14px; border: 1px solid #E8EFED; display: flex; align-items: center; padding: 12px 14px; gap: 12px; }
+.ex-row.done { opacity: 0.55; }
+.ex-thumb { width: 52px; height: 52px; border-radius: 10px; background: #F0F7F4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.ex-thumb-done { background: #F1EFE8; }
+.ex-info { flex: 1; }
+.ex-name { font-size: 14px; font-weight: 600; color: #0D1F1A; margin-bottom: 3px; }
+.ex-meta { font-size: 12px; color: #6B8A82; }
+.ex-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.ex-check { width: 24px; height: 24px; border-radius: 50%; background: #1D9E75; display: flex; align-items: center; justify-content: center; }
+.ex-arrow { width: 24px; height: 24px; border-radius: 50%; background: #F0F7F4; display: flex; align-items: center; justify-content: center; }
+.ex-pain-badge { font-size: 10px; padding: 2px 6px; border-radius: 6px; background: #FFF3E0; color: #854F0B; font-weight: 600; }
+
+.bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #E8EFED; padding: 12px 16px 28px; }
+.start-btn { background: #1D9E75; border-radius: 14px; height: 52px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #fff; font-size: 16px; font-weight: 700; }
+.start-sub { text-align: center; font-size: 12px; color: #9EB5AF; margin-top: 6px; }
+</style>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="notch"></div>
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span style="display:flex;gap:5px;align-items:center;">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#1a1a1a"/><rect x="4" y="2.5" width="3" height="9.5" rx="1" fill="#1a1a1a"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#1a1a1a"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#ddd"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C5.5 2 3.3 3.1 1.8 4.8L0 3C2 1.1 4.8 0 8 0s6 1.1 8 3l-1.8 1.8C12.7 3.1 10.5 2 8 2z" fill="#1a1a1a"/><path d="M8 5c-1.7 0-3.2.7-4.3 1.8L2 5.1C3.5 3.8 5.6 3 8 3s4.5.8 6 2.1L12.3 6.8C11.2 5.7 9.7 5 8 5z" fill="#1a1a1a"/><circle cx="8" cy="10" r="2" fill="#1a1a1a"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1a1a1a"/><path d="M23 4.5v3a1.5 1.5 0 000-3z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <div class="scroll-area">
+
+      <div class="top-bar">
+        <div class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D1F1A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div class="top-bar-info">
+          <div class="top-bar-title">Post-Op Knee Recovery</div>
+          <div class="top-bar-sub">Phase 1 · Dr. Ana Rodrigues</div>
+        </div>
+        <div style="background:#E1F5EE;padding:4px 10px;border-radius:20px;">
+          <span style="font-size:11px;font-weight:700;color:#085041;">Active</span>
+        </div>
+      </div>
+
+      <div class="plan-hero">
+        <div class="hero-progress-row">
+          <div class="hero-pct">62%</div>
+          <div class="hero-sessions">13 of 21 sessions done</div>
+        </div>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Apr 4 – May 15
+          </div>
+          <div class="hero-stat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9EB5AF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            ~35 min / session
+          </div>
+          <div class="hero-stat">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9EB5AF" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            5 exercises
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-row">
+        <div class="tab active">To Do <span class="tab-badge">5</span></div>
+        <div class="tab">Completed <span class="tab-badge-gray">8</span></div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-tag section-tag-warmup">Warm Up</span>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M8 12h8M12 8v8"/></svg>
+        </div>
+        <div class="ex-info">
+          <div class="ex-name">Ankle Pumps</div>
+          <div class="ex-meta">3 sets · 20 reps</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-linecap="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><line x1="13" y1="16" x2="17" y2="16"/></svg>
+        </div>
+        <div class="ex-info">
+          <div class="ex-name">Heel Slides</div>
+          <div class="ex-meta">3 sets · 15 reps</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <span class="section-tag section-tag-strength">Strength</span>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-linecap="round"><path d="M6.5 6.5h11M6.5 17.5h11M12 2v20"/></svg>
+        </div>
+        <div class="ex-info">
+          <div class="ex-name">Quadriceps Set</div>
+          <div class="ex-meta">3 sets · 10 reps · 5 sec hold</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-pain-badge">Pain 4 last time</div>
+          <div class="ex-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="ex-info">
+          <div class="ex-name">Straight Leg Raise</div>
+          <div class="ex-meta">3 sets · 10 reps</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-linecap="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3z"/><path d="M3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
+        </div>
+        <div class="ex-info">
+          <div class="ex-name">Mini Squats</div>
+          <div class="ex-meta">3 sets · 12 reps</div>
+        </div>
+        <div class="ex-right">
+          <div class="ex-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bottom-bar">
+      <div class="start-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Start Session
+      </div>
+      <div class="start-sub">5 exercises · ~35 min</div>
+    </div>
+
+  </div>
+</div>

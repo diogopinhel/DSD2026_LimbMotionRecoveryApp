@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimaryGreen">#1D9E75</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorTextDark">#0D1F1A</color>
+    <color name="colorTextMedium">#6B8A82</color>
+    <color name="colorTextLight">#A8C4BC</color>
+    <color name="colorTextSensor">#3D5550</color>
+    <color name="colorBorder">#D8E8E3</color>
+    <color name="colorLogoBackground">#F0F7F4</color>
+    <color name="colorLogoBorder">#D4EDE4</color>
+    <color name="colorDivider">#E8EFED</color>
+    <color name="colorPageBackground">#F0F4F3</color>
+    <color name="colorAmberBg">#FFF8F0</color>
+    <color name="colorAmberBorder">#FDEBC8</color>
+    <color name="colorAmberText">#BA7517</color>
+    <color name="colorAmberDark">#854F0B</color>
+    <color name="colorGreenLightBg">#F0FBF6</color>
+    <color name="colorGreenLightBorder">#B8E8D4</color>
+    <color name="colorGreenDark">#0F6E56</color>
+    <color name="colorGreenExtraLight">#E1F5EE</color>
+</resources>

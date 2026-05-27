@@ -1,0 +1,162 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.phone-wrap { display: flex; justify-content: center; padding: 2rem 0; background: #F0F4F3; border-radius: 20px; font-family: 'Figtree', sans-serif; }
+.phone { width: 375px; height: 812px; background: #ffffff; border-radius: 44px; overflow: hidden; border: 10px solid #1a1a1a; position: relative; display: flex; flex-direction: column; }
+.status-bar { background: #fff; padding: 18px 24px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: #1a1a1a; flex-shrink: 0; }
+.notch { width: 120px; height: 28px; background: #1a1a1a; border-radius: 0 0 18px 18px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+.content { flex: 1; display: flex; flex-direction: column; padding: 0 28px 36px; overflow-y: auto; scrollbar-width: none; }
+.content::-webkit-scrollbar { display: none; }
+.top-nav { display: flex; align-items: center; padding-top: 20px; margin-bottom: 24px; }
+.back-btn { width: 36px; height: 36px; border-radius: 50%; background: #F0F7F4; display: flex; align-items: center; justify-content: center; }
+.step-row { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: #E8EFED; }
+.step-dot.active { width: 20px; border-radius: 4px; background: #1D9E75; }
+.header-section { margin-bottom: 28px; }
+.logo-mini { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.logo-mini-icon { width: 36px; height: 36px; background: #F0F7F4; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #D4EDE4; overflow: hidden; }
+.logo-mini-icon img { width: 28px; height: 28px; object-fit: contain; }
+.logo-mini-name { font-size: 16px; font-weight: 700; color: #0D1F1A; }
+.page-title { font-size: 24px; font-weight: 700; color: #0D1F1A; margin-bottom: 6px; }
+.page-sub { font-size: 14px; color: #6B8A82; line-height: 1.5; }
+.form-section { display: flex; flex-direction: column; gap: 13px; margin-bottom: 8px; }
+.field-wrap { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 600; color: #0D1F1A; }
+.field-row { position: relative; }
+.field-input { height: 50px; border: 1.5px solid #D8E8E3; border-radius: 12px; padding: 0 46px 0 16px; font-size: 15px; color: #0D1F1A; font-family: 'Figtree', sans-serif; background: #fff; display: flex; align-items: center; }
+.field-input-ph { color: #A8C4BC; font-size: 14px; }
+.field-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
+.field-input.filled { border-color: #1D9E75; background: #FAFFFE; }
+.field-input.filled .check { display: flex; }
+.check { display: none; }
+.pwd-strength { margin-top: 6px; }
+.pwd-bar-row { display: flex; gap: 4px; margin-bottom: 5px; }
+.pwd-seg { flex: 1; height: 3px; border-radius: 2px; background: #E8EFED; }
+.pwd-seg.filled-g { background: #1D9E75; }
+.pwd-seg.filled-a { background: #EF9F27; }
+.pwd-label { font-size: 11px; color: #1D9E75; font-weight: 500; }
+.terms-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 4px; }
+.checkbox { width: 20px; height: 20px; border-radius: 6px; background: #1D9E75; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.terms-text { font-size: 12px; color: #6B8A82; line-height: 1.5; }
+.terms-link { color: #1D9E75; font-weight: 600; }
+.create-btn { height: 52px; background: #1D9E75; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 700; margin-top: 16px; letter-spacing: 0.01em; }
+.signin-row { text-align: center; margin-top: 20px; font-size: 14px; color: #6B8A82; }
+.signin-link { color: #1D9E75; font-weight: 700; }
+</style>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="notch"></div>
+
+    <div class="status-bar">
+      <span>9:41</span>
+      <span style="display:flex;gap:5px;align-items:center;">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="4" width="3" height="8" rx="1" fill="#1a1a1a"/><rect x="4" y="2.5" width="3" height="9.5" rx="1" fill="#1a1a1a"/><rect x="8" y="1" width="3" height="11" rx="1" fill="#1a1a1a"/><rect x="12" y="0" width="3" height="12" rx="1" fill="#ddd"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C5.5 2 3.3 3.1 1.8 4.8L0 3C2 1.1 4.8 0 8 0s6 1.1 8 3l-1.8 1.8C12.7 3.1 10.5 2 8 2z" fill="#1a1a1a"/><path d="M8 5c-1.7 0-3.2.7-4.3 1.8L2 5.1C3.5 3.8 5.6 3 8 3s4.5.8 6 2.1L12.3 6.8C11.2 5.7 9.7 5 8 5z" fill="#1a1a1a"/><circle cx="8" cy="10" r="2" fill="#1a1a1a"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1a1a1a"/><path d="M23 4.5v3a1.5 1.5 0 000-3z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <div class="content">
+
+      <div class="top-nav">
+        <div class="back-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D1F1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div class="step-row">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+        </div>
+      </div>
+
+      <div class="header-section">
+        <div class="logo-mini">
+          <div class="logo-mini-icon">
+            <img src="/mnt/user-data/uploads/ChatGPT_Image_May_13__2026__07_37_31_PM.png" alt="LIMBS" />
+          </div>
+          <div class="logo-mini-name">LIMBS</div>
+        </div>
+        <div class="page-title">Create your account</div>
+        <div class="page-sub">Start your recovery journey today.</div>
+      </div>
+
+      <div class="form-section">
+
+        <div class="field-wrap">
+          <div class="field-label">Full name</div>
+          <div class="field-row">
+            <div class="field-input filled">
+              <span style="color:#0D1F1A;font-size:15px;">John Doe</span>
+            </div>
+            <div class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="field-label">Email</div>
+          <div class="field-row">
+            <div class="field-input filled">
+              <span style="color:#0D1F1A;font-size:15px;">john.doe@email.com</span>
+            </div>
+            <div class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="field-label">Password</div>
+          <div class="field-row">
+            <div class="field-input">
+              <span style="color:#0D1F1A;letter-spacing:3px;font-size:18px;">••••••••</span>
+            </div>
+            <div class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A8C4BC" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+          </div>
+          <div class="pwd-strength">
+            <div class="pwd-bar-row">
+              <div class="pwd-seg filled-g"></div>
+              <div class="pwd-seg filled-g"></div>
+              <div class="pwd-seg filled-a"></div>
+              <div class="pwd-seg"></div>
+            </div>
+            <div class="pwd-label">Good password</div>
+          </div>
+        </div>
+
+        <div class="field-wrap">
+          <div class="field-label">Confirm password</div>
+          <div class="field-row">
+            <div class="field-input">
+              <span class="field-input-ph">Repeat your password</span>
+            </div>
+            <div class="field-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A8C4BC" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="terms-row">
+          <div class="checkbox">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="terms-text">
+            I agree to the <span class="terms-link">Terms of Service</span> and <span class="terms-link">Privacy Policy</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="create-btn">Create Account</div>
+
+      <div class="signin-row">
+        Already have an account? <span class="signin-link">Sign in</span>
+      </div>
+
+    </div>
+  </div>
+</div>
