@@ -3,9 +3,9 @@
 **Project:** Limb Motion Recovery App (M1 — Patient Mobile Application)
 **Repository:** https://github.com/diogopinhel/DSD2026_LimbMotionRecoveryApp
 **Plan date:** 2026-05-16
-**Team lead:** Diogo Pinhel (`dpinhel`) — reviews every PR from Sara and Enhe, and co-owns the heavy session track together with Widing.
+**Team lead:** Diogo Pinhel (`dpinhel`) — reviews every PR from Sara and Enhe, and co-owns the heavy session track together with Yiding.
 **Team members:**
-- Widing Wang
+- Yiding Wang
 - Sara Costa
 - Enhe Zhang
 
@@ -13,7 +13,7 @@
 
 ## 1. Purpose of This Document
 
-This document divides the remaining M1 work into three independent tracks. Diogo Pinhel **co-owns the heaviest track (session controller + plan wiring + real-time feedback) together with Widing Wang** because it has the highest integration risk and needs an extra pair of hands. Diogo is also the **sole reviewer** of Sara's and Enhe's pull requests, so he stays close to those tracks without taking individual tasks in them.
+This document divides the remaining M1 work into three independent tracks. Diogo Pinhel **co-owns the heaviest track (session controller + plan wiring + real-time feedback) together with Yiding Wang** because it has the highest integration risk and needs an extra pair of hands. Diogo is also the **sole reviewer** of Sara's and Enhe's pull requests, so he stays close to those tracks without taking individual tasks in them.
 
 Each track lists:
 - **Scope** — what to build.
@@ -54,15 +54,15 @@ Each track lists:
 
 ## 3. Track Assignments
 
-### 3.1 — Widing Wang + Diogo Pinhel — Exercise Controller, Plans Wiring & Real-Time Feedback
+### 3.1 — Yiding Wang + Diogo Pinhel — Exercise Controller, Plans Wiring & Real-Time Feedback
 
 **Track focus:** MOD-M1-03, MOD-M1-04 and the data-wiring part of MOD-M1-05.
 
-This is the most integration-heavy track on the project — it bridges the S2 module (sensor data), the V2 backend (session storage) and the live feedback the patient sees on screen. Because the workload is high and the risk of integration bugs is high, **Widing Wang and Diogo Pinhel pair on this track**. Widing has the strongest technical background on the team and leads the work; Diogo helps on implementation alongside reviewing the other two tracks.
+This is the most integration-heavy track on the project — it bridges the S2 module (sensor data), the V2 backend (session storage) and the live feedback the patient sees on screen. Because the workload is high and the risk of integration bugs is high, **Yiding Wang and Diogo Pinhel pair on this track**. Yiding has the strongest technical background on the team and leads the work; Diogo helps on implementation alongside reviewing the other two tracks.
 
 **Split of responsibilities inside the pair:**
-- **Widing** — leads. Owns the `SessionController` design + S2/V2 plumbing, drives the rep-counter heuristic, and is the **single point of contact with Sergio Moniz** for V2 endpoints.
-- **Diogo** — helps. Picks up sub-tasks Widing hands off (typically the `LiveFeedbackFragment` UI work and the `PlanDetailsActivity` wiring once `getPlanExercises` lands), integrates the pieces, and keeps the rest of the team unblocked.
+- **Yiding** — leads. Owns the `SessionController` design + S2/V2 plumbing, drives the rep-counter heuristic, and is the **single point of contact with Sergio Moniz** for V2 endpoints.
+- **Diogo** — helps. Picks up sub-tasks Yiding hands off (typically the `LiveFeedbackFragment` UI work and the `PlanDetailsActivity` wiring once `getPlanExercises` lands), integrates the pieces, and keeps the rest of the team unblocked.
 
 The pair agrees on who picks up what at the start of each day and writes it in their daily reports (see §4.4).
 
@@ -99,8 +99,8 @@ The pair agrees on who picks up what at the start of each day and writes it in t
      }
      ```
 
-#### V2 dependencies — Widing is the single point of contact with Sergio Moniz
-Widing owns the conversation with **Sergio Moniz** (V2 team lead) about every endpoint M1 needs for the session/plans area. Diogo CC'd on the thread but does not message Sergio directly to avoid duplicate requests. Refer Sergio to `docs/V2_API_REQUIREMENTS.md`. Open the conversation on day 1.
+#### V2 dependencies — Yiding is the single point of contact with Sergio Moniz
+Yiding owns the conversation with **Sergio Moniz** (V2 team lead) about every endpoint M1 needs for the session/plans area. Diogo CC'd on the thread but does not message Sergio directly to avoid duplicate requests. Refer Sergio to `docs/V2_API_REQUIREMENTS.md`. Open the conversation on day 1.
 
 | Priority | Endpoint | Why |
 |---|---|---|
@@ -136,15 +136,15 @@ While waiting on V2, develop against the **simulator** so the controller and fee
 
 ### 3.2 — Sara Costa — Session Player UI Shell & Surrounding Screens
 
-**Track focus:** the UI scaffolding around Widing's controller — everything the patient sees in the session flow **except the live feedback area** (that one belongs to Widing).
+**Track focus:** the UI scaffolding around Yiding's controller — everything the patient sees in the session flow **except the live feedback area** (that one belongs to Yiding).
 
 Sara's track is essentially "make the session flow feel like an app": navigation in and out of the session, the player layout, the sensor↔joint mapping step before starting, and the summary screen at the end.
 
 #### Scope
 1. **Session Player Activity (UI shell)**
    - New activity launched when the user taps **"Start Session"** in `PlanDetailsActivity` (currently shows a `Toast` — see `PlanDetailsActivity.kt:88`).
-   - Layout: top bar with exercise name + progress (`Exercise 2 of 5`), a content area where Widing's `LiveFeedbackFragment` is embedded, and bottom controls (**Pause / Resume / Stop**).
-   - The activity **does not** poll S2 or talk to V2 — it only forwards user actions to Widing's `SessionController` and observes its `state` StateFlow.
+   - Layout: top bar with exercise name + progress (`Exercise 2 of 5`), a content area where Yiding's `LiveFeedbackFragment` is embedded, and bottom controls (**Pause / Resume / Stop**).
+   - The activity **does not** poll S2 or talk to V2 — it only forwards user actions to Yiding's `SessionController` and observes its `state` StateFlow.
    - "Next exercise" and "Skip" buttons that advance through the exercise list of the plan.
 
 2. **Sensor↔Joint mapping step**
@@ -155,11 +155,11 @@ Sara's track is essentially "make the session flow feel like an app": navigation
 
 3. **End-of-session summary screen**
    - Reached automatically when `SessionController.state` transitions to `ENDED`.
-   - Reads the totals from `LiveFeedbackFragment.currentSummary()` (Widing exposes this): total reps, average ROM, max ROM, total time.
+   - Reads the totals from `LiveFeedbackFragment.currentSummary()` (Yiding exposes this): total reps, average ROM, max ROM, total time.
    - "Save & Continue" button that finishes the activity and returns to the Plan Details screen.
 
 #### Coordination
-Sara talks to **Widing and Diogo** — not to V2 / Sergio. The three must agree on the `SessionController` + `LiveFeedbackFragment` contracts on **day 1** (15-min WeChat call). Document the agreement in your end-of-day report.
+Sara talks to **Yiding and Diogo** — not to V2 / Sergio. The three must agree on the `SessionController` + `LiveFeedbackFragment` contracts on **day 1** (15-min WeChat call). Document the agreement in your end-of-day report.
 
 #### Files to create
 - `screens/session/SessionPlayerActivity.kt`, `SessionPlayerViewModel.kt`
@@ -176,7 +176,7 @@ Sara talks to **Widing and Diogo** — not to V2 / Sergio. The three must agree 
 - [ ] The mapping step appears before the session starts and produces a valid `Map<String, String>`.
 - [ ] Pause / Resume / Stop buttons correctly call `SessionController` and reflect its state.
 - [ ] Next / Skip advance the exercise correctly.
-- [ ] On stop, the summary screen appears with totals from Widing's fragment.
+- [ ] On stop, the summary screen appears with totals from Yiding's fragment.
 - [ ] No memory leaks or freezes when the session ends abruptly (e.g. user backs out).
 
 ---
@@ -256,7 +256,7 @@ These rules apply to **every** teammate. They are non-negotiable so the repo sta
 ### 4.1 — Branches
 - Each member works on their own branch named after themselves, all lowercase, no spaces:
   - Enhe Zhang → `ezhang`
-  - Widing Wang → `wwang`
+  - Yiding Wang → `ywang`
   - Sara Costa → `scosta`
 - Never commit to `master` or to anyone else's branch.
 - Pull from `master` daily before starting work:
@@ -310,7 +310,24 @@ Every working day, before logging off, each teammate creates a Markdown file in 
 
 Commit this file at the end of the day in the same push. This is how Diogo reviews progress and unblocks people without needing a daily standup.
 
-### 4.5 — Pull Requests
+### 4.5 — Weekly Evaluation (Professor ZHANG)
+
+Every week, **each teammate** must complete the weekly evaluation required by Professor ZHANG using **his official base template**. This is a mandatory academic requirement.
+
+- **Frequency:** once per week, at the end of each working week (before Sunday midnight).
+- **Template:** use the base template provided by Professor ZHANG — do not create your own format.
+- **Where to submit:** as instructed by Professor ZHANG (platform / WeChat / email — follow his instructions directly).
+- **Content expected (to fill in the template):**
+  - Tasks completed this week (reference branch, PR, or commit where applicable).
+  - Blockers encountered and how they were resolved.
+  - Tasks planned for the following week.
+  - Any questions or impediments requiring professor attention.
+- **Diogo is not the reviewer for this** — submit directly to Professor ZHANG.
+- Missing a weekly evaluation without prior notice is not acceptable.
+
+---
+
+### 4.6 — Pull Requests
 - When a feature is done (matching the Definition of Done), open a Pull Request from your branch → `master`.
 - PR title in English, same Conventional Commits style as commit titles.
 - PR description must include:
@@ -318,9 +335,9 @@ Commit this file at the end of the day in the same push. This is how Diogo revie
   - **How to test** — exact steps on a device or emulator.
   - **Screenshots** — at least one for any UI change.
 - Diogo is the reviewer for Sara's and Enhe's PRs.
-- For the session track (Widing + Diogo paired), the **author who did not write the code reviews** — i.e. Widing reviews Diogo's PRs and vice-versa. Never merge your own PR.
+- For the session track (Yiding + Diogo paired), the **author who did not write the code reviews** — i.e. Yiding reviews Diogo's PRs and vice-versa. Never merge your own PR.
 
-### 4.6 — Communication
+### 4.7 — Communication
 - Day-to-day chat: WeChat group.
 - For V2 endpoint questions: contact **Sergio Moniz** (V2 team lead) directly on WeChat — CC Diogo so he knows it's in progress.
 - For design requests: contact **Diogo** on WeChat with the exact screen / feature name.
@@ -330,11 +347,11 @@ Commit this file at the end of the day in the same push. This is how Diogo revie
 ## 5. Cross-Track Dependencies (Read Before Starting)
 
 ```
-Widing + Diogo (SessionController + V2 upload)
+Yiding + Diogo (SessionController + V2 upload)
     │
     └──> exposes Flow<FormatData> + StateFlow<SessionState>
                   │
-                  └──> Widing + Diogo (LiveFeedbackFragment) consume the Flow
+                  └──> Yiding + Diogo (LiveFeedbackFragment) consume the Flow
                   │
                   └──> Sara (SessionPlayerActivity) hosts the fragment and
                        drives Pause / Resume / Stop on the controller
@@ -348,7 +365,7 @@ Enhe (Profile sub-screens + Progress wiring)
     └──> independent of the session track
 ```
 
-**Action for day 1:** a 15-min WeChat call with Widing + Diogo + Sara to lock the `SessionController` and `LiveFeedbackFragment` contracts. Enhe does not need to join.
+**Action for day 1:** a 15-min WeChat call with Yiding + Diogo + Sara to lock the `SessionController` and `LiveFeedbackFragment` contracts. Enhe does not need to join.
 
 ---
 
