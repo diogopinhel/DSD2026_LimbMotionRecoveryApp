@@ -1,808 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPageBackground">
+    android:background="@color/white">
 
-    <!-- Header -->
-    <LinearLayout
+    <!-- 主内容区 -->
+    <ScrollView
+        android:id="@+id/content_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="16dp">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Progress"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextDark" />
-
-        <TextView
-            android:id="@+id/tvWeekBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/colorPrimaryGreen"
-            android:textStyle="bold"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:background="@drawable/bg_week_badge"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <!-- Tabs -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingStart="20dp">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/tabOverview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="12dp"
-            android:paddingEnd="16dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:id="@+id/tvTabOverview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Overview"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimaryGreen"
-                android:paddingBottom="10dp" />
-
-            <View
-                android:id="@+id/indicatorOverview"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/colorPrimaryGreen"
-                android:visibility="visible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/tabPain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="12dp"
-            android:paddingEnd="16dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:id="@+id/tvTabPain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pain"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextLight"
-                android:paddingBottom="10dp" />
-
-            <View
-                android:id="@+id/indicatorPain"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/colorPrimaryGreen"
-                android:visibility="invisible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/tabRom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="12dp"
-            android:paddingEnd="16dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:id="@+id/tvTabRom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Range of Motion"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextLight"
-                android:paddingBottom="10dp" />
-
-            <View
-                android:id="@+id/indicatorRom"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/colorPrimaryGreen"
-                android:visibility="invisible" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Tab bottom border -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPageBackground" />
-
-    <!-- Content area -->
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/tvStateMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:textColor="@color/colorTextMedium"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:lineSpacingMultiplier="1.4"
-            android:visibility="gone" />
-
-        <ScrollView
-            android:id="@+id/scrollContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- 顶部问候 -->
+            <TextView
+                android:id="@+id/tv_greeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hi, User"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your recovery progress"
+                android:textSize="14sp"
+                android:textColor="#888888"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- 汇总卡片行 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
-                <!-- ===== OVERVIEW TAB ===== -->
+                <!-- 总训练次数 -->
                 <LinearLayout
-                    android:id="@+id/contentOverview"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:background="#F5F5F5">
 
-                    <!-- ROM card -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_total_sessions"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="12dp">
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="8dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="RANGE OF MOTION"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorPrimaryGreen"
-                                android:letterSpacing="0.07" />
-
-                            <TextView
-                                android:id="@+id/tvRomValue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="—"
-                                android:textSize="28sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorTextDark" />
-
-                            <TextView
-                                android:id="@+id/tvRomGain"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textColor="@color/colorPrimaryGreen"
-                                android:textStyle="bold"
-                                android:layout_marginTop="4dp"
-                                android:visibility="gone" />
-                        </LinearLayout>
-
-                        <com.example.limbmotionrecoveryapp.screens.progress.LineChartView
-                            android:id="@+id/romChart"
-                            android:layout_width="match_parent"
-                            android:layout_height="160dp"
-                            android:layout_marginBottom="4dp" />
-
-                    </LinearLayout>
-
-                    <!-- Adherence card -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="8dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="EXERCISE ADHERENCE"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorPrimaryGreen"
-                                android:letterSpacing="0.07" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="This week"
-                                android:textSize="13sp"
-                                android:textColor="@color/colorTextMedium"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingBottom="12dp">
-
-                            <FrameLayout
-                                android:layout_width="72dp"
-                                android:layout_height="72dp">
-
-                                <com.example.limbmotionrecoveryapp.screens.progress.DonutChartView
-                                    android:id="@+id/donutChart"
-                                    android:layout_width="72dp"
-                                    android:layout_height="72dp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical"
-                                    android:gravity="center">
-
-                                    <TextView
-                                        android:id="@+id/tvAdherencePct"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="—"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/colorTextDark"
-                                        android:layout_gravity="center_horizontal" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="done"
-                                        android:textSize="9sp"
-                                        android:textColor="@color/colorTextLight"
-                                        android:layout_gravity="center_horizontal" />
-                                </LinearLayout>
-                            </FrameLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginStart="16dp">
-
-                                <TextView
-                                    android:id="@+id/tvAdherenceExercises"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:id="@+id/tvAdherenceSkipped"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/colorTextMedium"
-                                    android:layout_marginTop="3dp" />
-
-                                <TextView
-                                    android:id="@+id/tvAdherenceStreak"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="11sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#085041"
-                                    android:paddingStart="10dp"
-                                    android:paddingEnd="10dp"
-                                    android:paddingTop="3dp"
-                                    android:paddingBottom="3dp"
-                                    android:background="@drawable/bg_badge"
-                                    android:layout_marginTop="6dp"
-                                    android:visibility="gone" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/weekDaysContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingBottom="14dp" />
-
-                    </LinearLayout>
-
-                    <!-- Pain trend card -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="PAIN TREND"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:textColor="#BA7517"
-                                android:letterSpacing="0.07" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginTop="2dp">
-
-                                <TextView
-                                    android:id="@+id/tvPainAvg"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="28sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:id="@+id/tvPainChange"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="13sp"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="8dp"
-                                    android:visibility="gone" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Average pain level this week"
-                                android:textSize="12sp"
-                                android:textColor="@color/colorTextMedium"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/painBarsContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="80dp"
-                            android:orientation="horizontal"
-                            android:gravity="bottom"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp" />
-
-                        <LinearLayout
-                            android:id="@+id/painLabelsContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="14dp" />
-
-                    </LinearLayout>
-
-                    <!-- Weekly summary card -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="4dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="WEEKLY SUMMARY"
-                            android:textSize="11sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorTextMedium"
-                            android:letterSpacing="0.07"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="0dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="1dp">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="14dp">
-
-                                <TextView
-                                    android:id="@+id/tvSummarySession"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Avg session"
-                                    android:textSize="10sp"
-                                    android:textColor="@color/colorTextLight"
-                                    android:layout_marginTop="3dp" />
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/colorPageBackground" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="14dp">
-
-                                <TextView
-                                    android:id="@+id/tvSummaryDays"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Active days"
-                                    android:textSize="10sp"
-                                    android:textColor="@color/colorTextLight"
-                                    android:layout_marginTop="3dp" />
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/colorPageBackground" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:padding="14dp">
-
-                                <TextView
-                                    android:id="@+id/tvSummaryRom"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Weekly gain"
-                                    android:textSize="10sp"
-                                    android:textColor="@color/colorTextLight"
-                                    android:layout_marginTop="3dp" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-                    </LinearLayout>
+                        android:text="Total Sessions"
+                        android:textSize="11sp"
+                        android:textColor="#888888" />
 
                 </LinearLayout>
-                <!-- END OVERVIEW TAB -->
 
-                <!-- ===== PAIN TAB ===== -->
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="1dp" />
+
+                <!-- 完成次数 -->
                 <LinearLayout
-                    android:id="@+id/contentPain"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:background="#F5F5F5">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_completed_sessions"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="12dp">
+                        android:text="0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="PAIN TREND"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:textColor="#BA7517"
-                                android:letterSpacing="0.07" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginTop="2dp">
-
-                                <TextView
-                                    android:id="@+id/tvPainAvg2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="—"
-                                    android:textSize="28sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/colorTextDark" />
-
-                                <TextView
-                                    android:id="@+id/tvPainChange2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="13sp"
-                                    android:textStyle="bold"
-                                    android:layout_marginStart="8dp"
-                                    android:visibility="gone" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Average pain level this week"
-                                android:textSize="12sp"
-                                android:textColor="@color/colorTextMedium"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/painBarsContainer2"
-                            android:layout_width="match_parent"
-                            android:layout_height="80dp"
-                            android:orientation="horizontal"
-                            android:gravity="bottom"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp" />
-
-                        <LinearLayout
-                            android:id="@+id/painLabelsContainer2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="14dp" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Completed"
+                        android:textSize="11sp"
+                        android:textColor="#888888" />
 
                 </LinearLayout>
-                <!-- END PAIN TAB -->
 
-                <!-- ===== ROM TAB ===== -->
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="1dp" />
+
+                <!-- 准确率环形图 -->
                 <LinearLayout
-                    android:id="@+id/contentRom"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:background="#F5F5F5">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.example.limbmotionrecoveryapp.screens.progress.charts.DonutChartView
+                        android:id="@+id/donut_chart_accuracy"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        app:centerValue="0"
+                        app:percentage="0"
+                        app:label="Accuracy" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="@drawable/bg_plan_card_default"
-                        android:layout_marginBottom="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingBottom="8dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="RANGE OF MOTION"
-                                android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorPrimaryGreen"
-                                android:letterSpacing="0.07" />
-
-                            <TextView
-                                android:id="@+id/tvRomValue2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="—"
-                                android:textSize="28sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorTextDark" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginTop="8dp">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Current"
-                                        android:textSize="11sp"
-                                        android:textColor="@color/colorTextLight" />
-
-                                    <TextView
-                                        android:id="@+id/tvRomCurrent"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="—°"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/colorTextDark" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Target"
-                                        android:textSize="11sp"
-                                        android:textColor="@color/colorTextLight" />
-
-                                    <TextView
-                                        android:id="@+id/tvRomTarget"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="—°"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/colorPrimaryGreen" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="This week"
-                                        android:textSize="11sp"
-                                        android:textColor="@color/colorTextLight" />
-
-                                    <TextView
-                                        android:id="@+id/tvRomWeeklyGain2"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="—°"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold"
-                                        android:textColor="@color/colorTextDark" />
-                                </LinearLayout>
-
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <com.example.limbmotionrecoveryapp.screens.progress.LineChartView
-                            android:id="@+id/romChart2"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:layout_marginBottom="4dp" />
-
-                    </LinearLayout>
+                        android:text="Accuracy"
+                        android:textSize="11sp"
+                        android:textColor="#888888"
+                        android:layout_marginTop="4dp" />
 
                 </LinearLayout>
-                <!-- END ROM TAB -->
 
             </LinearLayout>
-        </ScrollView>
 
-    </FrameLayout>
+            <!-- 总时长卡片 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:background="#F5F5F5"
+                android:layout_marginBottom="24dp">
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Training Duration"
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_total_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.0 min"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#4CAF50" />
+
+            </LinearLayout>
+
+            <!-- 趋势图表标题 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weekly Trend"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="4dp" />
+
+            <!-- 图例 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="4dp"
+                    android:background="#4CAF50"
+                    android:layout_gravity="center_vertical" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ROM (°)"
+                    android:textSize="12sp"
+                    android:textColor="#888888"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="16dp" />
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="4dp"
+                    android:background="@android:color/holo_orange_dark"
+                    android:layout_gravity="center_vertical" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pain Level"
+                    android:textSize="12sp"
+                    android:textColor="#888888"
+                    android:layout_marginStart="4dp" />
+
+            </LinearLayout>
+
+            <!-- 折线图 -->
+            <com.example.limbmotionrecoveryapp.screens.progress.charts.LineChartView
+                android:id="@+id/line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- 加载状态 -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible" />
+
+    <!-- 错误状态 -->
+    <LinearLayout
+        android:id="@+id/error_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Something went wrong"
+            android:textSize="14sp"
+            android:textColor="#F44336"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btn_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+</FrameLayout>

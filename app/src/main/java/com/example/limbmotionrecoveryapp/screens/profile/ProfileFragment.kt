@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
 import com.example.limbmotionrecoveryapp.screens.auth.LoginActivity
+import com.example.limbmotionrecoveryapp.screens.profile.help.HelpActivity
+import com.example.limbmotionrecoveryapp.screens.profile.privacy.PrivacyActivity
+import com.example.limbmotionrecoveryapp.screens.profile.settings.SettingsActivity
 
 class ProfileFragment : Fragment() {
 
@@ -46,13 +49,13 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
         }
         view.findViewById<LinearLayout>(R.id.itemSettings).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
         view.findViewById<LinearLayout>(R.id.itemHelp).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), HelpActivity::class.java))
         }
         view.findViewById<LinearLayout>(R.id.itemPrivacy).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), PrivacyActivity::class.java))
         }
 
         view.findViewById<LinearLayout>(R.id.btnLogout).setOnClickListener {
