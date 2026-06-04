@@ -6,9 +6,11 @@ import com.google.gson.reflect.TypeToken
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import android.util.Log
+
 
 class V2ApiClient(
-    private val baseUrl: String = "http://113.44.220.94:3000"
+    private val baseUrl: String = "https://dsd2026-teamv2-production.up.railway.app"
 ) {
     private val client = OkHttpClient()
     private val gson = Gson()
@@ -24,6 +26,8 @@ class V2ApiClient(
         val body = response.body?.string() ?: "{}"
         if (!response.isSuccessful) {
             val err = try { gson.fromJson(body, JsonObject::class.java).get("error")?.asString } catch (_: Exception) { null }
+            val message = err ?: "HTTP ${response.code}"
+            Log.e("V2ApiClient", "Request failed: $message, responseBody: $body")
             throw RuntimeException(err ?: "HTTP ${response.code}")
         }
         return gson.fromJson(body, object : TypeToken<Map<String, Any?>>() {}.type)
@@ -33,6 +37,8 @@ class V2ApiClient(
         val body = response.body?.string() ?: "[]"
         if (!response.isSuccessful) {
             val err = try { gson.fromJson(body, JsonObject::class.java).get("error")?.asString } catch (_: Exception) { null }
+            val message = err ?: "HTTP ${response.code}"
+            Log.e("V2ApiClient", "Request failed: $message, responseBody: $body")
             throw RuntimeException(err ?: "HTTP ${response.code}")
         }
         return gson.fromJson(body, object : TypeToken<List<Map<String, Any?>>>() {}.type)
@@ -81,9 +87,21 @@ class V2ApiClient(
     }
 
     fun uploadMeasurement(payload: Map<String, Any>, token: String): Map<String, Any?> {
-        val req = Request.Builder().url(url("/measurements/raw"))
+        val req = Request.Builder().url(url("/measurements"))
             .header("Authorization", "Bearer $token")
             .post(gson.toJson(payload).toRequestBody(JSON_MEDIA))
+            .build()
+        return parseResponse(client.newCall(req).execute())
+    }
+
+    fun uploadMeasurementsBatch(sessionId: Int, measurements: List<Map<String, Any>>, token: String): Map<String, Any?> {
+        val body = mapOf(
+            "sessionId" to sessionId,
+            "measurements" to measurements
+        )
+        val req = Request.Builder().url(url("/measurements/batch"))
+            .header("Authorization", "Bearer $token")
+            .post(gson.toJson(body).toRequestBody(JSON_MEDIA))
             .build()
         return parseResponse(client.newCall(req).execute())
     }
