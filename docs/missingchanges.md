@@ -1,7 +1,57 @@
 # Missing Changes — M1 Team
 
 > Generated: 2026-06-04  
-> Branch: `dpinhel` (after merges of `origin/YidingWang` + `origin/EnheZhang`)
+> Branch: `dpinhel` (after merges of `origin/YidingWang` + `origin/EnheZhang`)  
+> Sara Costa (ArasTacos) — commit `6401fa5` in `origin/dpinhel`, **not yet merged here**
+
+---
+
+## Sara Costa (`ArasTacos` / `origin/dpinhel`, commit `6401fa5`)
+
+> ⚠️ Os ficheiros dela **não estão no branch `dpinhel`** ainda. Precisam de ser integrados.
+
+### Done ✅
+
+- **`SensorJointMappingFragment.kt`** — `BottomSheetDialogFragment` completo e funcional. Recebe dois MACs por argumento, mostra um Spinner por sensor com 6 opções de articulação (knee, hip, ankle, shoulder, elbow, wrist), invoca callback `onMappingConfirmed(Map<String, String>)` ao confirmar. Bem feito.
+
+- **`SessionPlayerActivity.kt`** — Shell de UI completa: botões Pause / Resume / Stop / Next / Skip, state machine local (IDLE → RUNNING ↔ PAUSED → ENDED), navegação para `SessionSummaryActivity` no Stop. Layouts e views linkados correctamente.
+
+- **`SessionSummaryActivity.kt`** — Ecrã de resumo com `sampleCount`, `errorCount`, `startTime`, `endTime`. Botão "Save & Continue" volta ao ecrã anterior.
+
+- **`PlanDetailsActivity.kt`** — Botão "Start Session" lança `SessionPlayerActivity` (já não é Toast).
+
+### Missing ❌
+
+#### 1. `SessionPlayerActivity` — Não está ligado ao `SessionController` (apenas TODOs)
+```kotlin
+// btnPause:
+// TODO: replace with controller.pause() when SessionController is available
+
+// btnStop:
+// TODO: replace with controller.stop() when SessionController is available
+```
+Needs to call `SessionController.getInstance(context)` para pause/resume/stop. O `tvAngleValue` existe no layout mas **nunca é atualizado** — o loop de leitura de dados S2 não está implementado.
+
+#### 2. Fluxo de mapeamento antes da sessão — ausente
+`PlanDetailsActivity.btnStartSession` lança `SessionPlayerActivity` directamente, sem mostrar primeiro `SensorJointMappingFragment`. O intent não passa nem a lista de exercícios nem os MACs dos sensores:
+```kotlin
+val intent = Intent(this, SessionPlayerActivity::class.java)
+val exerciseNames = arrayListOf<String>()  // ← lista vazia, nunca preenchida
+startActivity(intent)
+```
+O fluxo correcto deveria ser: **"Start Session" → SensorJointMappingFragment → SessionController.configure() → SessionPlayerActivity**.
+
+#### 3. `SessionSummaryActivity` — Dados reais nunca chegam
+`SessionPlayerActivity.btnStop` passa tudo a zeros:
+```kotlin
+intent.putExtra("sampleCount", 0)   // sempre 0
+intent.putExtra("errorCount", 0)    // sempre 0
+intent.putExtra("startTime", "")    // sempre vazio
+```
+Precisa de chamar `SessionController.stop()` para obter `M1SessionSummary` e passar os valores reais (amostras, erros, timestamps, ROM final, reps).
+
+#### 4. Ângulo em tempo real não aparece no ecrã
+`tvAngleValue` e `tvAngleId` existem na layout mas nunca são actualizados. Precisa de um loop de UI (coroutine ou LiveData) que leia `SessionController.liveData` e escreva os graus no ecrã.
 
 ---
 
