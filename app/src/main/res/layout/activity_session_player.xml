@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7F8FC">
+
+    <!-- TOP BAR -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvExerciseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise Name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1C2B4A"/>
+
+        <TextView
+            android:id="@+id/tvExerciseProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Exercise 1 of 5"
+            android:textSize="14sp"
+            android:textColor="#6B7A99"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
+    <!-- LIVE ANGLE DISPLAY -->
+    <LinearLayout
+        android:id="@+id/angleCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:layout_margin="16dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Angle"
+            android:textSize="14sp"
+            android:textColor="#6B7A99"/>
+
+        <TextView
+            android:id="@+id/tvAngleValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--°"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:textColor="#1A9E8F"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvAngleId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joint"
+            android:textSize="14sp"
+            android:textColor="#A3ADBF"
+            android:layout_marginTop="4dp"/>
+
+    </LinearLayout>
+
+    <!-- FEEDBACK AREA PLACEHOLDER (LegView will go here) -->
+    <FrameLayout
+        android:id="@+id/feedbackContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:background="#EEEDFE"
+        app:layout_constraintTop_toBottomOf="@id/angleCard"
+        app:layout_constraintBottom_toTopOf="@id/bottomControls"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Live Feedback Area"
+            android:textSize="16sp"
+            android:textColor="#6C5CE7"/>
+
+    </FrameLayout>
+
+    <!-- BOTTOM CONTROLS -->
+    <LinearLayout
+        android:id="@+id/bottomControls"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnPause"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Pause"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#E8F7F5"
+                android:textColor="#1A9E8F"/>
+
+            <Button
+                android:id="@+id/btnResume"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Resume"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#E8F7F5"
+                android:textColor="#1A9E8F"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Stop"
+                android:backgroundTint="#FDEAEA"
+                android:textColor="#E24B4A"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnNext"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Next Exercise"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#1A9E8F"
+                android:textColor="#FFFFFF"/>
+
+            <Button
+                android:id="@+id/btnSkip"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Skip"
+                android:backgroundTint="#F4F7FB"
+                android:textColor="#6B7A99"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

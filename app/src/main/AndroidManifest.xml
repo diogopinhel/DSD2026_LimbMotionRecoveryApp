@@ -69,6 +69,14 @@
             android:exported="false" />
         <!-- ============================= -->
 
+        <!-- Session Screens (Sara Costa) -->
+        <activity
+            android:name=".screens.session.SessionPlayerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.session.SessionSummaryActivity"
+            android:exported="false" />
+
         <!-- Profile Sub-Screens (Enhe Zhang) -->
         <activity
             android:name=".screens.profile.privacy.PrivacyActivity"

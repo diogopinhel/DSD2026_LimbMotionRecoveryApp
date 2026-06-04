@@ -86,7 +86,9 @@ class PlanDetailsActivity : AppCompatActivity() {
         // Bottom bar sub (will update when exercises load)
         findViewById<TextView>(R.id.tvStartSub).text = "Loading exercises…"
         findViewById<MaterialButton>(R.id.btnStartSession).setOnClickListener {
-            Toast.makeText(this, "Session flow — coming soon", Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(this, com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity::class.java)
+            val exerciseNames = arrayListOf<String>()
+            startActivity(intent)
         }
     }
 
