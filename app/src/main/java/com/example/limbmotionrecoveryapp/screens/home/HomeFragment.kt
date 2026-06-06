@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
 import com.example.limbmotionrecoveryapp.screens.session.PrepareExerciseActivity
+import com.example.limbmotionrecoveryapp.sensor.SensorActivity
 import com.example.limbmotionrecoveryapp.sensor.SensorRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -62,7 +63,7 @@ class HomeFragment : Fragment() {
 
         btnConnectSensor.setOnClickListener {
             // 保持原有传感器连接逻辑
-            // startActivity(Intent(requireContext(), SensorActivity::class.java))
+             startActivity(Intent(requireContext(), SensorActivity::class.java))
         }
 
         SensorRepository.state.observe(viewLifecycleOwner) { repoState ->
