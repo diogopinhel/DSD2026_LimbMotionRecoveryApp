@@ -410,7 +410,11 @@ class LegView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val baseX = width / 2f
+        val baseX = when (displayMode) {
+            DisplayMode.HORIZONTAL -> width / 3.5f
+            DisplayMode.SQUAT -> width / 2.2f
+            DisplayMode.STEPPING -> width / 2.2f
+        }
         val baseY = when (displayMode) {
             DisplayMode.HORIZONTAL -> height * 0.55f
             DisplayMode.SQUAT -> height * 0.75f

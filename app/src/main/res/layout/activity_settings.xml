@@ -1,122 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/colorBackground">
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="28dp"
+    android:paddingVertical="16dp">
+
+    <!-- 顶部标题栏 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
 
-        <!-- 顶部标题栏 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="← Back"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Settings"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textColor="@color/black" />
-
-            <View
-                android:layout_width="48dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <!-- Language -->
         <TextView
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Language"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="8dp" />
-
-        <Spinner
-            android:id="@+id/spinnerLanguage"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
-
-        <!-- Unit -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Unit (degrees/radians)"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="16dp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchUnit"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Use radians"
-            android:layout_marginTop="4dp" />
-
-        <!-- Notifications -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Notifications"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="16dp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchNotifications"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Enable notifications"
-            android:layout_marginTop="4dp" />
-
-        <!-- Dark Mode -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dark Mode"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="16dp" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchDarkMode"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Enable dark mode"
-            android:layout_marginTop="4dp" />
-
-        <!-- Logout button -->
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Log Out"
-            android:textAllCaps="false"
+            android:text="← Back"
             android:textSize="16sp"
-            android:textColor="@color/white"
-            android:backgroundTint="#D32F2F"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp" />
+            android:textColor="@color/colorTextDark"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Settings"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/colorTextDark" />
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+    <!-- Language -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Language"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginTop="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Unit -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unit (degrees/radians)"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginTop="16dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchUnit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Use radians"
+        android:layout_marginTop="4dp" />
+
+    <!-- Notifications -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginTop="16dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchNotifications"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Enable notifications"
+        android:layout_marginTop="4dp" />
+
+    <!-- Dark Mode -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dark Mode"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginTop="16dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchDarkMode"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Enable dark mode"
+        android:layout_marginTop="4dp" />
+
+    <!-- ==================== My Doctor ==================== -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"
+        android:layout_marginVertical="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Doctor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Current doctor info card -->
+    <LinearLayout
+        android:id="@+id/cardCurrentDoctor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#F5F5F5"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/tvCurrentDoctorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark" />
+
+        <TextView
+            android:id="@+id/tvCurrentDoctorRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/tvCurrentDoctorId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/colorTextMedium"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <!-- New Doctor ID -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Doctor ID"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginBottom="6dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilNewDoctorId"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxStrokeColor="@color/colorBorder"
+        app:boxStrokeWidth="1.5dp"
+        android:layout_marginBottom="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNewDoctorId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter new doctor's ID"
+            android:inputType="number"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextDark" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Verify Doctor button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnVerifyDoctor"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Verify Doctor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryGreen"
+        app:strokeColor="@color/colorPrimaryGreen"
+        app:strokeWidth="1.5dp"
+        app:cornerRadius="14dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Verification status -->
+    <TextView
+        android:id="@+id/tvVerifyStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Change Doctor button (initially hidden) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnChangeDoctor"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Change Doctor"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorPrimaryGreen"
+        app:cornerRadius="14dp"
+        android:visibility="gone"
+        android:layout_marginBottom="24dp" />
+
+    <!-- ==================== Logout ==================== -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"
+        android:layout_marginBottom="24dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Log Out"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="#D32F2F"
+        app:cornerRadius="14dp"
+        android:layout_marginBottom="32dp" />
+
+</LinearLayout>
 </ScrollView>

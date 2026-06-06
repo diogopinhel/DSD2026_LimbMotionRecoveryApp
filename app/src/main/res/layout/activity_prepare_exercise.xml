@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp"
+        android:paddingBottom="36dp">
+
+        <!-- Top nav -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="20dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_btn_back"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Back"
+                android:padding="6dp" />
+        </LinearLayout>
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prepare Exercise"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:id="@+id/tvPlanName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today's Exercise"
+            android:textSize="14sp"
+            android:textColor="@color/colorTextMedium"
+            android:layout_marginBottom="28dp" />
+
+        <!-- Section label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Exercise Type"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Exercise 1: Lying Flat -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardExercise1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorBorder"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="14dp">
+
+                <View
+                    android:id="@+id/indicator1"
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lying Flat"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lie on your back and perform leg raises or stretches to improve hip flexibility and range of motion."
+                        android:textSize="12sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
+
+                <RadioButton
+                    android:id="@+id/rbExercise1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:buttonTint="@color/colorPrimaryGreen" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Exercise 2: Squat -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardExercise2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorBorder"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="14dp">
+
+                <View
+                    android:id="@+id/indicator2"
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Squat"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stand up and sit down repeatedly to strengthen your quadriceps, hamstrings, and knee joints."
+                        android:textSize="12sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
+
+                <RadioButton
+                    android:id="@+id/rbExercise2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:buttonTint="@color/colorPrimaryGreen" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Exercise 3: March in Place -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardExercise3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorBorder"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="28dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="14dp">
+
+                <View
+                    android:id="@+id/indicator3"
+                    android:layout_width="4dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="March in Place"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lift your knees alternately while standing still to improve leg coordination and cardiovascular endurance."
+                        android:textSize="12sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:layout_marginTop="2dp"
+                        android:lineSpacingMultiplier="1.3" />
+                </LinearLayout>
+
+                <RadioButton
+                    android:id="@+id/rbExercise3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:buttonTint="@color/colorPrimaryGreen" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Start Session button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartSession"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Start Session"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/colorPrimaryGreen"
+            app:cornerRadius="14dp" />
+
+    </LinearLayout>
+</ScrollView>

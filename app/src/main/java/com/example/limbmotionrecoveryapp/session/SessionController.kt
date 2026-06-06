@@ -204,6 +204,14 @@ class SessionController private constructor(context: Context) {
         Log.i(TAG, "Exercise type manually set to: $currentExerciseType")
     }
 
+
+    fun setSensorJointMapping(mapping: Map<String, String>) {
+        check(currentState == State.IDLE) {
+            "Can only set sensor mapping in IDLE state, current=${currentState::class.simpleName}"
+        }
+        sensorJointMapping = mapping.toMap()
+        Log.i(TAG, "Sensor joint mapping manually set to: $sensorJointMapping")
+    }
     // -------------------------------------------------------------------------
     // 2. Start session
     // -------------------------------------------------------------------------
@@ -233,7 +241,12 @@ class SessionController private constructor(context: Context) {
             Log.i(TAG, "V2 session created: id=$currentSessionId")
 
             val s2 = s2Module ?: throw IllegalStateException("S2 not initialized")
-            sensorJointMapping = defaultJointMapping()
+            if (sensorJointMapping.isEmpty()) {
+                sensorJointMapping = defaultJointMapping()
+                Log.i(TAG, "Using default sensor joint mapping: $sensorJointMapping")
+            } else {
+                Log.i(TAG, "Using custom sensor joint mapping: $sensorJointMapping")
+            }
             val startResult = s2.session.start(
                 sessionId = currentSessionId,
                 userId = currentUserId,
