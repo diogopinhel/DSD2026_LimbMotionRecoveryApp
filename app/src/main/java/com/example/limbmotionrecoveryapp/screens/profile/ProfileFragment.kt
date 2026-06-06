@@ -42,12 +42,6 @@ class ProfileFragment : Fragment() {
         view.findViewById<LinearLayout>(R.id.itemMyRecovery).setOnClickListener {
             Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
         }
-        view.findViewById<LinearLayout>(R.id.itemAppointments).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
-        }
-        view.findViewById<LinearLayout>(R.id.itemMedications).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
-        }
         view.findViewById<LinearLayout>(R.id.itemSettings).setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
