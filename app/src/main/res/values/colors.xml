@@ -21,4 +21,6 @@
     <color name="colorGreenLightBorder">#B8E8D4</color>
     <color name="colorGreenDark">#0F6E56</color>
     <color name="colorGreenExtraLight">#E1F5EE</color>
+    <color name="colorError">#E53935</color>
+    <color name="colorAmber">#EF9F27</color>
 </resources>
