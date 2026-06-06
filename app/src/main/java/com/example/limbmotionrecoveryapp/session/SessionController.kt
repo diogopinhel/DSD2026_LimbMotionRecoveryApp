@@ -450,7 +450,7 @@ class SessionController private constructor(context: Context) {
             }
         }
     }
-    /** 10 Hz V2 download loop: skips if previous download still in flight. */
+    /** AI recommendation polling loop: fetches every 15 s to avoid hammering the server. */
     private fun startDownloadLoop() {
         downloadJob = controllerScope?.launch {
             while (isActive && (currentState == State.RUNNING || currentState == State.PAUSED)) {
@@ -468,7 +468,7 @@ class SessionController private constructor(context: Context) {
                         }
                     }
                 }
-                delay(100)
+                delay(15_000)
             }
         }
     }

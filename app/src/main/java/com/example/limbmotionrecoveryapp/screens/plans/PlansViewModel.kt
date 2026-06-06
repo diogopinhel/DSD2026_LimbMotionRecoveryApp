@@ -46,9 +46,11 @@ class PlansViewModel : ViewModel() {
         return try {
             Plan(
                 id = (item["id"] as? Double)?.toInt() ?: return null,
-                name = item["name"] as? String ?: item["title"] as? String ?: "Unnamed plan",
-                status = item["status"] as? String ?: "upcoming",
-                startDate = item["startDate"] as? String ?: item["start_date"] as? String ?: "",
+                name = item["name"] as? String ?: item["title"] as? String
+                    ?: item["exercise"] as? String ?: "Unnamed plan",
+                status = item["status"] as? String ?: "pending",
+                startDate = item["startDate"] as? String ?: item["start_date"] as? String
+                    ?: item["date"] as? String ?: "",
                 endDate = item["endDate"] as? String ?: item["end_date"] as? String ?: "",
                 totalSessions = (item["totalSessions"] as? Double)?.toInt()
                     ?: (item["total_sessions"] as? Double)?.toInt() ?: 0,

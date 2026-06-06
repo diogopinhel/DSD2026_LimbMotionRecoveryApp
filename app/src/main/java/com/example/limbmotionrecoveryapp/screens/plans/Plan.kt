@@ -15,7 +15,7 @@ data class Plan(
     val progressPercent: Int
         get() = if (totalSessions > 0) (completedSessions * 100 / totalSessions) else 0
 
-    val isActive: Boolean get() = status == "active"
+    val isActive: Boolean get() = status == "active" || status == "pending"
     val isUpcoming: Boolean get() = status == "upcoming"
     val isCompleted: Boolean get() = status == "completed"
 }
