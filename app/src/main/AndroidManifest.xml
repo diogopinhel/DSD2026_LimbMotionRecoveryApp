@@ -67,6 +67,12 @@
         <activity
             android:name=".test.ExerciseActivity"
             android:exported="false" />
+
+        <!-- ============================= -->
+        <activity
+            android:name=".screens.session.PrepareExerciseActivity"
+            android:exported="false" />
+
         <!-- ============================= -->
 
         <!-- Session Screens (Sara Costa) -->

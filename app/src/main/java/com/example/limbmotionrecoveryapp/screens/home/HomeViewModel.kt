@@ -7,10 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.dsd.m1.api.V2ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class HomeViewModel : ViewModel() {
 
@@ -39,28 +35,21 @@ class HomeViewModel : ViewModel() {
         _state.value = HomeState(userName = userName, loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // 1. 获取日程列表，找第一个 pending 的计划作为"当前计划"
                 val schedule = api.getSchedule(userId, token)
-                val activePlan = schedule.firstOrNull { it["status"] as? String == "active" }
+                val pendingPlan = schedule.firstOrNull { it["status"] as? String == "pending" }
+                val planName = pendingPlan?.let { it["exercise"] as? String }
 
-                val planName = activePlan?.let {
-                    it["name"] as? String ?: it["title"] as? String
-                }
-                val startDate = activePlan?.let {
-                    it["startDate"] as? String ?: it["start_date"] as? String
-                }
-                val endDate = activePlan?.let {
-                    it["endDate"] as? String ?: it["end_date"] as? String
-                }
-                val completedSessions = activePlan?.let {
-                    (it["completedSessions"] as? Double)?.toInt()
-                        ?: (it["completed_sessions"] as? Double)?.toInt() ?: 0
-                } ?: 0
-                val totalSessions = activePlan?.let {
-                    (it["totalSessions"] as? Double)?.toInt()
-                        ?: (it["total_sessions"] as? Double)?.toInt() ?: 0
-                } ?: 0
+                // 2. 获取进度统计（completedExercises, totalExercises, weeklyPercent）
+                val progress = api.getProgress(userId, token)
+                val adherence = progress["adherence"] as? Map<*, *>
+                val completedExercises = (adherence?.get("completedExercises") as? Double)?.toInt() ?: 0
+                val totalExercises = (adherence?.get("totalExercises") as? Double)?.toInt() ?: 0
+                val weeklyPercent = (adherence?.get("weeklyPercent") as? Double)?.toInt() ?: 0
 
-                val (weekCurrent, weekTotal, weekFraction) = computeWeekProgress(startDate, endDate)
+                // 3. 解析 weekLabel（如 "Week 3 of 6"）
+                val weekLabel = progress["weekLabel"] as? String
+                val (weekCurrent, weekTotal) = parseWeekLabel(weekLabel)
 
                 _state.postValue(
                     HomeState(
@@ -68,9 +57,9 @@ class HomeViewModel : ViewModel() {
                         activePlanName = planName,
                         recoveryWeekCurrent = weekCurrent,
                         recoveryWeekTotal = weekTotal,
-                        weekProgressFraction = weekFraction,
-                        completedSessions = completedSessions,
-                        totalSessions = totalSessions,
+                        weekProgressFraction = weeklyPercent / 100f,
+                        completedSessions = completedExercises,
+                        totalSessions = totalExercises,
                         loading = false
                     )
                 )
@@ -90,22 +79,17 @@ class HomeViewModel : ViewModel() {
         _state.value = _state.value?.copy(liveRomDeg = romDeg, liveMovementMs2 = movementMs2)
     }
 
-    private fun computeWeekProgress(startDate: String?, endDate: String?): Triple<Int, Int, Float> {
-        if (startDate == null || endDate == null) return Triple(0, 0, 0f)
-        return try {
-            val fmt = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val start = fmt.parse(startDate) ?: return Triple(0, 0, 0f)
-            val end = fmt.parse(endDate) ?: return Triple(0, 0, 0f)
-            val now = Date()
-            val totalDays = TimeUnit.MILLISECONDS.toDays(end.time - start.time).toInt()
-            val elapsedDays = TimeUnit.MILLISECONDS.toDays(now.time - start.time).toInt()
-                .coerceIn(0, totalDays)
-            val totalWeeks = (totalDays / 7).coerceAtLeast(1)
-            val currentWeek = (elapsedDays / 7 + 1).coerceIn(1, totalWeeks)
-            val fraction = (elapsedDays.toFloat() / totalDays).coerceIn(0f, 1f)
-            Triple(currentWeek, totalWeeks, fraction)
-        } catch (_: Exception) {
-            Triple(0, 0, 0f)
+    /** 解析 "Week 3 of 6" → (current, total) */
+    private fun parseWeekLabel(weekLabel: String?): Pair<Int, Int> {
+        if (weekLabel == null) return Pair(0, 0)
+        val regex = """Week (\d+) of (\d+)""".toRegex()
+        val match = regex.find(weekLabel)
+        return if (match != null) {
+            val current = match.groupValues[1].toIntOrNull() ?: 0
+            val total = match.groupValues[2].toIntOrNull() ?: 0
+            Pair(current, total)
+        } else {
+            Pair(0, 0)
         }
     }
 }

@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
-import com.example.limbmotionrecoveryapp.sensor.SensorActivity
+import com.example.limbmotionrecoveryapp.screens.session.PrepareExerciseActivity
 import com.example.limbmotionrecoveryapp.sensor.SensorRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -49,12 +49,20 @@ class HomeFragment : Fragment() {
 
         tvGreeting.text = buildGreeting(userName)
 
+        // 修复：Start Exercises 跳转到 Session 准备页面
         btnStartExercises.setOnClickListener {
-            navigateTo(R.id.nav_plans)
+            val intent = Intent(requireContext(), PrepareExerciseActivity::class.java)
+            // 可选：传递当前 pending plan 名称
+            val planName = viewModel.state.value?.activePlanName
+            if (!planName.isNullOrBlank()) {
+                intent.putExtra("planName", planName)
+            }
+            startActivity(intent)
         }
 
         btnConnectSensor.setOnClickListener {
-            startActivity(Intent(requireContext(), SensorActivity::class.java))
+            // 保持原有传感器连接逻辑
+            // startActivity(Intent(requireContext(), SensorActivity::class.java))
         }
 
         SensorRepository.state.observe(viewLifecycleOwner) { repoState ->
@@ -69,7 +77,7 @@ class HomeFragment : Fragment() {
                     "${state.activePlanName} · Week ${state.recoveryWeekCurrent} of ${state.recoveryWeekTotal}"
                 state.activePlanName != null -> state.activePlanName
                 state.loading -> ""
-                else -> ""
+                else -> "No active plan"
             }
 
             // Week progress bar
@@ -101,7 +109,7 @@ class HomeFragment : Fragment() {
             // Today at a glance
             if (state.totalSessions > 0) {
                 tvGlanceSessions.text = "${state.completedSessions}/${state.totalSessions}"
-                tvGlanceSessionsSub.text = "sessions completed"
+                tvGlanceSessionsSub.text = "exercises completed"
                 val pct = state.completedSessions * 100 / state.totalSessions
                 tvGlanceProgress.text = "$pct%"
                 tvGlanceProgressSub.text = "of plan complete"
@@ -127,9 +135,5 @@ class HomeFragment : Fragment() {
         }
         val firstName = name.split(" ").first().takeIf { it.isNotBlank() }
         return if (firstName != null) "$timeGreeting, $firstName 👋" else timeGreeting
-    }
-
-    private fun navigateTo(navItemId: Int) {
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNav)?.selectedItemId = navItemId
     }
 }
