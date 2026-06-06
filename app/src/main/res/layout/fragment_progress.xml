@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/colorBackground">
+
+<!-- 主内容 -->
+<LinearLayout
+    android:id="@+id/content_group"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <!-- 顶部标题区 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp"
+        android:paddingTop="52dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rehabilitation History"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Review your past training sessions and AI evaluations."
+            android:textSize="14sp"
+            android:textColor="@color/colorTextMedium"
+            android:lineSpacingMultiplier="1.5" />
+    </LinearLayout>
+
+    <!-- 刷新按钮行 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingHorizontal="28dp"
+        android:layout_marginBottom="12dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRefresh"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Refresh History"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryGreen"
+            app:strokeColor="@color/colorPrimaryGreen"
+            app:strokeWidth="1.5dp"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
+
+    <!-- 列表 -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="28dp"
+            android:clipToPadding="false" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>
+
+<!-- 加载状态 -->
+<ProgressBar
+    android:id="@+id/progress_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:visibility="visible" />
+
+<!-- 空状态 -->
+<LinearLayout
+    android:id="@+id/empty_group"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:visibility="gone">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No history yet"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginBottom="6dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete your first exercise\nto see records here."
+        android:textSize="14sp"
+        android:textColor="@color/colorTextMedium"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5" />
+</LinearLayout>
+
+<!-- 错误状态 -->
+<LinearLayout
+    android:id="@+id/error_group"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Something went wrong"
+        android:textSize="14sp"
+        android:textColor="@color/colorTextDark"
+        android:layout_marginBottom="12dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:text="Retry"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/colorPrimaryGreen"
+        app:cornerRadius="14dp" />
+</LinearLayout>
+
+</FrameLayout>
