@@ -72,6 +72,8 @@ object PayloadConverter {
 
     fun updateUserPayload(
         name: String? = null,
+        email: String? = null,
+        password: String? = null,
         age: Int? = null,
         role: String? = null,
         status: String? = null,
@@ -81,6 +83,8 @@ object PayloadConverter {
     ): Map<String, Any?> {
         return build(
             "name" to name,
+            "email" to email,
+            "password" to password,
             "age" to age,
             "role" to role,
             "status" to status,

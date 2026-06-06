@@ -1,14 +1,17 @@
 package com.example.limbmotionrecoveryapp.screens.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
@@ -20,6 +23,18 @@ import com.example.limbmotionrecoveryapp.screens.profile.settings.SettingsActivi
 class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
+
+    private val editProfileLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE)
+            val token = prefs.getString("token", "") ?: ""
+            val name = prefs.getString("userName", "") ?: ""
+            val email = prefs.getString("userEmail", "") ?: ""
+            viewModel.load(token, name, email)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -38,6 +53,15 @@ class ProfileFragment : Fragment() {
         val tvStatRom = view.findViewById<TextView>(R.id.tvStatRom)
         val tvStatAdherence = view.findViewById<TextView>(R.id.tvStatAdherence)
         val tvStatStreak = view.findViewById<TextView>(R.id.tvStatStreak)
+
+        view.findViewById<FrameLayout>(R.id.btnEdit).setOnClickListener {
+            val currentData = viewModel.state.value
+            val intent = Intent(requireContext(), EditProfileActivity::class.java).apply {
+                putExtra("name", currentData?.name ?: cachedName)
+                putExtra("email", currentData?.email ?: cachedEmail)
+            }
+            editProfileLauncher.launch(intent)
+        }
 
         view.findViewById<LinearLayout>(R.id.itemMyRecovery).setOnClickListener {
             Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()

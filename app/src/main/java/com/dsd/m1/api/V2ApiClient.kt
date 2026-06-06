@@ -153,6 +153,8 @@ class V2ApiClient(
     fun updateUser(
         id: Int,
         name: String? = null,
+        email: String? = null,
+        password: String? = null,
         age: Int? = null,
         role: String? = null,
         status: String? = null,
@@ -162,7 +164,7 @@ class V2ApiClient(
         token: String
     ): Map<String, Any?> {
         val req = authBuilder(token).url(url("/users/$id"))
-            .patch(jsonBody(PayloadConverter.updateUserPayload(name, age, role, status, conditionLabel, conditionDate, doctorId)))
+            .patch(jsonBody(PayloadConverter.updateUserPayload(name, email, password, age, role, status, conditionLabel, conditionDate, doctorId)))
             .build()
         return parseResponse(client.newCall(req).execute())
     }

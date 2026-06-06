@@ -83,7 +83,11 @@
             android:name=".screens.session.SessionSummaryActivity"
             android:exported="false" />
 
-        <!-- Profile Sub-Screens (Enhe Zhang) -->
+        <!-- Profile Sub-Screens -->
+        <activity
+            android:name=".screens.profile.EditProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".screens.profile.privacy.PrivacyActivity"
             android:exported="false" />
