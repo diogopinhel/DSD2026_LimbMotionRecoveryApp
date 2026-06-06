@@ -125,6 +125,7 @@ class PrepareExerciseActivity : AppCompatActivity() {
             controller.reset()
         }
         controller.setExerciseType(selectedId)
+        controller.setSensorMode(true)
 
         activityScope.launch(Dispatchers.IO) {
             val result = controller.start()
