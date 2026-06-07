@@ -63,8 +63,11 @@ class HomeFragment : Fragment() {
 
         btnConnectSensor.setOnClickListener {
             // 保持原有传感器连接逻辑
-             startActivity(Intent(requireContext(), SensorActivity::class.java))
+            startActivity(Intent(requireContext(), SensorActivity::class.java))
         }
+
+        // 修复：确保 Start Exercises 按钮始终可见，不受传感器状态影响
+        btnStartExercises.visibility = View.VISIBLE
 
         SensorRepository.state.observe(viewLifecycleOwner) { repoState ->
             val connected = repoState == SensorRepository.State.CONNECTED
@@ -106,6 +109,9 @@ class HomeFragment : Fragment() {
                 sensorBannerOn.visibility = View.GONE
                 sensorLiveCard.visibility = View.GONE
             }
+
+            // 修复：无论传感器是否连接，Start Exercises 按钮始终可见
+            btnStartExercises.visibility = View.VISIBLE
 
             // Today at a glance
             if (state.totalSessions > 0) {

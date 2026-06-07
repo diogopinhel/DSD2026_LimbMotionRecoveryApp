@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBackground"
@@ -146,7 +147,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_sensor_wifi"
                     android:contentDescription="@null"
-                    android:tint="@color/colorAmberText" />
+                    app:tint="@color/colorAmberText" />
             </FrameLayout>
 
             <LinearLayout
@@ -216,7 +217,7 @@
                     android:layout_gravity="center"
                     android:src="@drawable/ic_sensor_wifi"
                     android:contentDescription="@null"
-                    android:tint="@color/colorPrimaryGreen" />
+                    app:tint="@color/colorPrimaryGreen" />
             </FrameLayout>
 
             <LinearLayout
@@ -250,11 +251,11 @@
                 android:background="@drawable/bg_circle_green" />
         </LinearLayout>
 
-        <!-- Live sensor data card (only visible when sensor connected) -->
+        <!-- Live sensor data card (fixed height) -->
         <LinearLayout
             android:id="@+id/sensorLiveCard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="14dp"
             android:layout_marginTop="8dp"
@@ -264,12 +265,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:background="@drawable/bg_sensor_live_header"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
@@ -278,7 +277,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="LIVE SENSOR DATA"
-                    android:textSize="11sp"
+                    android:textSize="10sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorGreenDark"
                     android:letterSpacing="0.06" />
@@ -287,19 +286,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="● Live"
-                    android:textSize="10sp"
+                    android:textSize="9sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorGreenDark"
                     android:background="@drawable/bg_sensor_live_badge"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp" />
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -308,14 +308,14 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="10dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:id="@+id/tvLiveRom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="—"
-                        android:textSize="17sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextDark" />
 
@@ -323,7 +323,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ROM"
-                        android:textSize="10sp"
+                        android:textSize="9sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimaryGreen" />
 
@@ -331,9 +331,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Joint angle"
-                        android:textSize="10sp"
-                        android:textColor="@color/colorTextMedium"
-                        android:layout_marginTop="2dp" />
+                        android:textSize="9sp"
+                        android:textColor="@color/colorTextMedium" />
                 </LinearLayout>
 
                 <View
@@ -347,14 +346,14 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="10dp">
+                    android:padding="4dp">
 
                     <TextView
                         android:id="@+id/tvLiveMovement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="—"
-                        android:textSize="17sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextDark" />
 
@@ -362,7 +361,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="m/s²"
-                        android:textSize="10sp"
+                        android:textSize="9sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimaryGreen" />
 
@@ -370,9 +369,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Movement"
-                        android:textSize="10sp"
-                        android:textColor="@color/colorTextMedium"
-                        android:layout_marginTop="2dp" />
+                        android:textSize="9sp"
+                        android:textColor="@color/colorTextMedium" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -498,6 +496,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginEnd="14dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/bg_cta_btn"
             android:gravity="center"
             android:orientation="horizontal"
@@ -510,7 +509,7 @@
                 android:src="@drawable/ic_play"
                 android:layout_marginEnd="7dp"
                 android:contentDescription="@null"
-                android:tint="@color/white" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
