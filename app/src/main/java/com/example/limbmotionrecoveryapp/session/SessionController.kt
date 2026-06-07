@@ -686,8 +686,15 @@ class SessionController private constructor(context: Context) {
 
     private fun defaultJointMapping(): Map<String, String> {
         return mapOf(
-            "SIM_SENSOR_A" to "left_knee",
-            "SIM_SENSOR_B" to "left_knee"
+            // 左腿 (L1 / L2 / L3) -> left_knee
+            "D7:27:2D:8F:6A:4C" to "left_knee",   // L1
+            "E1:B8:34:05:DE:E9" to "left_knee",   // L2
+            "D9:BC:B5:1E:39:35" to "left_knee",   // L3
+
+            // 右腿 (R1 / R114514 / R3) -> right_knee
+            "D2:26:08:77:94:1B" to "right_knee",  // R1
+            "D5:17:71:B2:B2:67" to "right_knee",  // R114514
+            "C1:18:C7:C3:AA:49" to "right_knee"   // R3
         )
     }
 
