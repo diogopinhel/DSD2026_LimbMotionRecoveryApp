@@ -45,11 +45,21 @@ object SensorRepository {
     val foundDevice = MutableLiveData<FoundDevice?>()
     val errorMessage = MutableLiveData<String?>()
 
+    // [Multi] 新增：所有发现的设备列表
+    val foundDevices = MutableLiveData<List<FoundDevice>>(emptyList())
+    // [Multi] 新增：已连接传感器数量（用于 UI 显示）
+    val connectedCount = MutableLiveData(0)
+
     private var sensorService: SensorService? = null
     private var bleScanner: android.bluetooth.le.BluetoothLeScanner? = null
     private var activeScanCallback: ScanCallback? = null
     private var scope: CoroutineScope? = null
     private var monitorJob: Job? = null
+
+    // [Multi] 新增：扫描期间临时收集列表
+    private val _foundDevices = mutableListOf<FoundDevice>()
+    // [Multi] 新增：已连接地址列表
+    private val _connectedAddresses = mutableListOf<String>()
 
     var connectedAddress: String? = null
         private set
@@ -66,6 +76,10 @@ object SensorRepository {
         foundDevice.postValue(null)
         errorMessage.postValue(null)
         state.postValue(State.SCANNING)
+
+        // [Multi] 清空列表
+        synchronized(_foundDevices) { _foundDevices.clear() }
+        foundDevices.postValue(emptyList())
 
         bleScanner = adapter.bluetoothLeScanner
         val settings = ScanSettings.Builder()
@@ -85,9 +99,19 @@ object SensorRepository {
                     address = address,
                     rssi = result.rssi
                 )
-                stopScan()
-                foundDevice.postValue(found)
-                state.postValue(State.FOUND)
+
+                // [Multi] 收集到列表，不立即 stopScan
+                synchronized(_foundDevices) {
+                    if (_foundDevices.none { it.address == address }) {
+                        _foundDevices.add(found)
+                        foundDevices.postValue(_foundDevices.toList())
+                        // 兼容旧代码：foundDevice 始终指向第一个发现的设备
+                        if (foundDevice.value == null) {
+                            foundDevice.postValue(found)
+                            state.postValue(State.FOUND)
+                        }
+                    }
+                }
             }
 
             override fun onScanFailed(errorCode: Int) {
@@ -111,10 +135,14 @@ object SensorRepository {
             delay(SCAN_TIMEOUT_MS)
             if (state.value == State.SCANNING) {
                 stopScan()
-                withContext(Dispatchers.Main) {
-                    state.value = State.ERROR
-                    errorMessage.value = "No WitMotion sensor found nearby. Make sure the sensor is on and nearby."
+                val hasAny = synchronized(_foundDevices) { _foundDevices.isNotEmpty() }
+                if (!hasAny) {
+                    withContext(Dispatchers.Main) {
+                        state.value = State.ERROR
+                        errorMessage.value = "No WitMotion sensor found nearby. Make sure the sensor is on and nearby."
+                    }
                 }
+                // 如果已有设备，保持 FOUND 状态
             }
         }
     }
@@ -126,18 +154,33 @@ object SensorRepository {
         activeScanCallback = null
     }
 
+    // [Multi] 保留原有方法，内部转发到批量连接
     fun connect(context: Context, address: String) {
+        connectMultiple(context, listOf(address))
+    }
+
+    // [Multi] 新增：连接所有已发现的设备
+    fun connectAll(context: Context) {
+        val addresses = synchronized(_foundDevices) { _foundDevices.map { it.address } }
+        if (addresses.isEmpty()) return
+        connectMultiple(context, addresses)
+    }
+
+    // [Multi] 新增：批量连接核心逻辑
+    private fun connectMultiple(context: Context, addresses: List<String>) {
         state.postValue(State.CONNECTING)
         errorMessage.postValue(null)
+        stopScan() // 开始连接时停止扫描
 
         val service = SensorService(context.applicationContext)
-        service.initialize(
-            listOf(SensorConfig(address, NOTIFY_CHAR_UUID)),
-            ServiceConfig()
-        )
+        val configs = addresses.map { SensorConfig(it, NOTIFY_CHAR_UUID) }
+        service.initialize(configs, ServiceConfig())
         service.startSensors()
         sensorService = service
-        connectedAddress = address
+
+        _connectedAddresses.clear()
+        _connectedAddresses.addAll(addresses)
+        connectedAddress = addresses.firstOrNull() // 兼容旧代码
 
         cancelScope()
         scope = CoroutineScope(Dispatchers.IO)
@@ -145,18 +188,23 @@ object SensorRepository {
             val deadline = System.currentTimeMillis() + CONNECT_TIMEOUT_MS
             while (isActive) {
                 val status = service.getStatus()
+                // [Multi] 至少连上一个就算成功（与原有逻辑一致）
                 if (status.connectedSensors > 0) {
-                    withContext(Dispatchers.Main) { state.value = State.CONNECTED }
+                    withContext(Dispatchers.Main) {
+                        state.value = State.CONNECTED
+                        connectedCount.value = status.connectedSensors
+                    }
                     startMonitor(service)
                     return@launch
                 }
                 if (System.currentTimeMillis() > deadline) {
                     service.stopSensors()
                     sensorService = null
+                    _connectedAddresses.clear()
                     connectedAddress = null
                     withContext(Dispatchers.Main) {
                         state.value = State.ERROR
-                        errorMessage.value = "Could not connect to sensor. Make sure it is on and nearby."
+                        errorMessage.value = "Could not connect to sensors. Make sure they are on and nearby."
                     }
                     return@launch
                 }
@@ -170,13 +218,19 @@ object SensorRepository {
             while (isActive) {
                 delay(2_000)
                 val status = service.getStatus()
-                if (!status.connected && state.value == State.CONNECTED) {
+                // [Multi] 全部断开才认为断开
+                if (status.connectedSensors == 0 && state.value == State.CONNECTED) {
                     withContext(Dispatchers.Main) {
                         state.value = State.IDLE
                     }
                     sensorService = null
+                    _connectedAddresses.clear()
                     connectedAddress = null
                     break
+                }
+                // [Multi] 更新连接数量
+                if (state.value == State.CONNECTED) {
+                    connectedCount.postValue(status.connectedSensors)
                 }
             }
         }
@@ -187,10 +241,15 @@ object SensorRepository {
         cancelScope()
         sensorService?.stopSensors()
         sensorService = null
+        _connectedAddresses.clear()
         connectedAddress = null
         state.postValue(State.IDLE)
         foundDevice.postValue(null)
         errorMessage.postValue(null)
+        // [Multi]
+        synchronized(_foundDevices) { _foundDevices.clear() }
+        foundDevices.postValue(emptyList())
+        connectedCount.postValue(0)
     }
 
     fun retryFromScan() {
@@ -198,10 +257,15 @@ object SensorRepository {
         cancelScope()
         sensorService?.stopSensors()
         sensorService = null
+        _connectedAddresses.clear()
         connectedAddress = null
         foundDevice.postValue(null)
         errorMessage.postValue(null)
         state.postValue(State.IDLE)
+        // [Multi]
+        synchronized(_foundDevices) { _foundDevices.clear() }
+        foundDevices.postValue(emptyList())
+        connectedCount.postValue(0)
     }
 
     fun getService(): SensorService? = sensorService

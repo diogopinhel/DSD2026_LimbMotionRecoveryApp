@@ -74,9 +74,9 @@ class SensorActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.btnSkipFromFound).setOnClickListener { finish() }
         findViewById<TextView>(R.id.btnSkipFromError).setOnClickListener { finish() }
 
+        // [Multi] 改为连接所有发现的设备
         btnConnectDevice.setOnClickListener {
-            val device = SensorRepository.foundDevice.value ?: return@setOnClickListener
-            SensorRepository.connect(this, device.address)
+            SensorRepository.connectAll(this)
         }
 
         btnDone.setOnClickListener { finish() }
@@ -100,8 +100,14 @@ class SensorActivity : AppCompatActivity() {
                 SensorRepository.State.FOUND -> {
                     stopRingAnimation()
                     val device = SensorRepository.foundDevice.value
+                    val count = SensorRepository.foundDevices.value?.size ?: 1
                     tvFoundDeviceName.text = device?.name ?: "WitMotion Sensor"
-                    tvFoundDeviceAddress.text = "Ready to pair · ${device?.address?.takeLast(5) ?: "BLE"}"
+                    // [Multi] 显示发现数量
+                    tvFoundDeviceAddress.text = if (count > 1) {
+                        "$count devices found · Ready to pair"
+                    } else {
+                        "Ready to pair · ${device?.address?.takeLast(5) ?: "BLE"}"
+                    }
                     showState(ScanState.FOUND)
                 }
                 SensorRepository.State.CONNECTING -> {
@@ -109,8 +115,14 @@ class SensorActivity : AppCompatActivity() {
                 }
                 SensorRepository.State.CONNECTED -> {
                     stopRingAnimation()
+                    val count = SensorRepository.connectedCount.value ?: 1
                     val device = SensorRepository.foundDevice.value
-                    tvConnectedDeviceName.text = "${device?.name ?: "LIMBS Sensor"} is ready.\nMotion data will be recorded during your session."
+                    // [Multi] 根据连接数量显示单/复数
+                    tvConnectedDeviceName.text = if (count > 1) {
+                        "$count sensors are ready.\nMotion data will be recorded during your session."
+                    } else {
+                        "${device?.name ?: "LIMBS Sensor"} is ready.\nMotion data will be recorded during your session."
+                    }
                     showState(ScanState.CONNECTED)
                 }
                 SensorRepository.State.ERROR -> {
