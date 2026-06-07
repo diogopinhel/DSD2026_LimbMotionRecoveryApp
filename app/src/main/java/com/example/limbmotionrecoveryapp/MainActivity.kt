@@ -39,8 +39,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+        val fm = supportFragmentManager
+        val tx = fm.beginTransaction()
+        val all = listOf(homeFragment, plansFragment, progressFragment, profileFragment)
+        all.forEach { f ->
+            when {
+                f === fragment -> if (!f.isAdded) tx.add(R.id.fragmentContainer, f) else tx.show(f)
+                f.isAdded -> tx.hide(f)
+            }
+        }
+        tx.commit()
     }
 }

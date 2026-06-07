@@ -29,6 +29,7 @@ class PlansViewModel : ViewModel() {
     val state: LiveData<PlansState> = _state
 
     fun load(userId: Int, token: String) {
+        if (_state.value?.loading == true) return
         _state.value = PlansState(loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             try {
