@@ -18,6 +18,7 @@ import kotlinx.coroutines.*
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
@@ -136,6 +137,14 @@ class SessionController private constructor(context: Context) {
     private var sensorJointMapping: Map<String, String> = emptyMap()
 
     // -------------------------------------------------------------------------
+    // [WSS] WebSocket real-time feedback (新增)
+    // -------------------------------------------------------------------------
+    private var wsClient: okhttp3.WebSocket? = null
+    private val wsConnected = AtomicBoolean(false)
+    private val latestFeedbackRef: AtomicReference<MovementFeedback?> = AtomicReference(null)
+    private val totalFeedbackCount = AtomicInteger(0)
+
+    // -------------------------------------------------------------------------
     // Rehabilitation data cache (all private)
     // -------------------------------------------------------------------------
 
@@ -240,6 +249,9 @@ class SessionController private constructor(context: Context) {
             check(currentSessionId != -1) { "V2 createSession failed: $sessionResp" }
             Log.i(TAG, "V2 session created: id=$currentSessionId")
 
+            // [WSS] 建立 WebSocket 连接（新增 1 行）
+            connectWebSocket(currentSessionId)
+
             val s2 = s2Module ?: throw IllegalStateException("S2 not initialized")
             if (sensorJointMapping.isEmpty()) {
                 sensorJointMapping = defaultJointMapping()
@@ -342,6 +354,9 @@ class SessionController private constructor(context: Context) {
             // Final fetch of recommendations at session end
             fetchRecommendations()
 
+            // [WSS] 关闭 WebSocket（新增 1 行）
+            disconnectWebSocket()
+
             val summary = M1SessionSummary(
                 sessionId = currentSessionId,
                 sampleCount = s2Summary.sampleCount,
@@ -386,6 +401,11 @@ class SessionController private constructor(context: Context) {
             totalSampleCount.set(0)
             totalAngleCount.set(0)
             totalErrorCount.set(0)
+
+            // [WSS] 清空 WSS 反馈缓存（新增 3 行）
+            latestFeedbackRef.set(null)
+            totalFeedbackCount.set(0)
+            wsConnected.set(false)
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -598,6 +618,32 @@ class SessionController private constructor(context: Context) {
     /** Returns the number of FormatData chunks currently waiting in the upload queue. */
     fun getUploadQueueSize(): Int = synchronized(uploadQueue) { uploadQueue.size }
 
+    // -------------------------------------------------------------------------
+    // [WSS] Real-time feedback accessors（新增）
+    // -------------------------------------------------------------------------
+
+    /** Returns the most recent backend feedback, or null if none received yet. */
+    fun getLatestFeedback(): MovementFeedback? = latestFeedbackRef.get()
+
+    /** Returns true/false if the latest uploaded movement was judged correct by V2. */
+    fun getLatestIsCorrect(): Boolean? = latestFeedbackRef.get()?.isCorrect
+
+    /** Returns the joint name from the latest WSS feedback, or null. */
+    fun getLatestFeedbackJoint(): String? = latestFeedbackRef.get()?.joint
+
+    /** Returns the angle value from the latest WSS feedback, or null. */
+    fun getLatestFeedbackAngle(): Float? = latestFeedbackRef.get()?.angle
+
+    /** Returns how many movement_feedback messages have been received this session. */
+    fun getTotalFeedbackCount(): Int = totalFeedbackCount.get()
+
+    /** Returns true if the WebSocket is currently connected. */
+    fun isWsConnected(): Boolean = wsConnected.get()
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
     private suspend fun fetchRecommendations() {
         try {
             localRecommendations = v2Api.getSessionRecommendations(currentSessionId, currentToken)
@@ -653,6 +699,98 @@ class SessionController private constructor(context: Context) {
             else -> -1
         }
     }
+
+    // -------------------------------------------------------------------------
+    // [WSS] WebSocket helpers（新增）
+    // -------------------------------------------------------------------------
+
+    /** 目前华为云可用，Railway 不可用；华为使用 ws://，Railway 使用 wss:// */
+    private val wsHost = "113.44.220.94:3000"
+
+    private fun buildWsUrl(sessionId: Int): String {
+        return "ws://$wsHost/ws?sessionId=$sessionId"
+    }
+
+    private fun connectWebSocket(sessionId: Int) {
+        val client = okhttp3.OkHttpClient()
+        val request = okhttp3.Request.Builder()
+            .url(buildWsUrl(sessionId))
+            .build()
+
+        wsClient = client.newWebSocket(request, object : okhttp3.WebSocketListener() {
+            override fun onOpen(webSocket: okhttp3.WebSocket, response: okhttp3.Response) {
+                wsConnected.set(true)
+                Log.i(TAG, "WSS connected for session $sessionId")
+            }
+
+            override fun onMessage(webSocket: okhttp3.WebSocket, text: String) {
+                try {
+                    val json = org.json.JSONObject(text)
+                    when (json.optString("type")) {
+                        "movement_feedback" -> onMovementFeedback(json)
+                        "session_ended" -> Log.i(TAG, "WSS session_ended received")
+                        "connected" -> Log.i(TAG, "WSS handshake confirmed: ${json.toString()}")
+                        else -> Log.d(TAG, "WSS unknown type: ${json.optString("type")}")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "WSS message parse error: $text", e)
+                }
+            }
+
+            override fun onFailure(webSocket: okhttp3.WebSocket, t: Throwable, response: okhttp3.Response?) {
+                wsConnected.set(false)
+                Log.e(TAG, "WSS failure", t)
+            }
+
+            override fun onClosing(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+                wsConnected.set(false)
+                Log.i(TAG, "WSS closing: $code $reason")
+            }
+
+            override fun onClosed(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+                wsConnected.set(false)
+                Log.i(TAG, "WSS closed: $code $reason")
+            }
+        })
+    }
+
+    private fun disconnectWebSocket() {
+        wsClient?.close(1000, "Session ended")
+        wsClient = null
+        wsConnected.set(false)
+        Log.i(TAG, "WSS disconnected")
+    }
+
+    private fun onMovementFeedback(json: org.json.JSONObject) {
+        val data = json.optJSONObject("data") ?: return
+        val angleObj = data.optJSONObject("angle")
+
+        // 兼容后端 bug：joint 字段返回 "0"，真正的关节名在 angle.angleID
+        val angleId = angleObj?.optString("angleID") ?: data.optString("joint")
+        val angleValue = angleObj?.optDouble("angle", 0.0)?.toFloat() ?: 0f
+
+        val feedback = MovementFeedback(
+            sessionId = data.optInt("sessionId", currentSessionId),
+            timestamp = parseIsoToMillis(data.optString("timestamp")),
+            isCorrect = data.optBoolean("isCorrect", false),
+            joint = angleId,
+            angle = angleValue,
+            angleId = angleId
+        )
+
+        latestFeedbackRef.set(feedback)
+        totalFeedbackCount.incrementAndGet()
+
+        Log.i(TAG, "WSS feedback: isCorrect=${feedback.isCorrect}, joint=${feedback.joint}, angle=${feedback.angle}")
+    }
+
+    private fun parseIsoToMillis(iso: String): Long {
+        return try {
+            Instant.parse(iso).toEpochMilli()
+        } catch (_: Exception) {
+            System.currentTimeMillis()
+        }
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -666,4 +804,17 @@ data class M1SessionSummary(
     val startTime: String,
     val endTime: String,
     val exerciseType: String
+)
+
+// -----------------------------------------------------------------------------
+// [WSS] Real-time movement feedback from backend（新增）
+// -----------------------------------------------------------------------------
+
+data class MovementFeedback(
+    val sessionId: Int,
+    val timestamp: Long,
+    val isCorrect: Boolean,
+    val joint: String,
+    val angle: Float,
+    val angleId: String
 )

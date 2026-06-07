@@ -164,6 +164,37 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- [WSS] Real-time Feedback — 新增：动作是否标准 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_glance_item"
+        android:padding="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Real-time Feedback"
+            android:textSize="11sp"
+            android:textColor="@color/colorPrimaryGreen"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvIsCorrect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⏳ Analyzing..."
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextDark"
+            android:lineSpacingMultiplier="1.3" />
+    </LinearLayout>
+
     <!-- AI Feedback -->
     <LinearLayout
         android:layout_width="match_parent"
