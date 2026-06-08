@@ -28,6 +28,11 @@ class HomeFragment : Fragment() {
 
     private lateinit var btnPainCheckIn: LinearLayout
     private lateinit var tvPainBtnText: TextView
+    private lateinit var tvPainCardNumber: TextView
+    private lateinit var tvPainCardLabel: TextView
+    private lateinit var tvPainCardSubText: TextView
+    private lateinit var vPainBarTrack: View
+    private lateinit var vPainBarMarker: View
 
     private val handler = Handler(Looper.getMainLooper())
     private val countdownRunnable = object : Runnable {
@@ -65,6 +70,11 @@ class HomeFragment : Fragment() {
         val btnConnectSensor = view.findViewById<TextView>(R.id.btnConnectSensor)
         btnPainCheckIn = view.findViewById(R.id.btnPainCheckIn)
         tvPainBtnText = view.findViewById(R.id.tvPainBtnText)
+        tvPainCardNumber = view.findViewById(R.id.tvPainCardNumber)
+        tvPainCardLabel = view.findViewById(R.id.tvPainCardLabel)
+        tvPainCardSubText = view.findViewById(R.id.tvPainCardSubText)
+        vPainBarTrack = view.findViewById(R.id.vPainBarTrack)
+        vPainBarMarker = view.findViewById(R.id.vPainBarMarker)
 
         setupLearnSection(view)
 
@@ -85,6 +95,10 @@ class HomeFragment : Fragment() {
             if (!isLockedToday()) {
                 startActivity(Intent(requireContext(), PainCheckInActivity::class.java))
             }
+        }
+
+        view.findViewById<TextView>(R.id.tvPainViewLink).setOnClickListener {
+            startActivity(Intent(requireContext(), PainCheckInActivity::class.java))
         }
 
         SensorRepository.state.observe(viewLifecycleOwner) { repoState ->
@@ -156,28 +170,86 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshPainButton() {
-        if (isLockedToday()) {
+        val entry = getLastPainEntry()
+        val lockedToday = entry != null && isSameDay(entry.timestamp)
+
+        if (entry != null) {
+            val color = Color.parseColor(painColor(entry.level))
+            tvPainCardNumber.text = entry.level.toString()
+            tvPainCardLabel.text = painLabel(entry.level)
+            tvPainCardNumber.setTextColor(color)
+            tvPainCardLabel.setTextColor(color)
+            positionPainMarker(entry.level)
+        } else {
+            tvPainCardNumber.text = "—"
+            tvPainCardLabel.text = ""
+            tvPainCardNumber.setTextColor(resources.getColor(R.color.colorAmberText, null))
+            vPainBarMarker.visibility = View.GONE
+        }
+
+        if (lockedToday) {
             btnPainCheckIn.setBackgroundResource(R.drawable.bg_cta_btn_locked)
             val ms = msUntilMidnight()
             val h = ms / 3_600_000
             val m = (ms % 3_600_000) / 60_000
             tvPainBtnText.text = "🔒  Next check-in in ${h}h ${m}m"
+            tvPainCardSubText.text = "Pain registered for today"
         } else {
             btnPainCheckIn.setBackgroundResource(R.drawable.bg_cta_btn)
-            tvPainBtnText.text = "🩺  Register Pain Level"
+            tvPainBtnText.text = "Register today's pain"
+            tvPainCardSubText.text = if (entry != null)
+                "Last: ${SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(entry.timestamp))}"
+            else
+                "Tap to register"
         }
     }
 
-    private fun isLockedToday(): Boolean {
-        val prefs = requireContext().getSharedPreferences("pain_prefs", Context.MODE_PRIVATE)
-        val json = prefs.getString("entries", null) ?: return false
+    private fun positionPainMarker(level: Int) {
+        vPainBarMarker.visibility = View.VISIBLE
+        vPainBarTrack.post {
+            val trackW = vPainBarTrack.width
+            if (trackW <= 0) return@post
+            val markerW = vPainBarMarker.width.takeIf { it > 0 } ?: 9  // 3dp in px (~)
+            val pct = level / 10f
+            vPainBarMarker.translationX = trackW * pct - markerW / 2f
+        }
+    }
+
+    private fun getLastPainEntry(): PainCheckInActivity.PainEntry? {
+        val json = requireContext()
+            .getSharedPreferences("pain_prefs", Context.MODE_PRIVATE)
+            .getString("entries", null) ?: return null
         return try {
             val type = object : TypeToken<List<PainCheckInActivity.PainEntry>>() {}.type
             val entries: List<PainCheckInActivity.PainEntry> = Gson().fromJson(json, type)
-            if (entries.isEmpty()) return false
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            sdf.format(Date(entries.first().timestamp)) == sdf.format(Date())
-        } catch (e: Exception) { false }
+            entries.firstOrNull()
+        } catch (e: Exception) { null }
+    }
+
+    private fun isLockedToday(): Boolean {
+        val entry = getLastPainEntry() ?: return false
+        return isSameDay(entry.timestamp)
+    }
+
+    private fun isSameDay(timestamp: Long): Boolean {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date(timestamp)) == sdf.format(Date())
+    }
+
+    private fun painLabel(level: Int) = when (level) {
+        1 -> "No pain"
+        2, 3 -> "Minimal"
+        4, 5 -> "Mild"
+        6, 7 -> "Moderate"
+        8, 9 -> "Severe"
+        10 -> "Worst possible"
+        else -> ""
+    }
+
+    private fun painColor(level: Int) = when {
+        level <= 3 -> "#1D9E75"
+        level <= 6 -> "#BA7517"
+        else -> "#C0392B"
     }
 
     private fun msUntilMidnight(): Long {
