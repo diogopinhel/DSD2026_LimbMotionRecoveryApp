@@ -1,0 +1,235 @@
+
+<style>
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 14px 16px;
+    font-family: var(--font-sans);
+    max-width: 360px;
+    margin: 1rem auto;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .label-pain {
+    font-size: 11px;
+    font-weight: 500;
+    color: #B87A1A;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .view-link {
+    font-size: 12px;
+    color: #1D9E75;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .view-link:hover { opacity: 0.75; }
+  .main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .pain-question {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin: 0 0 2px;
+  }
+  .pain-sub {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+  .pain-value {
+    text-align: right;
+  }
+  .pain-number {
+    font-size: 24px;
+    font-weight: 500;
+    color: #B87A1A;
+    line-height: 1;
+  }
+  .pain-label {
+    font-size: 11px;
+    color: #B87A1A;
+    margin-top: 1px;
+  }
+  .trend {
+    font-size: 12px;
+    color: #1D9E75;
+    margin-bottom: 10px;
+  }
+  .bar-area {
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .bar-track {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #1D9E75 0%, #1D9E75 33%, #E4AA2C 33%, #E4AA2C 66%, #D85A30 66%, #D85A30 100%);
+    position: relative;
+  }
+  .bar-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px;
+    height: 18px;
+    background: var(--color-text-primary);
+    border-radius: 2px;
+    box-shadow: 0 0 0 2px var(--color-background-primary);
+  }
+  .bar-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+  .bar-labels span {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+  .register-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    background: #0F6E56;
+    color: #E1F5EE;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-family: var(--font-sans);
+    transition: opacity 0.15s;
+  }
+  .register-btn:hover { opacity: 0.85; }
+  .register-btn:disabled {
+    background: var(--color-background-secondary);
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+    opacity: 1;
+  }
+  .registered-badge {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #1D9E75;
+    margin-top: 8px;
+    justify-content: center;
+  }
+</style>
+
+<div class="card">
+  <div class="card-header">
+    <span class="label-pain">Pain check-in</span>
+    <a class="view-link" onclick="sendPrompt('Mostrar histórico de pain level')">
+      View <i class="ti ti-arrow-right" style="font-size:13px;" aria-hidden="true"></i>
+    </a>
+  </div>
+
+  <div class="main-row">
+    <div>
+      <p class="pain-question">How is your pain?</p>
+      <p class="pain-sub" id="sub-text">Tap to update</p>
+    </div>
+    <div class="pain-value">
+      <div class="pain-number" id="pain-display">4</div>
+      <div class="pain-label" id="level-label">Moderate</div>
+    </div>
+  </div>
+
+  <div class="trend">
+    <i class="ti ti-arrow-down" style="font-size:12px; color:#1D9E75;" aria-hidden="true"></i>
+    1 from yesterday
+  </div>
+
+  <div class="bar-area">
+    <div class="bar-track" id="bar-track">
+      <div class="bar-marker" id="bar-marker" style="left: 33%;"></div>
+    </div>
+    <div class="bar-labels">
+      <span>No pain</span>
+      <span>Moderate</span>
+      <span>Worst</span>
+    </div>
+  </div>
+
+  <div id="slider-area" style="display:none; margin-top:10px;">
+    <input type="range" min="0" max="10" value="4" id="pain-slider" style="width:100%;" step="1" />
+  </div>
+
+  <button class="register-btn" id="reg-btn">
+    <i class="ti ti-plus" style="font-size:16px;" aria-hidden="true"></i>
+    Register today's pain
+  </button>
+  <div class="registered-badge" id="done-badge">
+    <i class="ti ti-circle-check" style="font-size:15px;" aria-hidden="true"></i>
+    Registered for today
+  </div>
+</div>
+
+<script>
+  const slider = document.getElementById('pain-slider');
+  const display = document.getElementById('pain-display');
+  const labelEl = document.getElementById('level-label');
+  const marker = document.getElementById('bar-marker');
+  const btn = document.getElementById('reg-btn');
+  const sliderArea = document.getElementById('slider-area');
+  const doneBadge = document.getElementById('done-badge');
+  const subText = document.getElementById('sub-text');
+  let registered = false;
+  let currentVal = 4;
+
+  function getLabel(v) {
+    if (v <= 2) return 'Mild';
+    if (v <= 4) return 'Moderate';
+    if (v <= 6) return 'Considerable';
+    if (v <= 8) return 'Severe';
+    return 'Worst';
+  }
+
+  function updateBar(v) {
+    const pct = (v / 10) * 100;
+    marker.style.left = pct + '%';
+    display.textContent = v;
+    labelEl.textContent = getLabel(v);
+  }
+
+  btn.addEventListener('click', function() {
+    if (registered) return;
+    if (!sliderArea.style.display || sliderArea.style.display === 'none') {
+      sliderArea.style.display = 'block';
+      btn.innerHTML = '<i class="ti ti-check" style="font-size:16px;" aria-hidden="true"></i> Confirm';
+      subText.textContent = 'Drag to select your pain level';
+    } else {
+      registered = true;
+      sliderArea.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-check" style="font-size:16px;" aria-hidden="true"></i> Registered';
+      doneBadge.style.display = 'flex';
+      subText.textContent = 'Pain registered for today';
+    }
+  });
+
+  slider.addEventListener('input', function() {
+    currentVal = parseInt(this.value);
+    updateBar(currentVal);
+  });
+
+  updateBar(4);
+</script>

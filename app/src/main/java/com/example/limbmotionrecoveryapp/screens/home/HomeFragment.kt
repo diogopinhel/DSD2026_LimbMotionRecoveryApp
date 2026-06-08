@@ -291,6 +291,7 @@ class HomeFragment : Fragment() {
             putExtra(LearnTutorialActivity.EXTRA_DESCRIPTION, tutorial.description)
             putExtra(LearnTutorialActivity.EXTRA_DURATION, tutorial.duration)
             putExtra(LearnTutorialActivity.EXTRA_YOUTUBE_ID, tutorial.youtubeId)
+            putExtra(LearnTutorialActivity.EXTRA_CATEGORY, tutorial.category)
         }
         startActivity(intent)
     }
