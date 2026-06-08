@@ -31,6 +31,7 @@ class PlanDetailsActivity : AppCompatActivity() {
     private val viewModel: PlanDetailsViewModel by viewModels()
     private lateinit var adapter: ExerciseAdapter
     private var showingTodo = true
+    private var firstTodoExercise: Exercise? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +86,19 @@ class PlanDetailsActivity : AppCompatActivity() {
         // Bottom bar sub (will update when exercises load)
         findViewById<TextView>(R.id.tvStartSub).text = "Loading exercises…"
         findViewById<MaterialButton>(R.id.btnStartSession).setOnClickListener {
-            val intent = android.content.Intent(this, com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity::class.java)
-            val exerciseNames = arrayListOf<String>()
+            val ex = firstTodoExercise
+            val intent = android.content.Intent(
+                this,
+                com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity::class.java
+            ).apply {
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_NAME, ex?.name ?: "")
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_SUB, ex?.metaText ?: "")
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_DESCRIPTION, ex?.description ?: "")
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_GIF_URL, ex?.gifUrl ?: "")
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_SETS, ex?.sets ?: 0)
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_REPS, ex?.reps ?: 0)
+                putExtra(com.example.limbmotionrecoveryapp.screens.session.SessionPlayerActivity.EXTRA_EXERCISE_HOLD, ex?.holdSeconds ?: 0)
+            }
             startActivity(intent)
         }
     }
@@ -161,6 +173,7 @@ class PlanDetailsActivity : AppCompatActivity() {
                     rv.visibility = View.VISIBLE
                     val list = if (showingTodo) state.details.todoExercises else state.details.doneExercises
                     adapter.submitExercises(list)
+                    firstTodoExercise = state.details.todoExercises.firstOrNull()
                     val todo = state.details.todoExercises.size
                     val est = state.details.estimatedMinutes
                     tvStartSub.text = "$todo exercises${if (est > 0) " · ~${est} min" else ""}"

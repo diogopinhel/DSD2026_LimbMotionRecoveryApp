@@ -6,35 +6,67 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.limbmotionrecoveryapp.R
+import com.example.limbmotionrecoveryapp.sensor.SensorActivity
+import com.example.limbmotionrecoveryapp.sensor.SensorRepository
 import com.example.limbmotionrecoveryapp.session.SessionController
 import com.example.limbmotionrecoveryapp.view.LegView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SessionPlayerActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_EXERCISE_NAME = "exercise_name"
+        const val EXTRA_EXERCISE_SUB = "exercise_sub"
+        const val EXTRA_EXERCISE_DESCRIPTION = "exercise_description"
+        const val EXTRA_EXERCISE_GIF_URL = "exercise_gif_url"
+        const val EXTRA_EXERCISE_SETS = "exercise_sets"
+        const val EXTRA_EXERCISE_REPS = "exercise_reps"
+        const val EXTRA_EXERCISE_HOLD = "exercise_hold"
+    }
+
     private lateinit var controller: SessionController
     private lateinit var legView: LegView
     private lateinit var tvExerciseType: TextView
-    private lateinit var tvSessionId: TextView
+    private lateinit var tvExerciseSub: TextView
     private lateinit var tvTimer: TextView
     private lateinit var tvStatus: TextView
     private lateinit var tvLeftAngle: TextView
     private lateinit var tvRightAngle: TextView
+    private lateinit var tvRightAngleSub: TextView
     private lateinit var tvAiFeedback: TextView
     private lateinit var tvAiFeedbackLabel: TextView
+    private lateinit var tvExerciseCardTitle: TextView
+    private lateinit var tvExerciseInstruction: TextView
+    private lateinit var pillSets: TextView
+    private lateinit var pillReps: TextView
+    private lateinit var pillHold: TextView
+    private lateinit var cardSensorConnected: MaterialCardView
+    private lateinit var cardSensorDisconnected: MaterialCardView
     private lateinit var btnPauseResume: MaterialButton
     private lateinit var btnStop: MaterialButton
+
+    private val colorGreen by lazy { ContextCompat.getColor(this, R.color.colorPrimaryGreen) }
+    private val colorGreenDark by lazy { ContextCompat.getColor(this, R.color.colorGreenDark) }
+    private val colorGreenExtraLight by lazy { ContextCompat.getColor(this, R.color.colorGreenExtraLight) }
+    private val colorAmber by lazy { ContextCompat.getColor(this, R.color.colorAmber) }
+    private val colorAmberDark by lazy { ContextCompat.getColor(this, R.color.colorAmberDark) }
+    private val colorAmberBg by lazy { ContextCompat.getColor(this, R.color.colorAmberBg) }
+    private val colorTextDark by lazy { ContextCompat.getColor(this, R.color.colorTextDark) }
+    private val colorTextLight by lazy { ContextCompat.getColor(this, R.color.colorTextLight) }
 
     private val handler = Handler(Looper.getMainLooper())
     private val lastAngleTimestamps = mutableMapOf<String, Long>()
@@ -70,6 +102,9 @@ class SessionPlayerActivity : AppCompatActivity() {
         })
 
         initViews()
+        loadExerciseInfo()
+        setupSensorSection()
+        observeSensorState()
         setupLegView()
         checkControllerState()
         startTimer()
@@ -83,19 +118,75 @@ class SessionPlayerActivity : AppCompatActivity() {
     private fun initViews() {
         legView = findViewById(R.id.legView)
         tvExerciseType = findViewById(R.id.tvExerciseType)
-        tvSessionId = findViewById(R.id.tvSessionId)
+        tvExerciseSub = findViewById(R.id.tvExerciseSub)
         tvTimer = findViewById(R.id.tvTimer)
         tvStatus = findViewById(R.id.tvStatus)
         tvLeftAngle = findViewById(R.id.tvLeftAngle)
         tvRightAngle = findViewById(R.id.tvRightAngle)
+        tvRightAngleSub = findViewById(R.id.tvRightAngleSub)
         tvAiFeedback = findViewById(R.id.tvAiFeedback)
         tvAiFeedbackLabel = findViewById(R.id.tvAiFeedbackLabel)
+        tvExerciseCardTitle = findViewById(R.id.tvExerciseCardTitle)
+        tvExerciseInstruction = findViewById(R.id.tvExerciseInstruction)
+        pillSets = findViewById(R.id.pillSets)
+        pillReps = findViewById(R.id.pillReps)
+        pillHold = findViewById(R.id.pillHold)
+        cardSensorConnected = findViewById(R.id.cardSensorConnected)
+        cardSensorDisconnected = findViewById(R.id.cardSensorDisconnected)
         btnPauseResume = findViewById(R.id.btnPauseResume)
         btnStop = findViewById(R.id.btnStop)
 
-        val exerciseType = controller.getCurrentExerciseType()
-        tvExerciseType.text = getExerciseDisplayName(exerciseType)
-        tvSessionId.text = "Session #${controller.getCurrentSessionId()}"
+        findViewById<FrameLayout>(R.id.btnBackDisabled).setOnClickListener {
+            Toast.makeText(this, "Please click Stop to finish the session", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadExerciseInfo() {
+        val name = intent.getStringExtra(EXTRA_EXERCISE_NAME)
+            ?: getExerciseDisplayName(controller.getCurrentExerciseType())
+        val sub = intent.getStringExtra(EXTRA_EXERCISE_SUB) ?: "—"
+        val description = intent.getStringExtra(EXTRA_EXERCISE_DESCRIPTION)
+        val gifUrl = intent.getStringExtra(EXTRA_EXERCISE_GIF_URL)
+        val sets = intent.getIntExtra(EXTRA_EXERCISE_SETS, 0)
+        val reps = intent.getIntExtra(EXTRA_EXERCISE_REPS, 0)
+        val hold = intent.getIntExtra(EXTRA_EXERCISE_HOLD, 0)
+
+        tvExerciseType.text = name
+        tvExerciseSub.text = sub
+        tvExerciseCardTitle.text = name
+        tvExerciseInstruction.text = description
+            ?.takeIf { it.isNotBlank() }
+            ?: "Follow the movement shown above and maintain smooth, controlled motion throughout."
+
+        pillSets.text = if (sets > 0) "$sets Sets" else "—"
+        pillReps.text = if (reps > 0) "$reps Reps" else "—"
+        if (hold > 0) {
+            pillHold.visibility = View.VISIBLE
+            pillHold.text = "Hold ${hold}s"
+        }
+
+        if (!gifUrl.isNullOrBlank()) {
+            Glide.with(this)
+                .asGif()
+                .load(gifUrl)
+                .centerCrop()
+                .placeholder(android.R.color.transparent)
+                .into(findViewById(R.id.ivExerciseGif))
+        }
+    }
+
+    private fun setupSensorSection() {
+        findViewById<MaterialButton>(R.id.btnConnectSensor).setOnClickListener {
+            startActivity(Intent(this, SensorActivity::class.java))
+        }
+    }
+
+    private fun observeSensorState() {
+        SensorRepository.state.observe(this) { state ->
+            val connected = state == SensorRepository.State.CONNECTED
+            cardSensorConnected.visibility = if (connected) View.VISIBLE else View.GONE
+            cardSensorDisconnected.visibility = if (connected) View.GONE else View.VISIBLE
+        }
     }
 
     private fun setupLegView() {
@@ -118,7 +209,6 @@ class SessionPlayerActivity : AppCompatActivity() {
             Color.parseColor("#FFF0E6"),
             Color.parseColor("#D4A373")
         ))
-
         legView.setRightLimbColors(intArrayOf(
             Color.parseColor("#E8B89A"),
             Color.parseColor("#C6865C"),
@@ -168,16 +258,11 @@ class SessionPlayerActivity : AppCompatActivity() {
         tvTimer.text = formatDuration(elapsed)
 
         val controllerState = controller.getState()
-        tvStatus.text = when (controllerState) {
-            SessionController.State.RUNNING -> "RUNNING"
-            SessionController.State.PAUSED -> "PAUSED"
-            else -> "—"
-        }
-        tvStatus.setTextColor(
-            if (controllerState == SessionController.State.RUNNING)
-                ContextCompat.getColor(this, R.color.colorPrimaryGreen)
-            else
-                ContextCompat.getColor(this, R.color.colorAmber)
+        val sessionRunning = controllerState == SessionController.State.RUNNING
+        tvStatus.text = if (sessionRunning) "RUNNING" else "PAUSED"
+        tvStatus.setTextColor(if (sessionRunning) colorGreenDark else colorAmberDark)
+        tvStatus.backgroundTintList = ColorStateList.valueOf(
+            if (sessionRunning) colorGreenExtraLight else colorAmberBg
         )
 
         val data = controller.getLatestData()
@@ -185,17 +270,13 @@ class SessionPlayerActivity : AppCompatActivity() {
             lastAngleTimestamps[angle.angleID] = angle.timestamp
         }
 
-        val leftEntry = lastAngleTimestamps.entries.findLast {
-            it.key.contains("left", ignoreCase = true)
-        }
+        val leftEntry = lastAngleTimestamps.entries.findLast { it.key.contains("left", ignoreCase = true) }
         val leftVisible = leftEntry != null && (now - leftEntry.value < 60_000)
         val leftAngle = if (leftVisible) {
             data?.targetAngles?.findLast { it.angleID.contains("left", ignoreCase = true) }?.angle?.toFloat()
         } else null
 
-        val rightEntry = lastAngleTimestamps.entries.findLast {
-            it.key.contains("right", ignoreCase = true)
-        }
+        val rightEntry = lastAngleTimestamps.entries.findLast { it.key.contains("right", ignoreCase = true) }
         val rightVisible = rightEntry != null && (now - rightEntry.value < 60_000)
         val rightAngle = if (rightVisible) {
             data?.targetAngles?.findLast { it.angleID.contains("right", ignoreCase = true) }?.angle?.toFloat()
@@ -208,45 +289,35 @@ class SessionPlayerActivity : AppCompatActivity() {
 
         tvLeftAngle.text = leftAngle?.let { "%.1f°".format(it) } ?: "--"
         tvRightAngle.text = rightAngle?.let { "%.1f°".format(it) } ?: "--"
+        tvRightAngleSub.text = if (rightAngle != null) "Current angle" else "Not connected"
+        tvRightAngle.setTextColor(if (rightAngle != null) colorTextDark else colorTextLight)
 
-        // AI Feedback
         val aiRecs = controller.getLatestLiveRecommendations()
-        val aiText = if (aiRecs.isNotEmpty()) {
+        tvAiFeedback.text = if (aiRecs.isNotEmpty()) {
             aiRecs.joinToString("\n") { rec ->
                 val joint = rec["joint"] as? String ?: ""
                 val suggestion = rec["suggestion"] as? String ?: ""
                 val priority = rec["priority"] as? String ?: ""
-                if (joint.isNotEmpty() && suggestion.isNotEmpty()) {
-                    "[$priority] $joint: $suggestion"
-                } else {
-                    ""
-                }
-            }.trim()
+                if (joint.isNotEmpty() && suggestion.isNotEmpty()) "[$priority] $joint: $suggestion" else ""
+            }.trim().ifBlank { "None" }
         } else {
             "None"
         }
-        tvAiFeedback.text = aiText
-        tvAiFeedbackLabel.text = "AI Feedback"
     }
 
     private fun togglePauseResume() {
-        val green = ContextCompat.getColor(this, R.color.colorPrimaryGreen)
-        val amber = ContextCompat.getColor(this, R.color.colorAmber)
-
         if (isRunning) {
             controller.pause()
             elapsedBeforePause += System.currentTimeMillis() - lastResumeTime
             isRunning = false
-
             btnPauseResume.text = "Resume"
-            btnPauseResume.backgroundTintList = ColorStateList.valueOf(green)
+            btnPauseResume.backgroundTintList = ColorStateList.valueOf(colorGreen)
         } else {
             controller.resume()
             lastResumeTime = System.currentTimeMillis()
             isRunning = true
-
             btnPauseResume.text = "Pause"
-            btnPauseResume.backgroundTintList = ColorStateList.valueOf(amber)
+            btnPauseResume.backgroundTintList = ColorStateList.valueOf(colorAmber)
             handler.post(uiUpdateRunnable)
         }
     }
@@ -273,7 +344,7 @@ class SessionPlayerActivity : AppCompatActivity() {
                 }.onFailure { e ->
                     btnPauseResume.isEnabled = true
                     btnStop.isEnabled = true
-                    Snackbar.make(btnStop, "Stop failed: ${e.message}", Snackbar.LENGTH_LONG).show()
+                    Toast.makeText(this@SessionPlayerActivity, "Stop failed: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -290,6 +361,7 @@ class SessionPlayerActivity : AppCompatActivity() {
         "lying_flat" -> "Lying Flat"
         "squat" -> "Squat"
         "march_in_place" -> "March in Place"
+        "bend_knee_10" -> "Bend Knee"
         else -> type.replaceFirstChar { it.uppercase() }
     }
 

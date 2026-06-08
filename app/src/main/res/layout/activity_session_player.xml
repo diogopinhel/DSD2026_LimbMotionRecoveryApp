@@ -6,231 +6,588 @@
     android:orientation="vertical"
     android:background="@color/colorPageBackground">
 
-    <!-- Session Info Header -->
+    <!-- ── FIXED HEADER ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:background="@color/white"
-        android:paddingStart="28dp"
-        android:paddingEnd="28dp"
-        android:paddingTop="18dp"
-        android:paddingBottom="14dp"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="12dp"
         android:elevation="2dp">
 
+        <!-- Back (disabled during session — shows toast) -->
+        <FrameLayout
+            android:id="@+id/btnBackDisabled"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_sensor_icon_circle"
+            android:layout_marginEnd="10dp">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"
+                android:alpha="0.35"
+                android:contentDescription="Back disabled" />
+        </FrameLayout>
+
+        <!-- Exercise name + sub -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvExerciseType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Squat"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorTextDark" />
-
-                <TextView
-                    android:id="@+id/tvSessionId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Session #—"
-                    android:textSize="12sp"
-                    android:textColor="@color/colorTextMedium"
-                    android:layout_marginTop="2dp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvExerciseType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="end">
+                android:text="Exercise"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-                <TextView
-                    android:id="@+id/tvTimer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="00:00"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryGreen"
-                    android:fontFamily="monospace" />
+            <TextView
+                android:id="@+id/tvExerciseSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textSize="11sp"
+                android:textColor="@color/colorTextMedium"
+                android:layout_marginTop="1dp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="RUNNING"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryGreen"
-                    android:layout_marginTop="2dp" />
-            </LinearLayout>
+        <!-- Timer + status badge -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="22sp"
+                android:textColor="@color/colorPrimaryGreen"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.05" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RUNNING"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:letterSpacing="0.08"
+                android:textColor="@color/colorGreenDark"
+                android:background="@drawable/bg_pill_rounded"
+                android:paddingHorizontal="7dp"
+                android:paddingVertical="2dp"
+                android:layout_marginTop="3dp" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- LegView Area -->
-    <FrameLayout
+    <!-- ── SCROLLABLE BODY ── -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_sensor_live_card"
-        android:padding="10dp">
+        android:fillViewport="false"
+        android:overScrollMode="never">
 
-        <com.example.limbmotionrecoveryapp.view.LegView
-            android:id="@+id/legView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-    <!-- Angle Display -->
+            <!-- ── TUTORIAL CARD ── -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/colorBorder"
+                app:cardBackgroundColor="@color/white"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- GIF area -->
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="148dp"
+                        android:background="@color/colorGreenExtraLight">
+
+                        <ImageView
+                            android:id="@+id/ivExerciseGif"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Exercise preview" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Preview"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorGreenDark"
+                            android:background="@drawable/bg_pill_rounded"
+                            android:backgroundTint="@color/white"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"
+                            android:layout_gravity="top|end"
+                            android:layout_margin="8dp" />
+                    </FrameLayout>
+
+                    <!-- Card body -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="13dp">
+
+                        <TextView
+                            android:id="@+id/tvExerciseCardTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Exercise"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorTextDark"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvExerciseInstruction"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Follow the movement shown above."
+                            android:textSize="12sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:lineSpacingMultiplier="1.6"
+                            android:layout_marginBottom="10dp" />
+
+                        <!-- Pills row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/pillSets"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="3 Sets"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorGreenDark"
+                                android:background="@drawable/bg_pill_mint"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="3dp"
+                                android:layout_marginEnd="6dp" />
+
+                            <TextView
+                                android:id="@+id/pillReps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="10 Reps"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorGreenDark"
+                                android:background="@drawable/bg_pill_mint"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="3dp"
+                                android:layout_marginEnd="6dp" />
+
+                            <TextView
+                                android:id="@+id/pillHold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hold 2s"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorGreenDark"
+                                android:background="@drawable/bg_pill_mint"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="3dp"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── SENSOR DIVIDER ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0.5dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorDivider" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SENSOR"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.07"
+                    android:textColor="@color/colorTextLight"
+                    android:paddingHorizontal="8dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0.5dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorDivider" />
+            </LinearLayout>
+
+            <!-- ── SENSOR CONNECTED CARD ── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSensorConnected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.5dp"
+                app:strokeColor="@color/colorPrimaryGreen"
+                app:cardBackgroundColor="@color/white"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Green left strip -->
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimaryGreen" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <!-- Sensor header row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="8dp">
+
+                            <!-- Active badge with pulse dot -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/bg_pill_mint"
+                                android:paddingHorizontal="9dp"
+                                android:paddingVertical="3dp">
+
+                                <View
+                                    android:id="@+id/pulseDot"
+                                    android:layout_width="6dp"
+                                    android:layout_height="6dp"
+                                    android:background="@drawable/bg_sensor_icon_circle"
+                                    android:backgroundTint="@color/colorPrimaryGreen"
+                                    android:layout_marginEnd="5dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sensor active"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/colorGreenDark" />
+                            </LinearLayout>
+
+                            <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="WitMotion BT"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorTextLight" />
+                        </LinearLayout>
+
+                        <!-- Divider -->
+                        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/colorDivider" />
+
+                        <!-- LegView area -->
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="140dp"
+                            android:background="@color/colorGreenLightBg"
+                            android:padding="8dp">
+
+                            <com.example.limbmotionrecoveryapp.view.LegView
+                                android:id="@+id/legView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </FrameLayout>
+
+                        <!-- Divider -->
+                        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/colorDivider" />
+
+                        <!-- Angle stats row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Left leg"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/colorTextMedium" />
+
+                                <TextView
+                                    android:id="@+id/tvLeftAngle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textSize="22sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/colorTextDark"
+                                    android:layout_marginTop="2dp"
+                                    android:layout_marginBottom="1dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Current angle"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/colorPrimaryGreen" />
+                            </LinearLayout>
+
+                            <View android:layout_width="0.5dp" android:layout_height="match_parent" android:background="@color/colorDivider" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:padding="10dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Right leg"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/colorTextMedium" />
+
+                                <TextView
+                                    android:id="@+id/tvRightAngle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textSize="22sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/colorTextDark"
+                                    android:layout_marginTop="2dp"
+                                    android:layout_marginBottom="1dp" />
+
+                                <TextView
+                                    android:id="@+id/tvRightAngleSub"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Not connected"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/colorTextLight" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Divider -->
+                        <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="@color/colorDivider" />
+
+                        <!-- AI Feedback -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="top"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="9dp">
+
+                            <TextView
+                                android:id="@+id/tvAiFeedbackLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AI"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorGreenDark"
+                                android:background="@drawable/bg_pill_mint"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="1dp" />
+
+                            <TextView
+                                android:id="@+id/tvAiFeedback"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Waiting for feedback…"
+                                android:textSize="12sp"
+                                android:textColor="@color/colorTextDark"
+                                android:lineSpacingMultiplier="1.5" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ── SENSOR DISCONNECTED CARD ── -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSensorDisconnected"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/colorBorder"
+                app:cardBackgroundColor="@color/white"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingHorizontal="14dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="18dp">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_sensor_icon_circle"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_sensor_wifi"
+                            android:contentDescription="No sensor" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No sensor connected"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Connect your WitMotion sensor for real-time joint angle tracking during this session."
+                        android:textSize="12sp"
+                        android:textColor="@color/colorTextMedium"
+                        android:gravity="center"
+                        android:lineSpacingMultiplier="1.5"
+                        android:layout_marginBottom="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnConnectSensor"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="Connect Sensor"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorGreenDark"
+                        app:strokeColor="@color/colorPrimaryGreen"
+                        app:strokeWidth="1.5dp"
+                        app:cornerRadius="20dp"
+                        app:icon="@drawable/ic_sensor_wifi"
+                        app:iconTint="@color/colorPrimaryGreen"
+                        app:iconSize="14dp"
+                        app:iconPadding="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bottom spacing -->
+            <Space android:layout_width="match_parent" android:layout_height="4dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ── FIXED BOTTOM BAR ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="10dp">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@drawable/bg_glance_item"
-            android:padding="14dp"
-            android:layout_marginEnd="6dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Left Leg"
-                android:textSize="11sp"
-                android:textColor="@color/colorTextMedium"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvLeftAngle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextDark"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@drawable/bg_glance_item"
-            android:padding="14dp"
-            android:layout_marginStart="6dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Right Leg"
-                android:textSize="11sp"
-                android:textColor="@color/colorTextMedium"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvRightAngle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextDark"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- AI Feedback -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_glance_item"
-        android:padding="14dp">
-
-        <TextView
-            android:id="@+id/tvAiFeedbackLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="AI Feedback"
-            android:textSize="11sp"
-            android:textColor="@color/colorPrimaryGreen"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/tvAiFeedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="None"
-            android:textSize="13sp"
-            android:textColor="@color/colorTextDark"
-            android:lineSpacingMultiplier="1.3" />
-    </LinearLayout>
-
-    <!-- Controls -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="28dp"
-        android:paddingEnd="28dp"
+        android:background="@color/white"
+        android:paddingHorizontal="12dp"
         android:paddingTop="10dp"
-        android:paddingBottom="24dp"
-        android:background="@color/white">
+        android:paddingBottom="20dp"
+        android:elevation="4dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPauseResume"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Pause"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorAmber"
-            app:cornerRadius="14dp"
-            android:layout_marginEnd="8dp" />
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="4dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnStop"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Stop"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorError"
-            app:cornerRadius="14dp"
-            android:layout_marginStart="8dp" />
+            app:cornerRadius="12dp"
+            android:layout_marginStart="4dp" />
     </LinearLayout>
 
 </LinearLayout>

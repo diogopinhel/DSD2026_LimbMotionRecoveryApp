@@ -1,0 +1,528 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap {
+    background: #111;
+    padding: 20px 14px 24px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+  }
+  .device {
+    width: 100%;
+    max-width: 340px;
+    background: #F4FAF7;
+    border-radius: 24px;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  .header {
+    background: #fff;
+    border-bottom: 0.5px solid #d8eee5;
+    padding: 12px 14px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .back-disabled {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #f0f0ee; border: none;
+    display: flex; align-items: center; justify-content: center;
+    color: #bbb; flex-shrink: 0;
+    cursor: not-allowed;
+  }
+  .header-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .exercise-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1A2E27;
+    line-height: 1.2;
+  }
+  .exercise-sub {
+    font-size: 11px;
+    color: #888;
+    margin-top: 1px;
+  }
+  .timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .timer-value {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: #1D9E75;
+    line-height: 1;
+    letter-spacing: 1px;
+  }
+  .timer-badge {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0F6E56;
+    background: #E1F5EE;
+    border-radius: 20px;
+    padding: 2px 7px;
+    margin-top: 3px;
+  }
+  .timer-badge.paused { color: #854F0B; background: #FAEEDA; }
+
+  /* SCROLLABLE BODY */
+  .body { padding: 12px 12px 0; display: flex; flex-direction: column; gap: 10px; }
+
+  /* TUTORIAL CARD */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    border: 0.5px solid #d8eee5;
+    overflow: hidden;
+  }
+  .gif-area {
+    background: #E1F5EE;
+    height: 148px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .gif-label {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-size: 10px;
+    color: #0F6E56;
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  /* knee animation */
+  .knee-anim { position: relative; width: 110px; height: 120px; }
+  .leg-upper {
+    position: absolute;
+    bottom: 50%; left: 50%;
+    width: 14px; height: 60px;
+    background: #9FE1CB;
+    border-radius: 7px;
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(0deg);
+    animation: upperLeg 2s ease-in-out infinite alternate;
+  }
+  .leg-lower {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14px; height: 60px;
+    background: #5DCAA5;
+    border-radius: 7px;
+    transform-origin: top center;
+    transform: translateX(-50%) rotate(0deg);
+    animation: lowerLeg 2s ease-in-out infinite alternate;
+  }
+  .knee-joint {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px; height: 20px;
+    background: #1D9E75;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .angle-arc {
+    position: absolute;
+    top: 42%; left: 54%;
+    width: 38px; height: 38px;
+    border: 2px dashed #0F6E56;
+    border-radius: 50%;
+    clip-path: polygon(0 100%, 100% 100%, 100% 0);
+    opacity: 0.4;
+    animation: arcPulse 2s ease-in-out infinite alternate;
+  }
+  @keyframes upperLeg {
+    0% { transform: translateX(-50%) rotate(-20deg); }
+    100% { transform: translateX(-50%) rotate(10deg); }
+  }
+  @keyframes lowerLeg {
+    0% { transform: translateX(-50%) rotate(10deg); }
+    100% { transform: translateX(-50%) rotate(70deg); }
+  }
+  @keyframes arcPulse {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.5; }
+  }
+
+  .card-body { padding: 12px 14px 13px; }
+  .card-title { font-size: 13px; font-weight: 500; color: #1A2E27; margin-bottom: 4px; }
+  .card-instruction { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 10px; }
+  .pills-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    font-size: 11px;
+    color: #085041;
+    background: #E1F5EE;
+    border-radius: 20px;
+    padding: 3px 10px;
+    border: 0.5px solid #9FE1CB;
+  }
+
+  /* SENSOR CARDS */
+  .sensor-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888;
+    padding: 0 2px;
+  }
+
+  /* state A */
+  .sensor-connected {
+    background: #fff;
+    border-radius: 14px;
+    border: 0.5px solid #d8eee5;
+    border-left: 3px solid #1D9E75;
+    overflow: hidden;
+  }
+  .sensor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px 8px;
+    border-bottom: 0.5px solid #e8f5ef;
+  }
+  .sensor-active-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500; color: #085041;
+    background: #E1F5EE;
+    border-radius: 20px; padding: 3px 9px;
+  }
+  .pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #1D9E75;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .sensor-device-label { font-size: 11px; color: #aaa; }
+
+  .limb-visual {
+    background: #F4FAF7;
+    height: 110px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 24px;
+    padding: 10px;
+  }
+  .limb-3d {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .limb-svg-wrap {
+    width: 56px; height: 72px;
+    position: relative;
+  }
+  .limb-tag {
+    font-size: 10px; color: #666; letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .limb-active .limb-tag { color: #1D9E75; font-weight: 500; }
+  .limb-inactive .limb-tag { color: #bbb; }
+
+  .stats-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-top: 0.5px solid #e8f5ef;
+  }
+  .stat-box {
+    padding: 10px 14px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-box + .stat-box { border-left: 0.5px solid #e8f5ef; }
+  .stat-box-label { font-size: 11px; color: #888; }
+  .stat-box-value { font-size: 18px; font-weight: 500; color: #1A2E27; line-height: 1; }
+  .stat-box-value.inactive { color: #bbb; }
+  .stat-box-unit { font-size: 11px; color: #1D9E75; margin-top: 1px; }
+
+  .ai-feedback {
+    border-top: 0.5px solid #e8f5ef;
+    padding: 9px 14px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .ai-label {
+    font-size: 10px; font-weight: 500; color: #0F6E56;
+    background: #E1F5EE; border-radius: 20px;
+    padding: 2px 8px; white-space: nowrap; flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .ai-text { font-size: 12px; color: #444; line-height: 1.5; }
+
+  /* state B */
+  .sensor-disconnected {
+    background: #fff;
+    border-radius: 14px;
+    border: 0.5px solid #e8e8e6;
+    padding: 18px 14px 16px;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center; gap: 8px;
+  }
+  .sensor-icon-wrap {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: #F4FAF7;
+    border: 0.5px solid #d8eee5;
+    display: flex; align-items: center; justify-content: center;
+    color: #9FE1CB; font-size: 24px;
+    margin-bottom: 2px;
+  }
+  .sensor-disc-title { font-size: 14px; font-weight: 500; color: #1A2E27; }
+  .sensor-disc-sub { font-size: 12px; color: #888; line-height: 1.5; }
+  .connect-btn {
+    margin-top: 4px;
+    font-size: 13px; font-weight: 500; color: #0F6E56;
+    background: transparent;
+    border: 1.5px solid #1D9E75;
+    border-radius: 20px;
+    padding: 7px 20px;
+    cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.15s;
+  }
+  .connect-btn:hover { background: #E1F5EE; }
+
+  /* BOTTOM BAR */
+  .bottom-bar {
+    background: #fff;
+    border-top: 0.5px solid #d8eee5;
+    padding: 10px 12px 14px;
+    display: flex; gap: 8px;
+    flex-shrink: 0;
+    margin-top: 12px;
+  }
+  .btn-pause {
+    flex: 1; padding: 13px 0;
+    border: none; border-radius: 12px;
+    background: #EF9F27; color: #fff;
+    font-size: 14px; font-weight: 500;
+    font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: opacity 0.12s;
+  }
+  .btn-pause:hover { opacity: 0.88; }
+  .btn-stop {
+    flex: 1; padding: 13px 0;
+    border: none; border-radius: 12px;
+    background: #E53935; color: #fff;
+    font-size: 14px; font-weight: 500;
+    font-family: inherit; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: opacity 0.12s;
+  }
+  .btn-stop:hover { opacity: 0.88; }
+
+  .divider-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #aaa;
+    padding: 2px 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .divider-label::before, .divider-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: #e0e0de;
+  }
+</style>
+
+<div class="wrap">
+  <div class="device">
+
+    <!-- HEADER -->
+    <div class="header">
+      <button class="back-disabled" disabled aria-label="Back disabled">
+        <i class="ti ti-arrow-left" style="font-size:17px;" aria-hidden="true"></i>
+      </button>
+      <div class="header-center">
+        <div class="exercise-name">Bend Knee</div>
+        <div class="exercise-sub">3 sets · 10 reps</div>
+      </div>
+      <div class="timer-block">
+        <div class="timer-value" id="timer-val">00:42</div>
+        <div class="timer-badge" id="timer-badge">RUNNING</div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <!-- Tutorial card -->
+      <div class="card">
+        <div class="gif-area">
+          <span class="gif-label">Preview</span>
+          <div class="knee-anim">
+            <div class="leg-upper"></div>
+            <div class="knee-joint"></div>
+            <div class="leg-lower"></div>
+            <div class="angle-arc"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">Knee bend — active flexion</div>
+          <div class="card-instruction">Slowly bend your knee as far as comfortable. Hold for 2 seconds at full flexion, then return to the starting position. Keep movements smooth.</div>
+          <div class="pills-row">
+            <span class="pill">3 Sets</span>
+            <span class="pill">10 Reps</span>
+            <span class="pill">Hold 2s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sensor state label -->
+      <div class="divider-label">Sensor</div>
+
+      <!-- STATE A — connected -->
+      <div class="sensor-connected">
+        <div class="sensor-header">
+          <div class="sensor-active-badge">
+            <div class="pulse-dot"></div>
+            Sensor active
+          </div>
+          <div class="sensor-device-label">WitMotion BT</div>
+        </div>
+
+        <div class="limb-visual">
+          <!-- Left leg — active -->
+          <div class="limb-3d limb-active">
+            <svg width="52" height="72" viewBox="0 0 52 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="2" width="12" height="34" rx="6" fill="#9FE1CB"/>
+              <circle cx="26" cy="37" r="8" fill="#1D9E75"/>
+              <rect x="22" y="37" width="12" height="30" rx="6" fill="#5DCAA5" transform="rotate(42 26 37)"/>
+              <text x="26" y="58" text-anchor="middle" font-size="10" font-weight="500" fill="#0F6E56" font-family="sans-serif">42°</text>
+            </svg>
+            <div class="limb-tag">Left leg</div>
+          </div>
+
+          <!-- divider -->
+          <div style="width:0.5px; height:60px; background:#d8eee5;"></div>
+
+          <!-- Right leg — inactive -->
+          <div class="limb-3d limb-inactive">
+            <svg width="52" height="72" viewBox="0 0 52 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="20" y="2" width="12" height="34" rx="6" fill="#e0e0de"/>
+              <circle cx="26" cy="37" r="8" fill="#ccc"/>
+              <rect x="22" y="37" width="12" height="30" rx="6" fill="#d4d4d4"/>
+              <text x="26" y="58" text-anchor="middle" font-size="11" font-weight="500" fill="#bbb" font-family="sans-serif">—</text>
+            </svg>
+            <div class="limb-tag">Right leg</div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-box-label">Left leg</div>
+            <div class="stat-box-value">42.3<span style="font-size:13px; color:#aaa;">°</span></div>
+            <div class="stat-box-unit">Current angle</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Right leg</div>
+            <div class="stat-box-value inactive">—</div>
+            <div class="stat-box-unit" style="color:#ccc;">Not connected</div>
+          </div>
+        </div>
+
+        <div class="ai-feedback">
+          <span class="ai-label">AI</span>
+          <span class="ai-text">Good range of motion. Keep a steady pace and maintain consistent hold time.</span>
+        </div>
+      </div>
+
+      <!-- STATE B label -->
+      <div class="divider-label" style="margin-top:4px;">Or without sensor</div>
+
+      <!-- STATE B — disconnected -->
+      <div class="sensor-disconnected">
+        <div class="sensor-icon-wrap">
+          <i class="ti ti-bluetooth" aria-hidden="true"></i>
+        </div>
+        <div class="sensor-disc-title">No sensor connected</div>
+        <div class="sensor-disc-sub">Connect your WitMotion sensor for real-time joint angle tracking during this session.</div>
+        <button class="connect-btn" onclick="sendPrompt('Ligar sensor WitMotion via Bluetooth')">
+          <i class="ti ti-bluetooth" style="font-size:14px;" aria-hidden="true"></i>
+          Connect sensor
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+      <button class="btn-pause" id="pause-btn" onclick="togglePause()">
+        <i class="ti ti-player-pause" style="font-size:17px;" aria-hidden="true" id="pause-icon"></i>
+        <span id="pause-label">Pause</span>
+      </button>
+      <button class="btn-stop" onclick="sendPrompt('Terminar sessão de exercício')">
+        <i class="ti ti-player-stop" style="font-size:17px;" aria-hidden="true"></i>
+        Stop
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let seconds = 42;
+  let running = true;
+  let interval = setInterval(tick, 1000);
+
+  function tick() {
+    if (!running) return;
+    seconds++;
+    document.getElementById('timer-val').textContent = fmt(seconds);
+  }
+
+  function fmt(s) {
+    const m = Math.floor(s / 60).toString().padStart(2, '0');
+    const ss = (s % 60).toString().padStart(2, '0');
+    return m + ':' + ss;
+  }
+
+  function togglePause() {
+    running = !running;
+    const badge = document.getElementById('timer-badge');
+    const icon = document.getElementById('pause-icon');
+    const label = document.getElementById('pause-label');
+    if (running) {
+      badge.textContent = 'RUNNING';
+      badge.className = 'timer-badge';
+      icon.className = 'ti ti-player-pause';
+      label.textContent = 'Pause';
+    } else {
+      badge.textContent = 'PAUSED';
+      badge.className = 'timer-badge paused';
+      icon.className = 'ti ti-player-play';
+      label.textContent = 'Resume';
+    }
+  }
+
+  let angle = 42.3;
+  let dir = 1;
+  setInterval(() => {
+    if (!running) return;
+    angle += dir * 0.8;
+    if (angle >= 78) dir = -1;
+    if (angle <= 12) dir = 1;
+    document.querySelector('.stat-box-value').innerHTML = angle.toFixed(1) + '<span style="font-size:13px; color:#aaa;">°</span>';
+  }, 120);
+</script>
