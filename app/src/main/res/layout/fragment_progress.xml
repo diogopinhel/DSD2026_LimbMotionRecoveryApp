@@ -1,150 +1,365 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/colorBackground">
-
-<!-- 主内容 -->
-<LinearLayout
-    android:id="@+id/content_group"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:visibility="gone">
+    android:background="@color/colorBackground">
 
-    <!-- 顶部标题区 -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progressSpinner"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="28dp"
-        android:paddingTop="52dp"
-        android:paddingBottom="24dp">
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rehabilitation History"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextDark"
-            android:layout_marginBottom="6dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Review your past training sessions and AI evaluations."
-            android:textSize="14sp"
-            android:textColor="@color/colorTextMedium"
-            android:lineSpacingMultiplier="1.5" />
-    </LinearLayout>
-
-    <!-- 刷新按钮行 -->
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingHorizontal="28dp"
-        android:layout_marginBottom="12dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:visibility="visible">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRefresh"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="Refresh History"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimaryGreen"
-            app:strokeColor="@color/colorPrimaryGreen"
-            app:strokeWidth="1.5dp"
-            app:cornerRadius="14dp" />
-    </LinearLayout>
-
-    <!-- 列表 -->
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHistory"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="28dp"
-            android:clipToPadding="false" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="52dp"
+            android:paddingBottom="32dp">
 
-<!-- 加载状态 -->
-<ProgressBar
-    android:id="@+id/progress_bar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:visibility="visible" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Progress"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextDark"
+                android:layout_marginBottom="8dp" />
 
-<!-- 空状态 -->
-<LinearLayout
-    android:id="@+id/empty_group"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:visibility="gone">
+            <TextView
+                android:id="@+id/tvWeekLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_progress_chip"
+                android:textSize="12sp"
+                android:textColor="@color/colorPrimaryGreen"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp"
+                tools:text="Week of Jun 2 – Jun 8" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No history yet"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/colorTextDark"
-        android:layout_marginBottom="6dp" />
+            <!-- Stat cards row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Complete your first exercise\nto see records here."
-        android:textSize="14sp"
-        android:textColor="@color/colorTextMedium"
-        android:gravity="center"
-        android:lineSpacingMultiplier="1.5" />
-</LinearLayout>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
 
-<!-- 错误状态 -->
-<LinearLayout
-    android:id="@+id/error_group"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tv_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Something went wrong"
-        android:textSize="14sp"
-        android:textColor="@color/colorTextDark"
-        android:layout_marginBottom="12dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SESSIONS DONE"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.08"
+                            android:layout_marginBottom="6dp" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_retry"
-        android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:text="Retry"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/colorPrimaryGreen"
-        app:cornerRadius="14dp" />
-</LinearLayout>
+                        <TextView
+                            android:id="@+id/tvSessionsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorTextDark"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="this week"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:layout_marginBottom="10dp" />
+
+                        <TextView
+                            android:id="@+id/tvSessionsDelta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            tools:text="↑ 2 more than last week" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AVG PAIN LEVEL"
+                            android:textSize="10sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.08"
+                            android:layout_marginBottom="6dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="2dp">
+
+                            <TextView
+                                android:id="@+id/tvAvgPain"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="30sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextDark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="/10"
+                                android:textSize="13sp"
+                                android:textColor="@color/colorTextMedium"
+                                android:layout_gravity="bottom"
+                                android:paddingBottom="5dp"
+                                android:paddingStart="2dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="this week"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:layout_marginBottom="10dp" />
+
+                        <TextView
+                            android:id="@+id/tvPainDelta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            tools:text="↓ Down from 6.2" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Active Days -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active Days"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark"
+                        android:layout_marginBottom="16dp" />
+
+                    <LinearLayout
+                        android:id="@+id/barChartContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Pain Trend -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pain Trend"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.example.limbmotionrecoveryapp.screens.progress.PainLineChartView
+                        android:id="@+id/painLineChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Range of Motion -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Range of Motion"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextDark"
+                        android:layout_marginBottom="16dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📡"
+                            android:textSize="36sp"
+                            android:gravity="center"
+                            android:layout_marginBottom="10dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Connect your sensor to track\nrange of motion"
+                            android:textSize="13sp"
+                            android:textColor="@color/colorTextMedium"
+                            android:gravity="center"
+                            android:lineSpacingMultiplier="1.4"
+                            android:layout_marginBottom="16dp" />
+
+                        <Button
+                            android:id="@+id/btnConnectSensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:text="Connect sensor"
+                            android:textSize="13sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            android:background="@drawable/bg_outline_btn_green"
+                            android:paddingHorizontal="20dp"
+                            android:stateListAnimator="@null" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Streak banner -->
+            <LinearLayout
+                android:id="@+id/streakBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_streak_banner"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_streak_num"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvStreakNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingStart="12dp">
+
+                    <TextView
+                        android:id="@+id/tvStreakTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        tools:text="7-day streak 🔥" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keep it up!"
+                        android:textSize="12sp"
+                        android:textColor="#C0E8D9" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </FrameLayout>
