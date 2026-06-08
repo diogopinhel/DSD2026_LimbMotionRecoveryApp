@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="130dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_learn_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
+
+    <!-- Thumbnail -->
+    <FrameLayout
+        android:id="@+id/learnThumb"
+        android:layout_width="match_parent"
+        android:layout_height="75dp">
+
+        <!-- Colored background (set programmatically) -->
+        <View
+            android:id="@+id/learnThumbBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Play icon overlay -->
+        <FrameLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_learn_play_btn">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="2dp"
+                android:src="@drawable/ic_play"
+                android:contentDescription="@null"
+                android:tint="@color/white" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/learnTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="7dp"
+        android:paddingBottom="2dp"
+        android:text="Recovery tutorial"
+        android:textSize="11sp"
+        android:textStyle="normal"
+        android:textColor="@color/colorTextDark"
+        android:lineSpacingMultiplier="1.3"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- Duration -->
+    <TextView
+        android:id="@+id/learnDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="7dp"
+        android:text="5 min"
+        android:textSize="10sp"
+        android:textColor="@color/colorTextMedium" />
+
+</LinearLayout>

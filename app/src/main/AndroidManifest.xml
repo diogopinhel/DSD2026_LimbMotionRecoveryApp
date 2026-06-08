@@ -88,6 +88,12 @@
             android:name=".screens.home.PainCheckInActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".screens.home.LearnTutorialActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.home.LearnAllActivity"
+            android:exported="false" />
 
         <!-- Profile Sub-Screens -->
         <activity
