@@ -1,6 +1,8 @@
 package com.example.limbmotionrecoveryapp.screens.plans
 
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.limbmotionrecoveryapp.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PlanAdapter(
     private val onPlanClick: (Plan) -> Unit
@@ -76,6 +80,7 @@ class PlanAdapter(
         private val cardRoot: LinearLayout = view.findViewById(R.id.cardRoot)
         private val tvName: TextView = view.findViewById(R.id.tvPlanName)
         private val tvBadge: TextView = view.findViewById(R.id.tvBadge)
+        private val rowDoctor: LinearLayout = view.findViewById(R.id.rowDoctor)
         private val tvDoctorInitials: TextView = view.findViewById(R.id.tvDoctorInitials)
         private val tvDoctorName: TextView = view.findViewById(R.id.tvDoctorName)
         private val tvDates: TextView = view.findViewById(R.id.tvDates)
@@ -83,11 +88,18 @@ class PlanAdapter(
         private val tvProgressPct: TextView = view.findViewById(R.id.tvProgressPct)
         private val tvSessionsCount: TextView = view.findViewById(R.id.tvSessionsCount)
         private val progressBar: ProgressBar = view.findViewById(R.id.progressBar)
+        private val cardFooter: LinearLayout = view.findViewById(R.id.cardFooter)
         private val tvFooterStat: TextView = view.findViewById(R.id.tvFooterStat)
         private val tvFooterAction: TextView = view.findViewById(R.id.tvFooterAction)
 
         fun bind(plan: Plan, onClick: (Plan) -> Unit) {
             tvName.text = plan.name
+            cardRoot.alpha = if (plan.isCompleted) 0.75f else 1f
+
+            // Card background
+            cardRoot.setBackgroundResource(
+                if (plan.isActive) R.drawable.bg_plan_card_active else R.drawable.bg_plan_card_default
+            )
 
             // Badge
             when {
@@ -95,60 +107,85 @@ class PlanAdapter(
                     tvBadge.text = "Active"
                     tvBadge.setTextColor(Color.parseColor("#085041"))
                     tvBadge.setBackgroundResource(R.drawable.bg_badge)
-                    cardRoot.setBackgroundResource(R.drawable.bg_plan_card_active)
                 }
                 plan.isUpcoming -> {
                     tvBadge.text = "Upcoming"
                     tvBadge.setTextColor(Color.parseColor("#0C447C"))
-                    tvBadge.background = null
                     tvBadge.setBackgroundResource(R.drawable.bg_tag_blue)
-                    cardRoot.setBackgroundResource(R.drawable.bg_plan_card_default)
                 }
                 else -> {
                     tvBadge.text = "Completed"
                     tvBadge.setTextColor(Color.parseColor("#5F5E5A"))
                     tvBadge.setBackgroundResource(R.drawable.bg_tag_gray)
-                    cardRoot.setBackgroundResource(R.drawable.bg_plan_card_default)
-                    cardRoot.alpha = 0.75f
                 }
             }
 
-            // Doctor
-            val initials = plan.doctorName.split(" ")
-                .filter { it.isNotBlank() }.takeLast(2)
-                .joinToString("") { it.first().uppercase() }
-            tvDoctorInitials.text = initials
-            tvDoctorName.text = plan.doctorName
+            // Doctor row — hide when no doctor assigned
+            if (plan.doctorName.isBlank()) {
+                rowDoctor.visibility = View.GONE
+            } else {
+                rowDoctor.visibility = View.VISIBLE
+                val initials = plan.doctorName.split(" ")
+                    .filter { it.isNotBlank() }.takeLast(2)
+                    .joinToString("") { it.first().uppercase() }
+                tvDoctorInitials.text = initials
+                tvDoctorName.text = plan.doctorName
 
-            // Dates
-            tvDates.text = if (plan.startDate.isNotEmpty() && plan.endDate.isNotEmpty())
-                "${plan.startDate} – ${plan.endDate}" else ""
-
-            // Phase tags
-            tagsContainer.removeAllViews()
-            plan.phases.forEach { phase ->
-                val tag = TextView(tagsContainer.context).apply {
-                    text = phase
-                    textSize = 11f
-                    setTextColor(when {
-                        plan.isActive -> Color.parseColor("#0F6E56")
-                        plan.isUpcoming -> Color.parseColor("#185FA5")
-                        else -> Color.parseColor("#5F5E5A")
-                    })
-                    setBackgroundResource(when {
-                        plan.isActive -> R.drawable.bg_tag_green
-                        plan.isUpcoming -> R.drawable.bg_tag_blue
-                        else -> R.drawable.bg_tag_gray
-                    })
-                    setPadding(16, 6, 16, 6)
-                    val lp = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    lp.marginEnd = 12
-                    layoutParams = lp
+                val avatarColor = when {
+                    plan.isActive -> Color.parseColor("#E1F5EE")
+                    plan.isUpcoming -> Color.parseColor("#E6F1FB")
+                    else -> Color.parseColor("#F1EFE8")
                 }
-                tagsContainer.addView(tag)
+                val avatarDrawable = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setColor(avatarColor)
+                }
+                tvDoctorInitials.background = avatarDrawable
+                tvDoctorInitials.setTextColor(when {
+                    plan.isActive -> Color.parseColor("#085041")
+                    plan.isUpcoming -> Color.parseColor("#0C447C")
+                    else -> Color.parseColor("#5F5E5A")
+                })
+            }
+
+            // Dates — hide when empty, format ISO → "Apr 4 – May 15"
+            val startFmt = formatDate(plan.startDate)
+            val endFmt = formatDate(plan.endDate)
+            if (startFmt.isNotEmpty() && endFmt.isNotEmpty()) {
+                tvDates.visibility = View.VISIBLE
+                tvDates.text = "$startFmt – $endFmt"
+            } else {
+                tvDates.visibility = View.GONE
+            }
+
+            // Phase tags — hide container when empty
+            tagsContainer.removeAllViews()
+            if (plan.phases.isEmpty()) {
+                tagsContainer.visibility = View.GONE
+            } else {
+                tagsContainer.visibility = View.VISIBLE
+                plan.phases.forEach { phase ->
+                    val tag = TextView(tagsContainer.context).apply {
+                        text = phase
+                        textSize = 11f
+                        setTextColor(when {
+                            plan.isActive -> Color.parseColor("#0F6E56")
+                            plan.isUpcoming -> Color.parseColor("#185FA5")
+                            else -> Color.parseColor("#5F5E5A")
+                        })
+                        setBackgroundResource(when {
+                            plan.isActive -> R.drawable.bg_tag_green
+                            plan.isUpcoming -> R.drawable.bg_tag_blue
+                            else -> R.drawable.bg_tag_gray
+                        })
+                        setPadding(16, 6, 16, 6)
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply { marginEnd = 12 }
+                    }
+                    tagsContainer.addView(tag)
+                }
             }
 
             // Progress
@@ -157,26 +194,48 @@ class PlanAdapter(
                 plan.isActive -> {
                     tvProgressPct.text = "${plan.progressPercent}% complete"
                     tvProgressPct.setTextColor(Color.parseColor("#1D9E75"))
-                    tvSessionsCount.text = "${plan.completedSessions} of ${plan.totalSessions} sessions"
+                    tvSessionsCount.text = if (plan.totalSessions > 0)
+                        "${plan.completedSessions} of ${plan.totalSessions} sessions"
+                    else "— sessions"
+                    progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#1D9E75"))
+                    progressBar.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8F5EF"))
                 }
                 plan.isUpcoming -> {
-                    tvProgressPct.text = "Starts ${plan.startDate}"
+                    tvProgressPct.text = if (startFmt.isNotEmpty()) "Starts $startFmt" else "Upcoming"
                     tvProgressPct.setTextColor(Color.parseColor("#378ADD"))
-                    tvSessionsCount.text = "${plan.totalSessions} sessions"
+                    tvSessionsCount.text = if (plan.totalSessions > 0)
+                        "${plan.totalSessions} sessions"
+                    else "— sessions"
+                    progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#85B7EB"))
+                    progressBar.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#E6F1FB"))
                 }
                 else -> {
                     tvProgressPct.text = "100% complete"
                     tvProgressPct.setTextColor(Color.parseColor("#888780"))
-                    tvSessionsCount.text = "${plan.totalSessions} of ${plan.totalSessions} sessions"
+                    tvSessionsCount.text = if (plan.totalSessions > 0)
+                        "${plan.totalSessions} of ${plan.totalSessions} sessions"
+                    else "— sessions"
+                    progressBar.progress = 100
+                    progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#B4B2A9"))
+                    progressBar.progressBackgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8E8E4"))
                 }
             }
 
-            // Footer
+            // Footer background tint
+            cardFooter.setBackgroundColor(
+                Color.parseColor(if (plan.isActive) "#FAFFFE" else "#FAFAF9")
+            )
+
+            // Footer stat + action
             when {
                 plan.isActive -> {
-                    val today = if (plan.todayExercises > 0) "Today: ${plan.todayExercises} exercises" else "Today: active"
-                    tvFooterStat.text = today
-                    tvFooterStat.setTextColor(Color.parseColor("#1D9E75"))
+                    if (plan.todayExercises > 0) {
+                        tvFooterStat.text = "Today: ${plan.todayExercises} exercises"
+                        tvFooterStat.setTextColor(Color.parseColor("#1D9E75"))
+                    } else {
+                        tvFooterStat.text = "No exercises today"
+                        tvFooterStat.setTextColor(Color.parseColor("#9EB5AF"))
+                    }
                     tvFooterAction.text = "Open plan →"
                     tvFooterAction.setTextColor(Color.parseColor("#1D9E75"))
                 }
@@ -195,6 +254,15 @@ class PlanAdapter(
             }
 
             cardRoot.setOnClickListener { onClick(plan) }
+        }
+
+        private fun formatDate(iso: String): String {
+            if (iso.isBlank()) return ""
+            return try {
+                val src = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val dst = SimpleDateFormat("MMM d", Locale.getDefault())
+                dst.format(src.parse(iso)!!)
+            } catch (_: Exception) { iso }
         }
     }
 }

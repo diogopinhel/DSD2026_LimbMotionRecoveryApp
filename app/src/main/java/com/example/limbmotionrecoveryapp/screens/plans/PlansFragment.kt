@@ -68,11 +68,12 @@ class PlansFragment : Fragment() {
                 if (state.plans.isEmpty()) {
                     tvEmpty.visibility = View.VISIBLE
                     rvPlans.visibility = View.GONE
+                    tvHeaderSub.text = "No plans assigned yet"
                 } else {
                     tvEmpty.visibility = View.GONE
                     adapter.submitPlans(state.plans)
-                    val activePlan = state.plans.firstOrNull { it.isActive }
-                    tvHeaderSub.text = if (activePlan != null) activePlan.name else if (userName.isNotBlank()) "Hello, $userName" else ""
+                    val active = state.activePlans
+                    tvHeaderSub.text = "${state.plans.size} plan${if (state.plans.size != 1) "s" else ""} · $active active"
                 }
             }
         }
