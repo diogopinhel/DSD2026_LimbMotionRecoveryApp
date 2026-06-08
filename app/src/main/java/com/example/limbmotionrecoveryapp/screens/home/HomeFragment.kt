@@ -1,7 +1,6 @@
 package com.example.limbmotionrecoveryapp.screens.home
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
-import com.example.limbmotionrecoveryapp.screens.session.PrepareExerciseActivity
 import com.example.limbmotionrecoveryapp.sensor.SensorActivity
 import com.example.limbmotionrecoveryapp.sensor.SensorRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -50,15 +48,10 @@ class HomeFragment : Fragment() {
 
         tvGreeting.text = buildGreeting(userName)
 
-        // 修复：Start Exercises 跳转到 Session 准备页面
         btnStartExercises.setOnClickListener {
-            val intent = Intent(requireContext(), PrepareExerciseActivity::class.java)
-            // 可选：传递当前 pending plan 名称
-            val planName = viewModel.state.value?.activePlanName
-            if (!planName.isNullOrBlank()) {
-                intent.putExtra("planName", planName)
-            }
-            startActivity(intent)
+            requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+                R.id.bottomNav
+            ).selectedItemId = R.id.nav_plans
         }
 
         btnConnectSensor.setOnClickListener {
