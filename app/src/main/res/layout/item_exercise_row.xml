@@ -49,13 +49,27 @@
             android:textColor="@color/colorTextMedium" />
     </LinearLayout>
 
-    <!-- Right: pain badge (optional) + arrow -->
+    <!-- Right: video badge + pain badge + arrow -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="end"
         android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/tvVideoBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▶ GIF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#1D9E75"
+            android:background="@drawable/bg_tag_green"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvPainBadge"

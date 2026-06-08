@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:paddingBottom="40dp">
+
+    <!-- Handle -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#E0E0E0"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Exercise name -->
+    <TextView
+        android:id="@+id/tvSheetName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1A2E2A"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Phase tag -->
+    <TextView
+        android:id="@+id/tvSheetPhase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="#1D9E75"
+        android:background="@drawable/bg_tag_green"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="3dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- GIF demo (shown inline when gif_url is available) -->
+    <ImageView
+        android:id="@+id/ivExGif"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:background="#F0F0F0"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:contentDescription="Exercise demonstration" />
+
+    <!-- Sets / Reps / Hold -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tvSheetSets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1D9E75" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sets"
+                android:textSize="11sp"
+                android:textColor="#9EB5AF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tvSheetReps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1D9E75" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reps"
+                android:textSize="11sp"
+                android:textColor="#9EB5AF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutSheetHold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tvSheetHold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1D9E75" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sec hold"
+                android:textSize="11sp"
+                android:textColor="#9EB5AF" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Description from exercise catalog -->
+    <LinearLayout
+        android:id="@+id/layoutSheetDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How to do it"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#9EB5AF"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvSheetDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#3D5A54" />
+    </LinearLayout>
+
+    <!-- Notes from doctor -->
+    <LinearLayout
+        android:id="@+id/layoutSheetNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F5FAF8"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Doctor's Notes"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="#9EB5AF"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvSheetNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#3D5A54" />
+    </LinearLayout>
+
+    <!-- Watch Video button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnWatchVideo"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Watch Video"
+        android:textColor="#1D9E75"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:strokeColor="#1D9E75" />
+
+    <!-- Mark as Done button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMarkDone"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Mark as Done"
+        android:backgroundTint="#1D9E75"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.Button" />
+
+    <!-- Already completed label -->
+    <TextView
+        android:id="@+id/tvAlreadyDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Completed"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#1D9E75"
+        android:gravity="center"
+        android:visibility="gone" />
+
+</LinearLayout>

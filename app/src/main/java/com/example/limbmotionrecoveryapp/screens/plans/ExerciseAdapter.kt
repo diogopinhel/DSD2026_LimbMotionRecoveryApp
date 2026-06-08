@@ -69,11 +69,14 @@ class ExerciseAdapter(
         private val tvName: TextView = view.findViewById(R.id.tvExName)
         private val tvMeta: TextView = view.findViewById(R.id.tvExMeta)
         private val tvPain: TextView = view.findViewById(R.id.tvPainBadge)
+        private val tvVideo: TextView = view.findViewById(R.id.tvVideoBadge)
 
         fun bind(ex: Exercise, onClick: (Exercise) -> Unit) {
             tvName.text = ex.name
             tvMeta.text = ex.metaText
             itemView.alpha = if (ex.completed) 0.55f else 1f
+
+            tvVideo.visibility = if (!ex.gifUrl.isNullOrBlank()) View.VISIBLE else View.GONE
 
             if (ex.lastPainLevel != null) {
                 tvPain.visibility = View.VISIBLE
