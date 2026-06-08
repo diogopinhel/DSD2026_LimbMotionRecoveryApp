@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -129,8 +128,13 @@ class PlanDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupList() {
+        val token = getSharedPreferences("auth", MODE_PRIVATE).getString("token", "") ?: ""
         adapter = ExerciseAdapter { exercise ->
-            Toast.makeText(this, "Opening: ${exercise.name}", Toast.LENGTH_SHORT).show()
+            val sheet = ExerciseDetailSheet.newInstance(exercise)
+            sheet.onMarkDone = { exerciseId, scheduleId ->
+                viewModel.markDone(scheduleId, exerciseId, null, token)
+            }
+            sheet.show(supportFragmentManager, "exercise_detail")
         }
         val rv = findViewById<RecyclerView>(R.id.rvExercises)
         rv.layoutManager = LinearLayoutManager(this)
@@ -151,14 +155,6 @@ class PlanDetailsActivity : AppCompatActivity() {
                     layoutState.visibility = View.VISIBLE
                     progressBar.visibility = View.VISIBLE
                     tvMessage.visibility = View.GONE
-                }
-                is PlanDetailsViewModel.State.EndpointMissing -> {
-                    rv.visibility = View.GONE
-                    layoutState.visibility = View.VISIBLE
-                    progressBar.visibility = View.GONE
-                    tvMessage.visibility = View.VISIBLE
-                    tvMessage.text = state.message
-                    tvStartSub.text = "Waiting for V2 exercises endpoint"
                 }
                 is PlanDetailsViewModel.State.Success -> {
                     layoutState.visibility = View.GONE

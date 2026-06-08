@@ -12,6 +12,7 @@ import android.text.style.StyleSpan
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.limbmotionrecoveryapp.MainActivity
 import com.example.limbmotionrecoveryapp.R
@@ -90,6 +91,15 @@ class LoginActivity : AppCompatActivity() {
                         .putString("userEmail", state.userEmail)
                         .apply()
                     goToMain()
+                }
+                is LoginViewModel.State.NoDoctorAssigned -> {
+                    btnSignIn.isEnabled = true
+                    btnSignIn.text = "Sign In"
+                    AlertDialog.Builder(this)
+                        .setTitle("No Doctor Assigned")
+                        .setMessage("Your account does not have a doctor assigned yet.\n\nPlease contact the clinic administrator to complete your registration.")
+                        .setPositiveButton("OK", null)
+                        .show()
                 }
                 is LoginViewModel.State.Error -> {
                     btnSignIn.isEnabled = true
