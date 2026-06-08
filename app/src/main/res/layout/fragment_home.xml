@@ -521,5 +521,30 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
+        <!-- Pain Check-in button -->
+        <LinearLayout
+            android:id="@+id/btnPainCheckIn"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_cta_btn"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/tvPainBtnText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🩺  Register Pain Level"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

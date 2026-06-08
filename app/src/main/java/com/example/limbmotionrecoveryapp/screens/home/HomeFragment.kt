@@ -1,7 +1,10 @@
 package com.example.limbmotionrecoveryapp.screens.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +16,25 @@ import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
 import com.example.limbmotionrecoveryapp.sensor.SensorActivity
 import com.example.limbmotionrecoveryapp.sensor.SensorRepository
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var btnPainCheckIn: LinearLayout
+    private lateinit var tvPainBtnText: TextView
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val countdownRunnable = object : Runnable {
+        override fun run() {
+            if (isAdded) refreshPainButton()
+            handler.postDelayed(this, 60_000)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,18 +62,26 @@ class HomeFragment : Fragment() {
         val tvGlanceProgressSub = view.findViewById<TextView>(R.id.tvGlanceProgressSub)
         val btnStartExercises = view.findViewById<LinearLayout>(R.id.btnStartExercises)
         val btnConnectSensor = view.findViewById<TextView>(R.id.btnConnectSensor)
+        btnPainCheckIn = view.findViewById(R.id.btnPainCheckIn)
+        tvPainBtnText = view.findViewById(R.id.tvPainBtnText)
 
         tvGreeting.text = buildGreeting(userName)
 
         btnStartExercises.setOnClickListener {
-            requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
-                R.id.bottomNav
-            ).selectedItemId = R.id.nav_plans
+            requireActivity()
+                .findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+                    R.id.bottomNav
+                ).selectedItemId = R.id.nav_plans
         }
 
         btnConnectSensor.setOnClickListener {
-            // 保持原有传感器连接逻辑
-             startActivity(Intent(requireContext(), SensorActivity::class.java))
+            startActivity(Intent(requireContext(), SensorActivity::class.java))
+        }
+
+        btnPainCheckIn.setOnClickListener {
+            if (!isLockedToday()) {
+                startActivity(Intent(requireContext(), PainCheckInActivity::class.java))
+            }
         }
 
         SensorRepository.state.observe(viewLifecycleOwner) { repoState ->
@@ -65,7 +90,6 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
-            // Subline: plan name + week
             tvPlanSubline.text = when {
                 state.activePlanName != null && state.recoveryWeekTotal > 0 ->
                     "${state.activePlanName} · Week ${state.recoveryWeekCurrent} of ${state.recoveryWeekTotal}"
@@ -74,7 +98,6 @@ class HomeFragment : Fragment() {
                 else -> "No active plan"
             }
 
-            // Week progress bar
             if (state.recoveryWeekTotal > 0) {
                 tvWeekLabel.text = "${state.recoveryWeekCurrent} of ${state.recoveryWeekTotal} weeks"
                 weekProgressBar.progress = (state.weekProgressFraction * 100).toInt()
@@ -83,7 +106,6 @@ class HomeFragment : Fragment() {
                 weekProgressBar.progress = 0
             }
 
-            // Sensor banner
             if (state.sensorConnected) {
                 sensorBannerOff.visibility = View.GONE
                 sensorBannerOn.visibility = View.VISIBLE
@@ -100,7 +122,6 @@ class HomeFragment : Fragment() {
                 sensorLiveCard.visibility = View.GONE
             }
 
-            // Today at a glance
             if (state.totalSessions > 0) {
                 tvGlanceSessions.text = "${state.completedSessions}/${state.totalSessions}"
                 tvGlanceSessionsSub.text = "exercises completed"
@@ -120,8 +141,56 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::btnPainCheckIn.isInitialized) {
+            refreshPainButton()
+            if (isLockedToday()) handler.post(countdownRunnable)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(countdownRunnable)
+    }
+
+    private fun refreshPainButton() {
+        if (isLockedToday()) {
+            btnPainCheckIn.setBackgroundResource(R.drawable.bg_cta_btn_locked)
+            val ms = msUntilMidnight()
+            val h = ms / 3_600_000
+            val m = (ms % 3_600_000) / 60_000
+            tvPainBtnText.text = "🔒  Next check-in in ${h}h ${m}m"
+        } else {
+            btnPainCheckIn.setBackgroundResource(R.drawable.bg_cta_btn)
+            tvPainBtnText.text = "🩺  Register Pain Level"
+        }
+    }
+
+    private fun isLockedToday(): Boolean {
+        val prefs = requireContext().getSharedPreferences("pain_prefs", Context.MODE_PRIVATE)
+        val json = prefs.getString("entries", null) ?: return false
+        return try {
+            val type = object : TypeToken<List<PainCheckInActivity.PainEntry>>() {}.type
+            val entries: List<PainCheckInActivity.PainEntry> = Gson().fromJson(json, type)
+            if (entries.isEmpty()) return false
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            sdf.format(Date(entries.first().timestamp)) == sdf.format(Date())
+        } catch (e: Exception) { false }
+    }
+
+    private fun msUntilMidnight(): Long {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+        cal.add(Calendar.DAY_OF_MONTH, 1)
+        return cal.timeInMillis - System.currentTimeMillis()
+    }
+
     private fun buildGreeting(name: String): String {
-        val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val timeGreeting = when {
             hour < 12 -> "Good morning"
             hour < 18 -> "Good afternoon"

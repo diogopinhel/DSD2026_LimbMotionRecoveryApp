@@ -83,6 +83,12 @@
             android:name=".screens.session.SessionSummaryActivity"
             android:exported="false" />
 
+        <!-- Home Sub-Screens -->
+        <activity
+            android:name=".screens.home.PainCheckInActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Profile Sub-Screens -->
         <activity
             android:name=".screens.profile.EditProfileActivity"
