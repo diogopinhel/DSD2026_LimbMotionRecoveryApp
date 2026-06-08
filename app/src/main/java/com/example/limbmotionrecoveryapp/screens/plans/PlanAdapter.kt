@@ -221,9 +221,9 @@ class PlanAdapter(
                 }
             }
 
-            // Footer background tint
-            cardFooter.setBackgroundColor(
-                Color.parseColor(if (plan.isActive) "#FAFFFE" else "#FAFAF9")
+            // Footer background — rounded bottom corners to match the card outline
+            cardFooter.setBackgroundResource(
+                if (plan.isActive) R.drawable.bg_plan_footer_active else R.drawable.bg_plan_footer_default
             )
 
             // Footer stat + action
