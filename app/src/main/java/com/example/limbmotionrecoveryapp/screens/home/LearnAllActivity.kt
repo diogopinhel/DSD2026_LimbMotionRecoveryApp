@@ -4,11 +4,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.limbmotionrecoveryapp.R
 
 class LearnAllActivity : AppCompatActivity() {
@@ -42,6 +44,12 @@ class LearnAllActivity : AppCompatActivity() {
 
                 cardView.findViewById<View>(R.id.learnThumbBg)
                     .setBackgroundColor(Color.parseColor(tutorial.thumbColor))
+                val ivThumb = cardView.findViewById<ImageView>(R.id.ivThumbYoutube)
+                if (tutorial.youtubeId.isNotBlank()) {
+                    ivThumb.visibility = View.VISIBLE
+                    Glide.with(this).load("https://img.youtube.com/vi/${tutorial.youtubeId}/hqdefault.jpg")
+                        .centerCrop().into(ivThumb)
+                }
                 cardView.findViewById<TextView>(R.id.learnTitle).text = tutorial.title
                 cardView.findViewById<TextView>(R.id.learnDuration).text = tutorial.duration
 
@@ -52,6 +60,8 @@ class LearnAllActivity : AppCompatActivity() {
                         putExtra(LearnTutorialActivity.EXTRA_DURATION, tutorial.duration)
                         putExtra(LearnTutorialActivity.EXTRA_YOUTUBE_ID, tutorial.youtubeId)
                         putExtra(LearnTutorialActivity.EXTRA_CATEGORY, tutorial.category)
+                        putExtra(LearnTutorialActivity.EXTRA_AUTHOR, tutorial.author)
+                        putExtra(LearnTutorialActivity.EXTRA_VIDEO_DURATION, tutorial.videoDuration)
                     })
                 }
                 rowLayout.addView(cardView)

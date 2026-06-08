@@ -14,11 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="75dp">
 
-        <!-- Colored background (set programmatically) -->
+        <!-- Colored background fallback (set programmatically) -->
         <View
             android:id="@+id/learnThumbBg"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <!-- YouTube thumbnail (shown when video is available) -->
+        <ImageView
+            android:id="@+id/ivThumbYoutube"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
         <!-- Play icon overlay -->
         <FrameLayout

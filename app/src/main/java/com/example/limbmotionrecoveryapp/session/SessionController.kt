@@ -337,7 +337,11 @@ class SessionController private constructor(context: Context) {
             val s2Summary = s2.session.stop()
             Log.i(TAG, "S2 stopped: samples=${s2Summary.sampleCount}")
 
-            v2Api.endSession(currentSessionId, currentToken)
+            try {
+                v2Api.endSession(currentSessionId, currentToken)
+            } catch (e: Exception) {
+                Log.w(TAG, "endSession failed (session already stopped locally): ${e.message}")
+            }
 
             // Final fetch of recommendations at session end
             fetchRecommendations()

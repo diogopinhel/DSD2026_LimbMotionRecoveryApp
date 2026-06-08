@@ -90,6 +90,15 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
+            <!-- Thumbnail image, shown when video has a youtubeId -->
+            <ImageView
+                android:id="@+id/ivThumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
             <!-- Centred play button -->
             <FrameLayout
                 android:id="@+id/btnPlay"
@@ -246,6 +255,32 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
+            <!-- Author row (hidden when empty) -->
+            <LinearLayout
+                android:id="@+id/authorRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_person"
+                    android:tint="@color/colorTextLight" />
+
+                <TextView
+                    android:id="@+id/tvAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <!-- Divider -->
             <View
                 android:layout_width="match_parent"
@@ -272,30 +307,16 @@
 
                 <Button
                     android:id="@+id/btnShareAction"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
                     android:background="@drawable/bg_btn_share"
                     android:insetBottom="0dp"
                     android:insetTop="0dp"
                     android:text="Share"
-                    android:textColor="@color/colorTextDark"
+                    android:textColor="@color/colorPrimaryGreen"
                     android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnStartExercises"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1.6"
-                    android:background="@drawable/bg_cta_btn"
-                    android:insetBottom="0dp"
-                    android:insetTop="0dp"
-                    android:text="Start exercises ↗"
-                    android:textColor="#E1F5EE"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
             </LinearLayout>
 
             <!-- Related articles label -->

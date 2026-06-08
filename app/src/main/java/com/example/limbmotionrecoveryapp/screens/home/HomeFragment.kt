@@ -9,10 +9,12 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
 import com.example.limbmotionrecoveryapp.sensor.SensorActivity
@@ -110,7 +112,7 @@ class HomeFragment : Fragment() {
             tvPlanSubline.text = when {
                 state.activePlanName != null -> state.activePlanName
                 state.loading -> ""
-                else -> "No active plan"
+                else -> "Let's do it, recover your injury!"
             }
 
             if (state.totalSessions > 0) {
@@ -271,6 +273,12 @@ class HomeFragment : Fragment() {
         tutorials.forEachIndexed { index, tutorial ->
             val cardView = inflater.inflate(R.layout.item_learn_card, container, false)
             cardView.findViewById<View>(R.id.learnThumbBg).setBackgroundColor(Color.parseColor(tutorial.thumbColor))
+            val ivThumb = cardView.findViewById<ImageView>(R.id.ivThumbYoutube)
+            if (tutorial.youtubeId.isNotBlank()) {
+                ivThumb.visibility = View.VISIBLE
+                Glide.with(this).load("https://img.youtube.com/vi/${tutorial.youtubeId}/hqdefault.jpg")
+                    .centerCrop().into(ivThumb)
+            }
             cardView.findViewById<TextView>(R.id.learnTitle).text = tutorial.title
             cardView.findViewById<TextView>(R.id.learnDuration).text = tutorial.duration
             if (index > 0) {
@@ -292,6 +300,8 @@ class HomeFragment : Fragment() {
             putExtra(LearnTutorialActivity.EXTRA_DURATION, tutorial.duration)
             putExtra(LearnTutorialActivity.EXTRA_YOUTUBE_ID, tutorial.youtubeId)
             putExtra(LearnTutorialActivity.EXTRA_CATEGORY, tutorial.category)
+            putExtra(LearnTutorialActivity.EXTRA_AUTHOR, tutorial.author)
+            putExtra(LearnTutorialActivity.EXTRA_VIDEO_DURATION, tutorial.videoDuration)
         }
         startActivity(intent)
     }

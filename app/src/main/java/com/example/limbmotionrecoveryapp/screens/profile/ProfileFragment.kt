@@ -10,12 +10,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.limbmotionrecoveryapp.R
 import com.example.limbmotionrecoveryapp.screens.auth.LoginActivity
+import com.example.limbmotionrecoveryapp.screens.home.TutorialBookmarks
 import com.example.limbmotionrecoveryapp.screens.profile.help.HelpActivity
 import com.example.limbmotionrecoveryapp.screens.profile.privacy.PrivacyActivity
 import com.example.limbmotionrecoveryapp.screens.profile.settings.SettingsActivity
@@ -23,6 +23,7 @@ import com.example.limbmotionrecoveryapp.screens.profile.settings.SettingsActivi
 class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
+    private var rootView: View? = null
 
     private val editProfileLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -38,7 +39,7 @@ class ProfileFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_profile, container, false)
+    ): View = inflater.inflate(R.layout.fragment_profile, container, false).also { rootView = it }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences("auth", Context.MODE_PRIVATE)
@@ -64,7 +65,13 @@ class ProfileFragment : Fragment() {
         }
 
         view.findViewById<LinearLayout>(R.id.itemMyRecovery).setOnClickListener {
-            Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), MyRecoveryActivity::class.java))
+        }
+        view.findViewById<LinearLayout>(R.id.itemSavedVideos).setOnClickListener {
+            startActivity(Intent(requireContext(), SavedVideosActivity::class.java))
+        }
+        view.findViewById<LinearLayout>(R.id.itemPainLog).setOnClickListener {
+            startActivity(Intent(requireContext(), PainLogActivity::class.java))
         }
         view.findViewById<LinearLayout>(R.id.itemSettings).setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
@@ -108,6 +115,23 @@ class ProfileFragment : Fragment() {
             tvUserName.text = cachedName
             tvUserEmail.text = cachedEmail
             tvInitials.text = initials(cachedName)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateSavedBadge()
+    }
+
+    private fun updateSavedBadge() {
+        val view = rootView ?: return
+        val badge = view.findViewById<TextView>(R.id.tvSavedBadge)
+        val count = TutorialBookmarks.getAll(requireContext()).size
+        if (count > 0) {
+            badge.text = count.toString()
+            badge.visibility = View.VISIBLE
+        } else {
+            badge.visibility = View.GONE
         }
     }
 

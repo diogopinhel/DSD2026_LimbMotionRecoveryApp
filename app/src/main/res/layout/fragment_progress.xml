@@ -29,6 +29,7 @@
             android:paddingTop="52dp"
             android:paddingBottom="32dp">
 
+            <!-- Header -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,18 +37,14 @@
                 android:textSize="26sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorTextDark"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="4dp" />
 
             <TextView
                 android:id="@+id/tvWeekLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:background="@drawable/bg_progress_chip"
-                android:textSize="12sp"
-                android:textColor="@color/colorPrimaryGreen"
-                android:textStyle="bold"
+                android:textSize="13sp"
+                android:textColor="@color/colorTextMedium"
                 android:layout_marginBottom="20dp"
                 tools:text="Week of Jun 2 – Jun 8" />
 
@@ -58,6 +55,7 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp">
 
+                <!-- Sessions done card -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -73,15 +71,21 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_calendar"
+                            android:tint="@color/colorPrimaryGreen"
+                            android:contentDescription="@null"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="SESSIONS DONE"
-                            android:textSize="10sp"
+                            android:text="Sessions done"
+                            android:textSize="11sp"
                             android:textColor="@color/colorTextMedium"
-                            android:textStyle="bold"
-                            android:letterSpacing="0.08"
-                            android:layout_marginBottom="6dp" />
+                            android:layout_marginBottom="4dp" />
 
                         <TextView
                             android:id="@+id/tvSessionsCount"
@@ -91,15 +95,7 @@
                             android:textSize="30sp"
                             android:textStyle="bold"
                             android:textColor="@color/colorTextDark"
-                            android:layout_marginBottom="2dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="this week"
-                            android:textSize="11sp"
-                            android:textColor="@color/colorTextMedium"
-                            android:layout_marginBottom="10dp" />
+                            android:layout_marginBottom="8dp" />
 
                         <TextView
                             android:id="@+id/tvSessionsDelta"
@@ -111,6 +107,7 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- Avg pain level card -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -126,21 +123,27 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_activity"
+                            android:tint="@color/colorAmber"
+                            android:contentDescription="@null"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="AVG PAIN LEVEL"
-                            android:textSize="10sp"
+                            android:text="Avg pain level"
+                            android:textSize="11sp"
                             android:textColor="@color/colorTextMedium"
-                            android:textStyle="bold"
-                            android:letterSpacing="0.08"
-                            android:layout_marginBottom="6dp" />
+                            android:layout_marginBottom="4dp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="2dp">
+                            android:layout_marginBottom="8dp">
 
                             <TextView
                                 android:id="@+id/tvAvgPain"
@@ -161,14 +164,6 @@
                                 android:paddingBottom="5dp"
                                 android:paddingStart="2dp" />
                         </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="this week"
-                            android:textSize="11sp"
-                            android:textColor="@color/colorTextMedium"
-                            android:layout_marginBottom="10dp" />
 
                         <TextView
                             android:id="@+id/tvPainDelta"
@@ -196,14 +191,46 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Active Days"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextDark"
-                        android:layout_marginBottom="16dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Active days"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextDark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sessions per day this week"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorTextMedium" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This week"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_progress_chip"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/barChartContainer"
@@ -228,14 +255,46 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Pain Trend"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextDark"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pain trend"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextDark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Last 7 check-ins"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorTextMedium" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="7 days"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorPrimaryGreen"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_progress_chip"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp" />
+                    </LinearLayout>
 
                     <com.example.limbmotionrecoveryapp.screens.progress.PainLineChartView
                         android:id="@+id/painLineChart"
@@ -259,14 +318,42 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Range of Motion"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextDark"
-                        android:layout_marginBottom="16dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Range of motion"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorTextDark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Max angle per session"
+                                android:textSize="11sp"
+                                android:textColor="@color/colorTextMedium" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Via sensor"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorTextLight" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -275,12 +362,12 @@
                         android:gravity="center"
                         android:paddingVertical="8dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📡"
-                            android:textSize="36sp"
-                            android:gravity="center"
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_sensor_wifi"
+                            android:tint="@color/colorTextLight"
+                            android:contentDescription="@null"
                             android:layout_marginBottom="10dp" />
 
                         <TextView
@@ -302,7 +389,8 @@
                             android:textColor="@color/colorPrimaryGreen"
                             android:background="@drawable/bg_outline_btn_green"
                             android:paddingHorizontal="20dp"
-                            android:stateListAnimator="@null" />
+                            android:stateListAnimator="@null"
+                            app:backgroundTint="@null" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -348,15 +436,21 @@
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/white"
-                        tools:text="7-day streak 🔥" />
+                        tools:text="5-day streak" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Keep it up!"
+                        android:text="Keep going — don't break the chain!"
                         android:textSize="12sp"
                         android:textColor="#C0E8D9" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔥"
+                    android:textSize="24sp" />
             </LinearLayout>
 
         </LinearLayout>

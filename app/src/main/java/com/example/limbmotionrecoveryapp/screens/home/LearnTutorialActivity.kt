@@ -4,20 +4,17 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.limbmotionrecoveryapp.R
 
 class LearnTutorialActivity : AppCompatActivity() {
@@ -34,19 +31,21 @@ class LearnTutorialActivity : AppCompatActivity() {
         val duration = intent.getStringExtra(EXTRA_DURATION) ?: ""
         val youtubeId = intent.getStringExtra(EXTRA_YOUTUBE_ID) ?: ""
         val category = intent.getStringExtra(EXTRA_CATEGORY) ?: "Recovery basics"
+        val author = intent.getStringExtra(EXTRA_AUTHOR) ?: ""
+        val videoDuration = intent.getStringExtra(EXTRA_VIDEO_DURATION) ?: ""
 
         // Toolbar
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<TextView>(R.id.tvToolbarTitle).text = title
 
         val btnBookmark = findViewById<ImageButton>(R.id.btnBookmark)
-        btnBookmark.setOnClickListener { toggleBookmark(btnBookmark) }
+        isBookmarked = TutorialBookmarks.isSaved(this, title)
+        applyBookmarkState(btnBookmark)
+        btnBookmark.setOnClickListener { toggleBookmark(btnBookmark, title) }
 
         val shareAction = { shareArticle(title) }
         findViewById<View>(R.id.btnShareToolbar).setOnClickListener { shareAction() }
         findViewById<View>(R.id.btnShareAction).setOnClickListener { shareAction() }
-
-        findViewById<View>(R.id.btnStartExercises).setOnClickListener { finish() }
 
         // Content
         findViewById<TextView>(R.id.tvTutorialTitle).text = title
@@ -54,34 +53,40 @@ class LearnTutorialActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDurationPill).text = "$duration read"
         findViewById<TextView>(R.id.tvCategoryPill).text = category
 
+        val authorRow = findViewById<LinearLayout>(R.id.authorRow)
+        val tvAuthor = findViewById<TextView>(R.id.tvAuthor)
+        if (author.isNotBlank()) {
+            tvAuthor.text = author
+            authorRow.visibility = View.VISIBLE
+        }
+
         // Player labels
-        val durationBadge = duration.replace(" min", ":00")
+        val durationBadge = videoDuration.ifBlank { duration.replace(" min", ":00") }
         findViewById<TextView>(R.id.tvPlayerCategory).text = category
         findViewById<TextView>(R.id.tvPlayerDuration).text = durationBadge
 
         // Player setup
-        val webView = findViewById<WebView>(R.id.webViewYoutube)
         val btnPlay = findViewById<View>(R.id.btnPlay)
+        val ivThumbnail = findViewById<ImageView>(R.id.ivThumbnail)
         val tvComingSoon = findViewById<TextView>(R.id.tvComingSoon)
 
-        setupWebView(webView)
+        if (youtubeId.isNotBlank()) {
+            ivThumbnail.visibility = View.VISIBLE
+            Glide.with(this)
+                .load("https://img.youtube.com/vi/$youtubeId/hqdefault.jpg")
+                .centerCrop()
+                .into(ivThumbnail)
+        }
 
         findViewById<FrameLayout>(R.id.playerContainer).setOnClickListener {
-            if (videoPlayed) return@setOnClickListener
-            videoPlayed = true
-
-            btnPlay.animate().alpha(0f).setDuration(180).withEndAction {
-                btnPlay.visibility = View.GONE
-            }.start()
-
             if (youtubeId.isNotBlank()) {
-                webView.visibility = View.VISIBLE
-                webView.loadDataWithBaseURL(
-                    "https://www.youtube.com",
-                    buildYouTubeHtml(youtubeId),
-                    "text/html", "utf-8", null
-                )
+                openYouTube(youtubeId)
             } else {
+                if (videoPlayed) return@setOnClickListener
+                videoPlayed = true
+                btnPlay.animate().alpha(0f).setDuration(180).withEndAction {
+                    btnPlay.visibility = View.GONE
+                }.start()
                 tvComingSoon.alpha = 0f
                 tvComingSoon.visibility = View.VISIBLE
                 tvComingSoon.animate().alpha(1f).setDuration(300).start()
@@ -91,8 +96,14 @@ class LearnTutorialActivity : AppCompatActivity() {
         setupRelatedArticles(title)
     }
 
-    private fun toggleBookmark(btn: ImageButton) {
+    private fun toggleBookmark(btn: ImageButton, title: String) {
         isBookmarked = !isBookmarked
+        if (isBookmarked) TutorialBookmarks.save(this, title)
+        else TutorialBookmarks.remove(this, title)
+        applyBookmarkState(btn)
+    }
+
+    private fun applyBookmarkState(btn: ImageButton) {
         if (isBookmarked) {
             btn.setBackgroundResource(R.drawable.bg_circle_btn_active)
             btn.setColorFilter(getColor(R.color.colorPrimaryGreen))
@@ -110,44 +121,15 @@ class LearnTutorialActivity : AppCompatActivity() {
         startActivity(Intent.createChooser(intent, null))
     }
 
-    private fun setupWebView(webView: WebView) {
-        webView.settings.apply {
-            javaScriptEnabled = true
-            mediaPlaybackRequiresUserGesture = false
-            loadWithOverviewMode = true
-            useWideViewPort = true
-            cacheMode = WebSettings.LOAD_NO_CACHE
+    private fun openYouTube(videoId: String) {
+        val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$videoId")).apply {
+            setPackage("com.google.android.youtube")
         }
-        webView.webChromeClient = WebChromeClient()
-        webView.webViewClient = WebViewClient()
-        webView.addJavascriptInterface(object : Any() {
-            @JavascriptInterface
-            fun onVideoEnded() = runOnUiThread { showDone() }
-        }, "Android")
+        val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=$videoId"))
+        startActivity(
+            if (packageManager.resolveActivity(appIntent, 0) != null) appIntent else webIntent
+        )
     }
-
-    private fun buildYouTubeHtml(videoId: String) = """
-        <!DOCTYPE html><html>
-        <head><meta name="viewport" content="width=device-width,initial-scale=1">
-        <style>html,body{margin:0;padding:0;background:#000;height:100%;}
-        #player{position:absolute;top:0;left:0;width:100%;height:100%;}</style>
-        </head>
-        <body>
-        <div id="player"></div>
-        <script>
-          var tag=document.createElement('script');
-          tag.src='https://www.youtube.com/iframe_api';
-          document.head.appendChild(tag);
-          var player;
-          function onYouTubeIframeAPIReady(){
-            player=new YT.Player('player',{
-              videoId:'$videoId',
-              playerVars:{playsinline:1,rel:0,autoplay:1},
-              events:{onStateChange:function(e){if(e.data===0)Android.onVideoEnded();}}
-            });
-          }
-        </script></body></html>
-    """.trimIndent()
 
     private fun showDone() {
         val progressFill = findViewById<View>(R.id.progressFill)
@@ -215,6 +197,8 @@ class LearnTutorialActivity : AppCompatActivity() {
                     putExtra(EXTRA_DURATION, tutorial.duration)
                     putExtra(EXTRA_YOUTUBE_ID, tutorial.youtubeId)
                     putExtra(EXTRA_CATEGORY, tutorial.category)
+                    putExtra(EXTRA_AUTHOR, tutorial.author)
+                    putExtra(EXTRA_VIDEO_DURATION, tutorial.videoDuration)
                 })
             }
             container.addView(card)
@@ -227,5 +211,7 @@ class LearnTutorialActivity : AppCompatActivity() {
         const val EXTRA_DURATION = "extra_duration"
         const val EXTRA_YOUTUBE_ID = "extra_youtube_id"
         const val EXTRA_CATEGORY = "extra_category"
+        const val EXTRA_AUTHOR = "extra_author"
+        const val EXTRA_VIDEO_DURATION = "extra_video_duration"
     }
 }

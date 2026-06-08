@@ -109,6 +109,15 @@
         <activity
             android:name=".screens.profile.help.HelpActivity"
             android:exported="false" />
+        <activity
+            android:name=".screens.profile.MyRecoveryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.profile.SavedVideosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screens.profile.PainLogActivity"
+            android:exported="false" />
 
         <!-- Firebase Cloud Messaging -->
         <service

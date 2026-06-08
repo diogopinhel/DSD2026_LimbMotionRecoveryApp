@@ -26,26 +26,37 @@ Create a table with the following schema:
 |---|---|---|
 | `id` | integer (PK, auto-increment) | Unique exercise ID |
 | `name` | string | Display name |
-| `category` | string | Exercise category |
-| `description` | string | Short instructions for the patient |
-| `gif_url` | string (nullable) | URL of an animated GIF demonstrating the exercise |
+| `category` | string | Exercise category (`"Lower Body"`, `"Flexibility"`, `"Balance"`, `"Gait"`) |
+| `description` | string | One or two sentences summarising the exercise — shown below the exercise name in the UI |
+| `instructions` | JSON array of strings | Step-by-step instructions. Each string is one numbered step. Rendered as a list in both M1 and M2. |
+| `gif_url` | string (nullable) | URL of an animated GIF demonstrating the exercise. Return `null` if unavailable — never omit the field. |
+| `thumbnail_url` | string (nullable) | URL of a static image for card previews. **See note below.** |
+
+> **Why `thumbnail_url` in addition to `gif_url`?**
+> The M1 exercise list shows all exercises for a session at once. Loading 10 animated GIFs simultaneously causes significant battery drain, data usage, and UI jank. `thumbnail_url` is used as a static preview in list/card contexts; the GIF is only loaded when the patient opens the exercise detail screen. `thumbnail_url` is also used in the M2 doctor dashboard exercise picker and works as a fallback if the GIF URL is unreachable.
 
 ### Seed Data (10 exercises)
 
-Please seed the table with the following entries on first deploy. For `gif_url`, use any appropriate publicly accessible GIF demonstrating the exercise (Physiopedia, Giphy, or similar):
+The complete seed payload — including full step-by-step `instructions`, real `gif_url` values sourced from JEFIT and Physiopedia, and `thumbnail_url` for each exercise — is in:
 
-| ID | Name | Category | Description |
+```
+docs/v2_exercise_seed_data.json
+```
+
+Summary of GIF sources used:
+
+| ID | Name | gif_url source | thumbnail_url source |
 |---|---|---|---|
-| 1 | Squat | Lower Body | 3 reps, ~5 s each. Feet shoulder-width apart, knees aligned with toes. Do not let knees cave inward. |
-| 2 | Walking Test | Gait | Walk forward 5 m at a natural pace. Eyes forward, arms relaxed. |
-| 3 | Stair Climbing | Lower Body | Climb 10 steps. Body upright, one step at a time, hold the rail if needed. |
-| 4 | Straight Leg Raise | Lower Body | Lie flat on back. Lift one leg to 45°, hold 2 s, lower slowly. |
-| 5 | Knee Extension | Lower Body | Seated on a chair. Extend knee fully, hold 3 s, lower slowly. |
-| 6 | Ankle Pumps | Lower Body | Seated or lying. Flex and point the ankle repeatedly. Good for circulation post-surgery. |
-| 7 | Hip Abduction | Lower Body | Side-lying. Lift top leg to 30–45°, hold 2 s, lower slowly. |
-| 8 | Calf Raises | Lower Body | Stand with feet flat. Rise onto toes, hold 2 s, lower slowly. |
-| 9 | Hamstring Stretch | Flexibility | Seated, legs extended. Reach forward towards feet, hold 20–30 s. Do not bounce. |
-| 10 | Single-Leg Balance | Balance | Stand on one leg for 30 s. Switch sides. Hold a wall if needed. |
+| 1 | Squat | JEFIT #493 | JEFIT |
+| 2 | Walking Test | JEFIT #1373 | JEFIT |
+| 3 | Stair Climbing | JEFIT #1225 | JEFIT |
+| 4 | Straight Leg Raise | JEFIT #982 | JEFIT |
+| 5 | Knee Extension | JEFIT #130 | JEFIT |
+| 6 | Ankle Pumps | Physiopedia (archive) | `null` |
+| 7 | Hip Abduction | JEFIT #1361 | JEFIT |
+| 8 | Calf Raises | JEFIT #1227 | JEFIT |
+| 9 | Hamstring Stretch | JEFIT #932 | JEFIT |
+| 10 | Single-Leg Balance | JEFIT #662 | JEFIT |
 
 ---
 
@@ -68,15 +79,29 @@ Authorization: Bearer <token>
     "id": 1,
     "name": "Squat",
     "category": "Lower Body",
-    "description": "3 reps, ~5 s each. Feet shoulder-width apart, knees aligned with toes.",
-    "gif_url": "https://www.youtube.com/watch?v=..."
+    "description": "Strengthens quadriceps, glutes and core. Essential for regaining functional leg strength after lower limb surgery.",
+    "instructions": [
+      "Stand with feet shoulder-width apart, toes pointing slightly outward.",
+      "Extend your arms forward for balance and keep your chest up.",
+      "Slowly bend your knees and sit back with your hips, as if sitting into a chair.",
+      "Lower until your knees are parallel with your glutes, or as far as comfortable.",
+      "Return to the starting position, pressing through your heels."
+    ],
+    "gif_url": "https://cdn.jefit.com/assets/img/exercises/gifs/493.gif",
+    "thumbnail_url": "https://www.jefit.com/images/exercises/960_590/1972.jpg"
   },
   {
     "id": 2,
     "name": "Walking Test",
     "category": "Gait",
-    "description": "Walk forward 5 m at a natural pace. Eyes forward, arms relaxed.",
-    "gif_url": "https://www.youtube.com/watch?v=..."
+    "description": "Assesses basic gait quality and mobility after lower limb injury or surgery.",
+    "instructions": [
+      "Stand upright with eyes forward and arms relaxed at your sides.",
+      "Walk forward at a natural, comfortable pace for 5 metres.",
+      "Turn around and return to the starting position."
+    ],
+    "gif_url": null,
+    "thumbnail_url": null
   }
 ]
 ```
@@ -88,8 +113,10 @@ Authorization: Bearer <token>
 | `id` | integer | Yes | |
 | `name` | string | Yes | |
 | `category` | string | Yes | |
-| `description` | string | Yes | |
-| `gif_url` | string or null | Yes | Return `null` if no video available, never omit the field |
+| `description` | string | Yes | Short summary shown below the exercise name |
+| `instructions` | array of strings | Yes | Step-by-step list. Return `[]` if empty, never `null`. |
+| `gif_url` | string or null | Yes | Return `null` if unavailable — never omit the field |
+| `thumbnail_url` | string or null | Yes | Return `null` if unavailable — never omit the field |
 
 ### HTTP Errors
 
@@ -148,8 +175,15 @@ This endpoint already exists. We need it to return `gif_url`, `description`, and
       "reps": 10,
       "holdSeconds": 2,
       "notes": "Stop immediately if you feel sharp knee pain.",
-      "gif_url": "https://www.youtube.com/watch?v=...",
-      "description": "3 reps, ~5 s each. Feet shoulder-width apart.",
+      "description": "Strengthens quadriceps, glutes and core. Essential for regaining functional leg strength after lower limb surgery.",
+      "instructions": [
+        "Stand with feet shoulder-width apart, toes pointing slightly outward.",
+        "Slowly bend your knees and sit back with your hips.",
+        "Lower until knees are parallel with glutes, or as far as comfortable.",
+        "Return to starting position pressing through your heels."
+      ],
+      "gif_url": "https://cdn.jefit.com/assets/img/exercises/gifs/493.gif",
+      "thumbnail_url": "https://www.jefit.com/images/exercises/960_590/1972.jpg",
       "completed": false,
       "lastPainLevel": null
     }
@@ -167,9 +201,11 @@ This endpoint already exists. We need it to return `gif_url`, `description`, and
 | `sets` | integer | Yes | |
 | `reps` | integer | Yes | |
 | `holdSeconds` | integer | Yes | Use `0` if not applicable, never `null` |
-| `notes` | string or null | Yes | Doctor's note |
-| `gif_url` | string or null | Yes | Used to show video button in M1 |
-| `description` | string or null | Yes | Short instructions shown below exercise name |
+| `notes` | string or null | Yes | Doctor's note to the patient |
+| `description` | string or null | Yes | Short summary shown below the exercise name |
+| `instructions` | array of strings | Yes | Step-by-step list. Return `[]` if empty, never `null`. |
+| `gif_url` | string or null | Yes | Animated GIF shown on the exercise detail screen |
+| `thumbnail_url` | string or null | Yes | Static image used in card/list previews |
 | `completed` | boolean | Yes | Whether patient completed this exercise |
 | `lastPainLevel` | integer or null | Yes | Pain reported (1–10), `null` if not reported |
 

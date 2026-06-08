@@ -123,7 +123,7 @@ class ProgressFragment : Fragment() {
         if (state.streakDays >= 2) {
             streakBanner.visibility = View.VISIBLE
             tvStreakNum.text = state.streakDays.toString()
-            tvStreakTitle.text = "${state.streakDays}-day streak 🔥"
+            tvStreakTitle.text = "${state.streakDays}-day streak"
         } else {
             streakBanner.visibility = View.GONE
         }
