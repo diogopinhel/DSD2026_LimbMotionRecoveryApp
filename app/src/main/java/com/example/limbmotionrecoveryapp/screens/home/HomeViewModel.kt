@@ -15,9 +15,6 @@ class HomeViewModel : ViewModel() {
     data class HomeState(
         val userName: String = "",
         val activePlanName: String? = null,
-        val recoveryWeekCurrent: Int = 0,
-        val recoveryWeekTotal: Int = 0,
-        val weekProgressFraction: Float = 0f,
         val completedSessions: Int = 0,
         val totalSessions: Int = 0,
         val sensorConnected: Boolean = false,
@@ -35,31 +32,34 @@ class HomeViewModel : ViewModel() {
         _state.value = HomeState(userName = userName, loading = true)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // 1. 获取日程列表，找第一个 pending 的计划作为"当前计划"
-                val schedule = api.getSchedule(userId, token)
-                val pendingPlan = schedule.firstOrNull { it["status"] as? String == "pending" }
-                val planName = pendingPlan?.let { it["exercise"] as? String }
+                // 1. Find active plan (first with status == "pending")
+                val schedules = api.getSchedule(userId, token)
+                val activePlan = schedules.firstOrNull { it["status"] as? String == "pending" }
+                val planName = activePlan?.get("exercise") as? String
+                val planId = (activePlan?.get("id") as? Double)?.toInt()
 
-                // 2. 获取进度统计（completedExercises, totalExercises, weeklyPercent）
-                val progress = api.getProgress(userId, token)
-                val adherence = progress["adherence"] as? Map<*, *>
-                val completedExercises = (adherence?.get("completedExercises") as? Double)?.toInt() ?: 0
-                val totalExercises = (adherence?.get("totalExercises") as? Double)?.toInt() ?: 0
-                val weeklyPercent = (adherence?.get("weeklyPercent") as? Double)?.toInt() ?: 0
-
-                // 3. 解析 weekLabel（如 "Week 3 of 6"）
-                val weekLabel = progress["weekLabel"] as? String
-                val (weekCurrent, weekTotal) = parseWeekLabel(weekLabel)
+                // 2. Fetch exercise counts for the active plan
+                var completedEx = 0
+                var totalEx = 0
+                if (planId != null) {
+                    try {
+                        val detail = api.getScheduleExercises(planId, token)
+                        val list = detail["exercises"] as? List<*> ?: emptyList<Any>()
+                        totalEx = list.size
+                        completedEx = list.count { item ->
+                            (item as? Map<*, *>)?.get("completed") as? Boolean == true
+                        }
+                    } catch (_: Exception) {
+                        // Plan has no exercises yet — keep 0/0
+                    }
+                }
 
                 _state.postValue(
                     HomeState(
                         userName = userName,
                         activePlanName = planName,
-                        recoveryWeekCurrent = weekCurrent,
-                        recoveryWeekTotal = weekTotal,
-                        weekProgressFraction = weeklyPercent / 100f,
-                        completedSessions = completedExercises,
-                        totalSessions = totalExercises,
+                        completedSessions = completedEx,
+                        totalSessions = totalEx,
                         loading = false
                     )
                 )
@@ -77,19 +77,5 @@ class HomeViewModel : ViewModel() {
 
     fun updateLiveSensorData(romDeg: Float, movementMs2: Float) {
         _state.value = _state.value?.copy(liveRomDeg = romDeg, liveMovementMs2 = movementMs2)
-    }
-
-    /** 解析 "Week 3 of 6" → (current, total) */
-    private fun parseWeekLabel(weekLabel: String?): Pair<Int, Int> {
-        if (weekLabel == null) return Pair(0, 0)
-        val regex = """Week (\d+) of (\d+)""".toRegex()
-        val match = regex.find(weekLabel)
-        return if (match != null) {
-            val current = match.groupValues[1].toIntOrNull() ?: 0
-            val total = match.groupValues[2].toIntOrNull() ?: 0
-            Pair(current, total)
-        } else {
-            Pair(0, 0)
-        }
     }
 }

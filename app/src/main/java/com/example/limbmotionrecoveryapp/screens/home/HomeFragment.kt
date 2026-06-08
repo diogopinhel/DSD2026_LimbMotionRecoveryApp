@@ -2,6 +2,7 @@ package com.example.limbmotionrecoveryapp.screens.home
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -65,6 +66,8 @@ class HomeFragment : Fragment() {
         btnPainCheckIn = view.findViewById(R.id.btnPainCheckIn)
         tvPainBtnText = view.findViewById(R.id.tvPainBtnText)
 
+        setupLearnSection(view)
+
         tvGreeting.text = buildGreeting(userName)
 
         btnStartExercises.setOnClickListener {
@@ -91,16 +94,14 @@ class HomeFragment : Fragment() {
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             tvPlanSubline.text = when {
-                state.activePlanName != null && state.recoveryWeekTotal > 0 ->
-                    "${state.activePlanName} · Week ${state.recoveryWeekCurrent} of ${state.recoveryWeekTotal}"
                 state.activePlanName != null -> state.activePlanName
                 state.loading -> ""
                 else -> "No active plan"
             }
 
-            if (state.recoveryWeekTotal > 0) {
-                tvWeekLabel.text = "${state.recoveryWeekCurrent} of ${state.recoveryWeekTotal} weeks"
-                weekProgressBar.progress = (state.weekProgressFraction * 100).toInt()
+            if (state.totalSessions > 0) {
+                tvWeekLabel.text = "${state.completedSessions} / ${state.totalSessions}"
+                weekProgressBar.progress = state.completedSessions * 100 / state.totalSessions
             } else {
                 tvWeekLabel.text = "—"
                 weekProgressBar.progress = 0
@@ -187,6 +188,39 @@ class HomeFragment : Fragment() {
         cal.set(Calendar.MILLISECOND, 0)
         cal.add(Calendar.DAY_OF_MONTH, 1)
         return cal.timeInMillis - System.currentTimeMillis()
+    }
+
+    private fun setupLearnSection(view: View) {
+        val tutorials = LearnTutorials.all.take(4)
+        val container = view.findViewById<LinearLayout>(R.id.learnCardsContainer)
+        val inflater = LayoutInflater.from(requireContext())
+        val gap = (8 * resources.displayMetrics.density).toInt()
+
+        tutorials.forEachIndexed { index, tutorial ->
+            val cardView = inflater.inflate(R.layout.item_learn_card, container, false)
+            cardView.findViewById<View>(R.id.learnThumbBg).setBackgroundColor(Color.parseColor(tutorial.thumbColor))
+            cardView.findViewById<TextView>(R.id.learnTitle).text = tutorial.title
+            cardView.findViewById<TextView>(R.id.learnDuration).text = tutorial.duration
+            if (index > 0) {
+                (cardView.layoutParams as LinearLayout.LayoutParams).marginStart = gap
+            }
+            cardView.setOnClickListener { openTutorial(tutorial) }
+            container.addView(cardView)
+        }
+
+        view.findViewById<TextView>(R.id.btnLearnSeeAll).setOnClickListener {
+            startActivity(Intent(requireContext(), LearnAllActivity::class.java))
+        }
+    }
+
+    private fun openTutorial(tutorial: LearnTutorials.Tutorial) {
+        val intent = Intent(requireContext(), LearnTutorialActivity::class.java).apply {
+            putExtra(LearnTutorialActivity.EXTRA_TITLE, tutorial.title)
+            putExtra(LearnTutorialActivity.EXTRA_DESCRIPTION, tutorial.description)
+            putExtra(LearnTutorialActivity.EXTRA_DURATION, tutorial.duration)
+            putExtra(LearnTutorialActivity.EXTRA_YOUTUBE_ID, tutorial.youtubeId)
+        }
+        startActivity(intent)
     }
 
     private fun buildGreeting(name: String): String {
