@@ -5,6 +5,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.limbmotionrecoveryapp.R
+import com.example.limbmotionrecoveryapp.session.SessionController
 import com.google.android.material.button.MaterialButton
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -16,7 +17,10 @@ class SessionSummaryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_session_summary)
 
-        findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
+            SessionController.getInstance(applicationContext).reset()
+            finish()
+        }
 
         val sessionId = intent.getIntExtra("sessionId", 0)
         val sampleCount = intent.getIntExtra("sampleCount", 0)
@@ -34,19 +38,26 @@ class SessionSummaryActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvEndTime).text = formatIsoTime(endTime)
 
         findViewById<MaterialButton>(R.id.btnSaveAndContinue).setOnClickListener {
+            SessionController.getInstance(applicationContext).reset()
             finish()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val controller = SessionController.getInstance(applicationContext)
+        if (controller.getState() == SessionController.State.ENDED) {
+            controller.reset()
         }
     }
 
     private fun formatIsoTime(iso: String): String {
         if (iso == "--" || iso.isEmpty()) return "--"
         return try {
-            // 解析 ISO 8601 (e.g. 2026-04-21T14:00:00Z 或 2026-04-21T14:00:00.000Z)
             val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply {
                 timeZone = TimeZone.getTimeZone("UTC")
             }
             val date = parser.parse(iso.take(19))
-            // 格式化为本地时区的友好格式
             val formatter = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.US).apply {
                 timeZone = TimeZone.getDefault()
             }
