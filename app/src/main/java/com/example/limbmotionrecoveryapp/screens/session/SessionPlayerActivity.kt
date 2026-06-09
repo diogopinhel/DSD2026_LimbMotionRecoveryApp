@@ -36,7 +36,6 @@ class SessionPlayerActivity : AppCompatActivity() {
     private lateinit var btnPauseResume: MaterialButton
     private lateinit var btnStop: MaterialButton
 
-    // [WSS] 新增：实时反馈显示
     private lateinit var tvIsCorrect: TextView
 
     private val handler = Handler(Looper.getMainLooper())
@@ -96,7 +95,6 @@ class SessionPlayerActivity : AppCompatActivity() {
         btnPauseResume = findViewById(R.id.btnPauseResume)
         btnStop = findViewById(R.id.btnStop)
 
-        // [WSS] 新增
         tvIsCorrect = findViewById(R.id.tvIsCorrect)
 
         val exerciseType = controller.getCurrentExerciseType()
@@ -116,23 +114,23 @@ class SessionPlayerActivity : AppCompatActivity() {
         legView.setAngleModeDegrees()
 
         legView.setLeftLimbColors(intArrayOf(
-            Color.parseColor("#FFE4D6"),
-            Color.parseColor("#F5C6A5"),
-            Color.parseColor("#D4A373")
-        ))
-        legView.setLeftCapColors(intArrayOf(
-            Color.parseColor("#FFF0E6"),
-            Color.parseColor("#D4A373")
-        ))
-
-        legView.setRightLimbColors(intArrayOf(
             Color.parseColor("#E8B89A"),
             Color.parseColor("#C6865C"),
             Color.parseColor("#8B5E3C")
         ))
-        legView.setRightCapColors(intArrayOf(
+        legView.setLeftCapColors(intArrayOf(
             Color.parseColor("#F5D0B5"),
             Color.parseColor("#B07D4B")
+        ))
+
+        legView.setRightLimbColors(intArrayOf(
+            Color.parseColor("#FFE4D6"),
+            Color.parseColor("#F5C6A5"),
+            Color.parseColor("#D4A373")
+        ))
+        legView.setRightCapColors(intArrayOf(
+            Color.parseColor("#FFF0E6"),
+            Color.parseColor("#D4A373")
         ))
     }
 
@@ -186,7 +184,7 @@ class SessionPlayerActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.colorAmber)
         )
 
-        // ====== 原有 S2 本地传感器数据逻辑（完全保留） ======
+        //  本地传感器数据驱动 LegView（保留备用）
         val data = controller.getLatestData()
         data?.targetAngles?.forEach { angle ->
             lastAngleTimestamps[angle.angleID] = angle.timestamp
@@ -215,53 +213,39 @@ class SessionPlayerActivity : AppCompatActivity() {
 
         tvLeftAngle.text = leftAngle?.let { "%.1f°".format(it) } ?: "--"
         tvRightAngle.text = rightAngle?.let { "%.1f°".format(it) } ?: "--"
-        // =====================================================
+        /**/
+        /*
 
-        // [WSS] 新增：用服务端反馈覆盖 last 数据，并显示动作标准状态
-        val feedback = controller.getLatestFeedback()
-        if (feedback != null) {
-            val wssAngle = feedback.angle
-            val wssJoint = feedback.joint
+        // [WSS] 服务器数据驱动双腿（左右腿独立读取，避免批量覆盖）
+        val leftFeedback = controller.getLatestLeftFeedback()
+        val rightFeedback = controller.getLatestRightFeedback()
 
-            when {
-                wssJoint.contains("left", ignoreCase = true) -> {
-                    tvLeftAngle.text = "%.1f°".format(wssAngle)
-                    legView.setLeftAngle((180f - wssAngle).coerceIn(0f, 180f))
-                    legView.setShowLeft(true)
-                }
-                wssJoint.contains("right", ignoreCase = true) -> {
-                    tvRightAngle.text = "%.1f°".format(wssAngle)
-                    legView.setRightAngle((180f - wssAngle).coerceIn(0f, 180f))
-                    legView.setShowRight(true)
-                }
-                else -> {
-                    // joint 不含 left/right（如 "knee"），更新 S2 当前有数据的那条腿
-                    if (leftAngle != null && rightAngle == null) {
-                        tvLeftAngle.text = "%.1f°".format(wssAngle)
-                        legView.setLeftAngle((180f - wssAngle).coerceIn(0f, 180f))
-                        legView.setShowLeft(true)
-                    } else if (rightAngle != null && leftAngle == null) {
-                        tvRightAngle.text = "%.1f°".format(wssAngle)
-                        legView.setRightAngle((180f - wssAngle).coerceIn(0f, 180f))
-                        legView.setShowRight(true)
-                    } else {
-                        // 两边都有或都没有，默认更新左腿
-                        tvLeftAngle.text = "%.1f°".format(wssAngle)
-                        legView.setLeftAngle((180f - wssAngle).coerceIn(0f, 180f))
-                        legView.setShowLeft(true)
-                    }
-                }
-            }
+        if (leftFeedback != null) {
+            tvLeftAngle.text = "%.1f°".format(leftFeedback.angle)
+            legView.setLeftAngle((180f - leftFeedback.angle).coerceIn(0f, 180f))
+            legView.setShowLeft(true)
+        }
 
-            tvIsCorrect.text = if (feedback.isCorrect) "✅ Standard" else "❌ Adjust"
+        if (rightFeedback != null) {
+            tvRightAngle.text = "%.1f°".format(rightFeedback.angle)
+            legView.setRightAngle((180f - rightFeedback.angle).coerceIn(0f, 180f))
+            legView.setShowRight(true)
+        }
+
+        // isCorrect 显示：取任意一条最新的反馈
+        val latestFeedback = rightFeedback ?: leftFeedback
+        if (latestFeedback != null) {
+            tvIsCorrect.text = if (latestFeedback.isCorrect) "✅ Standard" else "❌ Adjust"
             tvIsCorrect.setTextColor(
-                if (feedback.isCorrect) Color.parseColor("#4CAF50")
+                if (latestFeedback.isCorrect) Color.parseColor("#4CAF50")
                 else Color.parseColor("#F44336")
             )
         } else {
             tvIsCorrect.text = "⏳ Analyzing..."
             tvIsCorrect.setTextColor(Color.parseColor("#9E9E9E"))
         }
+        */
+        /**/
 
         // AI Feedback（原有逻辑完全保留）
         val aiRecs = controller.getLatestLiveRecommendations()

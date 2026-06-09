@@ -265,7 +265,7 @@ class LegView @JvmOverloads constructor(
         if (state.pendingAngles.isEmpty()) return
 
         // Backlog protection: drop intermediate frames when queue is too large, keep only the latest.
-        if (state.pendingAngles.size >= 10) {
+        if (state.pendingAngles.size >= 50) {
             val latest = state.pendingAngles.removeLast()
             state.pendingAngles.clear()
             state.pendingAngles.addLast(latest)
@@ -274,7 +274,7 @@ class LegView @JvmOverloads constructor(
         val target = state.pendingAngles.removeFirst()
         val backlog = state.pendingAngles.size
 
-        val durationMs = (120L - backlog * 10L).coerceAtLeast(20L)
+        val durationMs = (110L - backlog * 10L).coerceAtLeast(80L)
         val interpolator = LinearInterpolator()
 
         state.currentAnimator?.cancel()

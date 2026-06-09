@@ -70,6 +70,8 @@ class SessionController private constructor(context: Context) {
     private var realS1: S1RealModule? = null
     private var s2Module: S2Module? = null
 
+    private var m1SimulatedSensor: M1SimulatedSensor? = null
+
     init {
         buildS2(useReal = true)
     }
@@ -78,9 +80,14 @@ class SessionController private constructor(context: Context) {
      * Builds S1 (real + simulator) and S2.
      * Falls back to simulator automatically if real BLE sensor is not connected.
      */
+    /**
+     * Builds S1 (real + simulator) and S2.
+     * Falls back to simulator automatically if real BLE sensor is not connected.
+     */
     private fun buildS2(useReal: Boolean) {
+        // [保留] 原有 S2 构建逻辑，暂时废弃
+        /*
         simS1 = SimulatedS1Module()
-
         realS1 = null
         if (useReal) {
             val service: SensorService? = SensorRepository.getService()
@@ -91,13 +98,17 @@ class SessionController private constructor(context: Context) {
                 Log.w(TAG, "Real sensor unavailable; falling back to simulator")
             }
         }
-
         s2Module = S2Module(
             s1RealModule = realS1,
             s1SimModule = simS1!!,
             context = appContext
         )
         s2Module?.session?.setMode(realS1 == null)
+        */
+
+        // M1 自研仿真传感器（替代 S2）
+        m1SimulatedSensor = M1SimulatedSensor.getInstance()
+        Log.i(TAG, "M1 simulated sensor initialized")
     }
 
     // -------------------------------------------------------------------------
@@ -137,11 +148,12 @@ class SessionController private constructor(context: Context) {
     private var sensorJointMapping: Map<String, String> = emptyMap()
 
     // -------------------------------------------------------------------------
-    // [WSS] WebSocket real-time feedback (新增)
+    // [WSS] WebSocket real-time feedback（拆分为左右腿独立存储，避免批量覆盖）
     // -------------------------------------------------------------------------
     private var wsClient: okhttp3.WebSocket? = null
     private val wsConnected = AtomicBoolean(false)
-    private val latestFeedbackRef: AtomicReference<MovementFeedback?> = AtomicReference(null)
+    private val latestLeftFeedbackRef: AtomicReference<MovementFeedback?> = AtomicReference(null)
+    private val latestRightFeedbackRef: AtomicReference<MovementFeedback?> = AtomicReference(null)
     private val totalFeedbackCount = AtomicInteger(0)
 
     // -------------------------------------------------------------------------
@@ -249,9 +261,11 @@ class SessionController private constructor(context: Context) {
             check(currentSessionId != -1) { "V2 createSession failed: $sessionResp" }
             Log.i(TAG, "V2 session created: id=$currentSessionId")
 
-            // [WSS] 建立 WebSocket 连接（新增 1 行）
+            // [WSS] 建立 WebSocket 连接
             connectWebSocket(currentSessionId)
 
+            // [保留] 原有 S2 启动逻辑，暂时废弃
+            /*
             val s2 = s2Module ?: throw IllegalStateException("S2 not initialized")
             if (sensorJointMapping.isEmpty()) {
                 sensorJointMapping = defaultJointMapping()
@@ -266,6 +280,15 @@ class SessionController private constructor(context: Context) {
                 payloadStatus = currentExerciseType
             )
             check(startResult.success) { "S2 start failed: ${startResult.errorMessage}" }
+            */
+
+            // M1 仿真传感器启动（无视 sensorJointMapping）
+            val startResult = m1SimulatedSensor!!.start(
+                sessionId = currentSessionId,
+                userId = currentUserId,
+                payloadStatus = currentExerciseType
+            )
+            check(startResult.success) { "M1 sensor start failed: ${startResult.errorMessage}" }
 
             startAllLoops()
             Result.success(Unit)
@@ -310,9 +333,17 @@ class SessionController private constructor(context: Context) {
         return try {
             transition(State.PAUSED, State.RUNNING)
 
+            // [保留] 原有 S2 丢弃逻辑，暂时废弃
+            /*
             val s2 = s2Module ?: throw IllegalStateException("S2 not initialized")
             runBlocking(Dispatchers.IO) {
                 try { s2.data.read() } catch (_: Exception) { }
+            }
+            */
+
+            // M1 仿真：丢弃暂停期间缓存的数据
+            runBlocking(Dispatchers.IO) {
+                try { m1SimulatedSensor!!.read() } catch (_: Exception) { }
             }
 
             startReadLoop()
@@ -345,24 +376,31 @@ class SessionController private constructor(context: Context) {
 
             stopAllLoops()
 
+            // [保留] 原有 S2 停止逻辑，暂时废弃
+            /*
             val s2 = s2Module ?: throw IllegalStateException("S2 not initialized")
             val s2Summary = s2.session.stop()
             Log.i(TAG, "S2 stopped: samples=${s2Summary.sampleCount}")
+            */
+
+            // M1 仿真传感器停止
+            val m1Summary = m1SimulatedSensor!!.stop()
+            Log.i(TAG, "M1 sensor stopped: samples=${m1Summary.sampleCount}")
 
             v2Api.endSession(currentSessionId, currentToken)
 
             // Final fetch of recommendations at session end
             fetchRecommendations()
 
-            // [WSS] 关闭 WebSocket（新增 1 行）
+            // [WSS] 关闭 WebSocket
             disconnectWebSocket()
 
             val summary = M1SessionSummary(
                 sessionId = currentSessionId,
-                sampleCount = s2Summary.sampleCount,
-                errorCount = s2Summary.errorCount,
-                startTime = s2Summary.startTime,
-                endTime = s2Summary.endTime,
+                sampleCount = m1Summary.sampleCount,
+                errorCount = m1Summary.errorCount,
+                startTime = m1Summary.startTime,
+                endTime = m1Summary.endTime,
                 exerciseType = currentExerciseType
             )
             sessionSummary = summary
@@ -402,10 +440,14 @@ class SessionController private constructor(context: Context) {
             totalAngleCount.set(0)
             totalErrorCount.set(0)
 
-            // [WSS] 清空 WSS 反馈缓存（新增 3 行）
-            latestFeedbackRef.set(null)
+            // [WSS] 清空 WSS 反馈缓存
+            latestLeftFeedbackRef.set(null)
+            latestRightFeedbackRef.set(null)
             totalFeedbackCount.set(0)
             wsConnected.set(false)
+
+            // 重置 M1 仿真传感器状态（移到 try 块内，确保执行）
+            m1SimulatedSensor?.reset()
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -429,8 +471,11 @@ class SessionController private constructor(context: Context) {
         readJob = controllerScope?.launch {
             while (isActive && currentState == State.RUNNING) {
                 try {
-                    val s2 = s2Module ?: break
-                    val data: FormatData = s2.data.read()
+                    // [保留] 原有 S2 读取逻辑，暂时废弃
+                    // val s2 = s2Module ?: break
+                    // val data: FormatData = s2.data.read()
+
+                    val data: FormatData = m1SimulatedSensor!!.read()
 
                     latestDataRef.set(data)
                     synchronized(localDataCache) { localDataCache.add(data) }
@@ -619,20 +664,26 @@ class SessionController private constructor(context: Context) {
     fun getUploadQueueSize(): Int = synchronized(uploadQueue) { uploadQueue.size }
 
     // -------------------------------------------------------------------------
-    // [WSS] Real-time feedback accessors（新增）
+    // [WSS] Real-time feedback accessors（拆分为左右腿独立）
     // -------------------------------------------------------------------------
 
-    /** Returns the most recent backend feedback, or null if none received yet. */
-    fun getLatestFeedback(): MovementFeedback? = latestFeedbackRef.get()
+    /** Returns the most recent left-leg backend feedback, or null if none received yet. */
+    fun getLatestLeftFeedback(): MovementFeedback? = latestLeftFeedbackRef.get()
+
+    /** Returns the most recent right-leg backend feedback, or null if none received yet. */
+    fun getLatestRightFeedback(): MovementFeedback? = latestRightFeedbackRef.get()
+
+    /** Returns the most recent backend feedback (any leg), or null if none received yet. */
+    fun getLatestFeedback(): MovementFeedback? = latestRightFeedbackRef.get() ?: latestLeftFeedbackRef.get()
 
     /** Returns true/false if the latest uploaded movement was judged correct by V2. */
-    fun getLatestIsCorrect(): Boolean? = latestFeedbackRef.get()?.isCorrect
+    fun getLatestIsCorrect(): Boolean? = getLatestFeedback()?.isCorrect
 
     /** Returns the joint name from the latest WSS feedback, or null. */
-    fun getLatestFeedbackJoint(): String? = latestFeedbackRef.get()?.joint
+    fun getLatestFeedbackJoint(): String? = getLatestFeedback()?.joint
 
     /** Returns the angle value from the latest WSS feedback, or null. */
-    fun getLatestFeedbackAngle(): Float? = latestFeedbackRef.get()?.angle
+    fun getLatestFeedbackAngle(): Float? = getLatestFeedback()?.angle
 
     /** Returns how many movement_feedback messages have been received this session. */
     fun getTotalFeedbackCount(): Int = totalFeedbackCount.get()
@@ -705,7 +756,7 @@ class SessionController private constructor(context: Context) {
     }
 
     // -------------------------------------------------------------------------
-    // [WSS] WebSocket helpers（新增）
+    // [WSS] WebSocket helpers
     // -------------------------------------------------------------------------
 
     /** 目前华为云可用，Railway 不可用；华为使用 ws://，Railway 使用 wss:// */
@@ -782,7 +833,12 @@ class SessionController private constructor(context: Context) {
             angleId = angleId
         )
 
-        latestFeedbackRef.set(feedback)
+        // 按关节名分别存储，避免批量 WSS 消息互相覆盖
+        when {
+            angleId.contains("left", ignoreCase = true) -> latestLeftFeedbackRef.set(feedback)
+            angleId.contains("right", ignoreCase = true) -> latestRightFeedbackRef.set(feedback)
+            else -> latestLeftFeedbackRef.set(feedback) // 默认给左腿
+        }
         totalFeedbackCount.incrementAndGet()
 
         Log.i(TAG, "WSS feedback: isCorrect=${feedback.isCorrect}, joint=${feedback.joint}, angle=${feedback.angle}")
@@ -811,7 +867,7 @@ data class M1SessionSummary(
 )
 
 // -----------------------------------------------------------------------------
-// [WSS] Real-time movement feedback from backend（新增）
+// [WSS] Real-time movement feedback from backend
 // -----------------------------------------------------------------------------
 
 data class MovementFeedback(
